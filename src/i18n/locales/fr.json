@@ -1,0 +1,86 @@
+{
+  "common": {
+    "search": "Rechercher",
+    "cart": "Panier",
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "profile": "Profil",
+    "orders": "Commandes",
+    "admin": "Administration",
+    "loading": "Chargement..."
+  },
+  "nav": {
+    "home": "Accueil",
+    "categories": "Catégories",
+    "allProducts": "Tous les produits",
+    "about": "À propos",
+    "contact": "Contact"
+  },
+  "categories": {
+    "electronics": "Électronique",
+    "clothing": "Vêtements",
+    "home": "Maison",
+    "beauty": "Beauté"
+  },
+  "product": {
+    "addToCart": "Ajouter au panier",
+    "outOfStock": "Rupture de stock",
+    "inStock": "En stock",
+    "lowStock": "Stock faible",
+    "description": "Description",
+    "quantity": "Quantité",
+    "price": "Prix",
+    "reviews": "avis"
+  },
+  "cart": {
+    "empty": "Votre panier est vide",
+    "continueShopping": "Continuer vos achats",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "tax": "Taxes",
+    "total": "Total",
+    "checkout": "Passer à la caisse",
+    "clear": "Vider le panier"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "Inscription",
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "fullName": "Nom complet",
+    "forgotPassword": "Mot de passe oublié ?",
+    "rememberMe": "Se souvenir de moi",
+    "createAccount": "Créer un compte",
+    "alreadyHaveAccount": "Déjà un compte ?"
+  },
+  "footer": {
+    "about": {
+      "title": "ShopWave",
+      "description": "Créer des expériences d'achat exceptionnelles avec des produits de qualité et un service client supérieur."
+    },
+    "quickLinks": {
+      "title": "Liens rapides",
+      "home": "Accueil",
+      "shop": "Boutique",
+      "about": "À propos",
+      "contact": "Contact",
+      "blog": "Blog"
+    },
+    "customerService": {
+      "title": "Service client",
+      "faq": "FAQ",
+      "shipping": "Politique de livraison",
+      "returns": "Retours et remboursements",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions générales"
+    },
+    "contact": {
+      "title": "Contactez-nous",
+      "address": "123 Commerce Street",
+      "city": "San Francisco, CA 94103"
+    },
+    "rights": "Tous droits réservés.",
+    "designed": "Conçu et développé avec soin pour le client moderne."
+  }
+}
