@@ -1,0 +1,86 @@
+{
+  "common": {
+    "search": "Search",
+    "cart": "Cart",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "profile": "Profile",
+    "orders": "Orders",
+    "admin": "Admin",
+    "loading": "Loading..."
+  },
+  "nav": {
+    "home": "Home",
+    "categories": "Categories",
+    "allProducts": "All Products",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "categories": {
+    "electronics": "Electronics",
+    "clothing": "Clothing",
+    "home": "Home & Kitchen",
+    "beauty": "Beauty"
+  },
+  "product": {
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of Stock",
+    "inStock": "In Stock",
+    "lowStock": "Low Stock",
+    "description": "Description",
+    "quantity": "Quantity",
+    "price": "Price",
+    "reviews": "reviews"
+  },
+  "cart": {
+    "empty": "Your Cart is Empty",
+    "continueShopping": "Continue Shopping",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "total": "Total",
+    "checkout": "Checkout",
+    "clear": "Clear Cart"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember Me",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?"
+  },
+  "footer": {
+    "about": {
+      "title": "ShopWave",
+      "description": "Creating exceptional shopping experiences with quality products and superior customer service."
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "home": "Home",
+      "shop": "Shop",
+      "about": "About",
+      "contact": "Contact",
+      "blog": "Blog"
+    },
+    "customerService": {
+      "title": "Customer Service",
+      "faq": "FAQ",
+      "shipping": "Shipping Policy",
+      "returns": "Returns & Refunds",
+      "privacy": "Privacy Policy",
+      "terms": "Terms & Conditions"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "address": "123 Commerce Street",
+      "city": "San Francisco, CA 94103"
+    },
+    "rights": "All rights reserved.",
+    "designed": "Designed and built with care for the modern shopper."
+  }
+}
