@@ -59,7 +59,7 @@ const CategoryPage = () => {
     return (
       <div className="container mx-auto my-16 px-4 text-center">
         <h2 className="mb-6 text-2xl font-bold">Category Not Found</h2>
-        <p className="mb-8 text-gray-600">The category you're looking for doesn't exist.</p>
+        <p className="mb-8 text-gray-600">The category you're looking for doesn't exist or has been removed.</p>
         <Link to="/" className="rounded-md bg-blue-600 px-6 py-3 text-white hover:bg-blue-700">
           <ArrowLeft className="mr-2 inline-block h-5 w-5" />
           Back to Home

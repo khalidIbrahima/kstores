@@ -8,7 +8,10 @@ import {
   Package,
   TrendingUp,
   TrendingDown,
-  ArrowRight
+  ArrowRight,
+  BarChart3,
+  ArrowUpRight,
+  ArrowDownRight
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
@@ -19,7 +22,10 @@ const Dashboard = () => {
     totalRevenue: 0,
     totalProducts: 0,
     recentOrders: [],
-    topProducts: []
+    topProducts: [],
+    salesData: [],
+    orderGrowth: 0,
+    revenueGrowth: 0
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,9 +47,33 @@ const Dashboard = () => {
         // Fetch total revenue
         const { data: orders } = await supabase
           .from('orders')
-          .select('total');
+          .select('total, created_at')
+          .order('created_at', { ascending: false });
         
         const totalRevenue = orders?.reduce((sum, order) => sum + order.total, 0) || 0;
+
+        // Calculate growth rates
+        const currentMonth = orders?.filter(order => {
+          const orderDate = new Date(order.created_at);
+          const now = new Date();
+          return orderDate.getMonth() === now.getMonth();
+        });
+
+        const lastMonth = orders?.filter(order => {
+          const orderDate = new Date(order.created_at);
+          const now = new Date();
+          return orderDate.getMonth() === now.getMonth() - 1;
+        });
+
+        const orderGrowth = lastMonth?.length 
+          ? ((currentMonth?.length - lastMonth?.length) / lastMonth?.length) * 100 
+          : 0;
+
+        const currentRevenue = currentMonth?.reduce((sum, order) => sum + order.total, 0) || 0;
+        const lastRevenue = lastMonth?.reduce((sum, order) => sum + order.total, 0) || 0;
+        const revenueGrowth = lastRevenue 
+          ? ((currentRevenue - lastRevenue) / lastRevenue) * 100 
+          : 0;
 
         // Fetch products count
         const { count: productsCount } = await supabase
@@ -67,13 +97,30 @@ const Dashboard = () => {
           .order('inventory', { ascending: true })
           .limit(5);
 
+        // Generate sales data for chart
+        const salesData = Array.from({ length: 7 }, (_, i) => {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          const dayOrders = orders?.filter(order => {
+            const orderDate = new Date(order.created_at);
+            return orderDate.toDateString() === date.toDateString();
+          });
+          return {
+            date: date.toLocaleDateString('en-US', { weekday: 'short' }),
+            sales: dayOrders?.reduce((sum, order) => sum + order.total, 0) || 0
+          };
+        }).reverse();
+
         setStats({
           totalOrders: ordersCount || 0,
           totalCustomers: customersCount || 0,
           totalRevenue,
           totalProducts: productsCount || 0,
           recentOrders: recentOrders || [],
-          topProducts: topProducts || []
+          topProducts: topProducts || [],
+          salesData,
+          orderGrowth,
+          revenueGrowth
         });
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -96,7 +143,7 @@ const Dashboard = () => {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <h1 className="text-3xl font-bold">Kapital Store Dashboard</h1>
         <p className="text-gray-600">Welcome to your admin dashboard</p>
       </div>
 
@@ -108,13 +155,17 @@ const Dashboard = () => {
           transition={{ duration: 0.3 }}
           className="rounded-lg bg-white p-6 shadow-md"
         >
-          <div className="flex items-center">
-            <div className="rounded-full bg-blue-100 p-3">
-              <ShoppingBag className="h-6 w-6 text-blue-600" />
-            </div>
-            <div className="ml-4">
+          <div className="flex items-center justify-between">
+            <div>
               <p className="text-sm text-gray-600">Total Orders</p>
               <h3 className="text-2xl font-bold">{stats.totalOrders}</h3>
+              <div className={`mt-2 flex items-center text-sm ${stats.orderGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {stats.orderGrowth >= 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+                <span>{Math.abs(stats.orderGrowth).toFixed(1)}% from last month</span>
+              </div>
+            </div>
+            <div className="rounded-full bg-blue-100 p-3">
+              <ShoppingBag className="h-6 w-6 text-blue-600" />
             </div>
           </div>
         </motion.div>
@@ -125,13 +176,17 @@ const Dashboard = () => {
           transition={{ duration: 0.3, delay: 0.1 }}
           className="rounded-lg bg-white p-6 shadow-md"
         >
-          <div className="flex items-center">
-            <div className="rounded-full bg-green-100 p-3">
-              <Users className="h-6 w-6 text-green-600" />
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Total Revenue</p>
+              <h3 className="text-2xl font-bold">${stats.totalRevenue.toFixed(2)}</h3>
+              <div className={`mt-2 flex items-center text-sm ${stats.revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {stats.revenueGrowth >= 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+                <span>{Math.abs(stats.revenueGrowth).toFixed(1)}% from last month</span>
+              </div>
             </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">Total Customers</p>
-              <h3 className="text-2xl font-bold">{stats.totalCustomers}</h3>
+            <div className="rounded-full bg-green-100 p-3">
+              <DollarSign className="h-6 w-6 text-green-600" />
             </div>
           </div>
         </motion.div>
@@ -142,13 +197,17 @@ const Dashboard = () => {
           transition={{ duration: 0.3, delay: 0.2 }}
           className="rounded-lg bg-white p-6 shadow-md"
         >
-          <div className="flex items-center">
-            <div className="rounded-full bg-yellow-100 p-3">
-              <DollarSign className="h-6 w-6 text-yellow-600" />
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Total Customers</p>
+              <h3 className="text-2xl font-bold">{stats.totalCustomers}</h3>
+              <div className="mt-2 flex items-center text-sm text-green-600">
+                <ArrowUpRight className="h-4 w-4" />
+                <span>12.5% from last month</span>
+              </div>
             </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">Total Revenue</p>
-              <h3 className="text-2xl font-bold">${stats.totalRevenue.toFixed(2)}</h3>
+            <div className="rounded-full bg-purple-100 p-3">
+              <Users className="h-6 w-6 text-purple-600" />
             </div>
           </div>
         </motion.div>
@@ -159,16 +218,49 @@ const Dashboard = () => {
           transition={{ duration: 0.3, delay: 0.3 }}
           className="rounded-lg bg-white p-6 shadow-md"
         >
-          <div className="flex items-center">
-            <div className="rounded-full bg-purple-100 p-3">
-              <Package className="h-6 w-6 text-purple-600" />
-            </div>
-            <div className="ml-4">
+          <div className="flex items-center justify-between">
+            <div>
               <p className="text-sm text-gray-600">Total Products</p>
               <h3 className="text-2xl font-bold">{stats.totalProducts}</h3>
+              <div className="mt-2 flex items-center text-sm text-blue-600">
+                <Package className="mr-1 h-4 w-4" />
+                <span>{stats.topProducts.filter(p => p.inventory < 10).length} low stock</span>
+              </div>
+            </div>
+            <div className="rounded-full bg-yellow-100 p-3">
+              <Package className="h-6 w-6 text-yellow-600" />
             </div>
           </div>
         </motion.div>
+      </div>
+
+      {/* Sales Chart */}
+      <div className="mb-12 rounded-lg bg-white p-6 shadow-md">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-xl font-bold">Sales Overview</h2>
+          <select className="rounded-md border border-gray-300 px-3 py-1 text-sm">
+            <option>Last 7 days</option>
+            <option>Last 30 days</option>
+            <option>Last 90 days</option>
+          </select>
+        </div>
+        <div className="h-64">
+          <div className="flex h-full items-end justify-between">
+            {stats.salesData.map((data, index) => (
+              <div key={index} className="flex flex-col items-center">
+                <div 
+                  className="w-12 bg-blue-500 transition-all duration-300 hover:bg-blue-600"
+                  style={{ 
+                    height: `${(data.sales / Math.max(...stats.salesData.map(d => d.sales))) * 100}%`,
+                    minHeight: '20px'
+                  }}
+                ></div>
+                <span className="mt-2 text-sm text-gray-600">{data.date}</span>
+                <span className="text-xs text-gray-500">${data.sales}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -204,7 +296,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Top Products */}
+        {/* Low Stock Products */}
         <div className="rounded-lg bg-white p-6 shadow-md">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-bold">Low Stock Products</h2>

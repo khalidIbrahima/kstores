@@ -1,37 +1,38 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { 
   Search, 
   ShoppingCart, 
-  User, 
   Menu, 
   X, 
-  ChevronDown, 
-  LogOut, 
-  ShoppingBag, 
-  LayoutDashboard 
+  ChevronDown,
+  User
 } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
+import { useAuth } from '../../contexts/AuthContext';
 import LanguageSwitcher from '../LanguageSwitcher';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { user, profile, isAdmin, signOut } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const { itemCount } = useCart();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
+  const dropdownRef = useRef(null);
+  const userDropdownRef = useRef(null);
 
   // Close menus when location changes
   useEffect(() => {
     setMobileMenuOpen(false);
-    setUserMenuOpen(false);
+    setDropdownOpen(false);
+    setUserDropdownOpen(false);
   }, [location]);
 
   // Handle scroll effects
@@ -44,6 +45,21 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Handle click outside dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+        setUserDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // Handle search submit
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -53,10 +69,13 @@ const Header = () => {
     }
   };
 
-  // Handle sign out
   const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
+    try {
+      await signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   return (
@@ -69,8 +88,8 @@ const Header = () => {
         <div className="flex h-16 items-center justify-between md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center text-2xl font-bold text-blue-800">
-            <ShoppingBag className="mr-2" />
-            <span>ShopWave</span>
+            <ShoppingCart className="mr-2" />
+            <span>Kapital Store</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -79,16 +98,45 @@ const Header = () => {
               <li>
                 <Link to="/" className="text-gray-700 hover:text-blue-700">{t('nav.home')}</Link>
               </li>
-              <li className="relative group">
-                <button className="flex items-center text-gray-700 hover:text-blue-700">
+              <li className="relative" ref={dropdownRef}>
+                <button 
+                  className="flex items-center text-gray-700 hover:text-blue-700"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                >
                   {t('nav.categories')} <ChevronDown className="ml-1 h-4 w-4" />
                 </button>
-                <div className="absolute left-0 mt-2 hidden w-48 rounded-md bg-white p-2 shadow-lg group-hover:block">
-                  <Link to="/category/electronics" className="block rounded p-2 hover:bg-gray-100">{t('categories.electronics')}</Link>
-                  <Link to="/category/clothing" className="block rounded p-2 hover:bg-gray-100">{t('categories.clothing')}</Link>
-                  <Link to="/category/home" className="block rounded p-2 hover:bg-gray-100">{t('categories.home')}</Link>
-                  <Link to="/category/beauty" className="block rounded p-2 hover:bg-gray-100">{t('categories.beauty')}</Link>
-                </div>
+                {dropdownOpen && (
+                  <div className="absolute left-0 mt-2 w-48 rounded-md bg-white p-2 shadow-lg">
+                    <Link 
+                      to="/category/electronics" 
+                      className="block rounded p-2 hover:bg-gray-100"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      {t('categories.electronics')}
+                    </Link>
+                    <Link 
+                      to="/category/clothing" 
+                      className="block rounded p-2 hover:bg-gray-100"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      {t('categories.clothing')}
+                    </Link>
+                    <Link 
+                      to="/category/home" 
+                      className="block rounded p-2 hover:bg-gray-100"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      {t('categories.home')}
+                    </Link>
+                    <Link 
+                      to="/category/beauty" 
+                      className="block rounded p-2 hover:bg-gray-100"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      {t('categories.beauty')}
+                    </Link>
+                  </div>
+                )}
               </li>
               <li>
                 <Link to="/products" className="text-gray-700 hover:text-blue-700">{t('nav.allProducts')}</Link>
@@ -102,7 +150,7 @@ const Header = () => {
             </ul>
           </nav>
 
-          {/* Search, Cart, User */}
+          {/* Search, Cart, Language, User */}
           <div className="flex items-center space-x-4">
             {/* Language Switcher */}
             <LanguageSwitcher />
@@ -131,58 +179,56 @@ const Header = () => {
 
             {/* User Menu */}
             {user ? (
-              <div className="relative">
-                <button 
-                  onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center space-x-1"
+              <div className="relative" ref={userDropdownRef}>
+                <button
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className="flex items-center space-x-1 rounded-full bg-gray-100 p-2 hover:bg-gray-200"
                 >
-                  <div className="h-8 w-8 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
-                    {profile?.avatar_url ? (
-                      <img src={profile.avatar_url} alt={profile.full_name} className="h-full w-full object-cover" />
-                    ) : (
-                      <User className="h-5 w-5 text-gray-500" />
-                    )}
-                  </div>
+                  <User className="h-5 w-5 text-gray-700" />
                 </button>
-
-                <AnimatePresence>
-                  {userMenuOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-48 rounded-md bg-white py-2 shadow-lg ring-1 ring-black ring-opacity-5"
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 rounded-md bg-white p-2 shadow-lg">
+                    <Link
+                      to="/profile"
+                      className="block rounded p-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setUserDropdownOpen(false)}
                     >
-                      <div className="border-b border-gray-100 px-4 py-2">
-                        <p className="text-sm font-medium">{profile?.full_name}</p>
-                        <p className="text-xs text-gray-500">{user.email}</p>
-                      </div>
-                      <Link to="/profile" className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <User className="mr-2 h-4 w-4" /> {t('common.profile')}
-                      </Link>
-                      <Link to="/orders" className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <ShoppingBag className="mr-2 h-4 w-4" /> {t('common.orders')}
-                      </Link>
-                      {isAdmin && (
-                        <Link to="/admin" className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          <LayoutDashboard className="mr-2 h-4 w-4" /> {t('common.admin')}
-                        </Link>
-                      )}
-                      <button
-                        onClick={handleSignOut}
-                        className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      Profile
+                    </Link>
+                    <Link
+                      to="/orders"
+                      className="block rounded p-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setUserDropdownOpen(false)}
+                    >
+                      Orders
+                    </Link>
+                    {user.is_admin && (
+                      <Link
+                        to="/admin"
+                        className="block rounded p-2 text-gray-700 hover:bg-gray-100"
+                        onClick={() => setUserDropdownOpen(false)}
                       >
-                        <LogOut className="mr-2 h-4 w-4" /> {t('common.signOut')}
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                        Admin Dashboard
+                      </Link>
+                    )}
+                    <button
+                      onClick={() => {
+                        setUserDropdownOpen(false);
+                        handleSignOut();
+                      }}
+                      className="block w-full rounded p-2 text-left text-red-600 hover:bg-red-50"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
-              <Link to="/login" className="flex items-center text-gray-700 hover:text-blue-700">
-                <User className="mr-1 h-5 w-5" />
-                <span className="hidden md:inline">{t('common.signIn')}</span>
+              <Link
+                to="/login"
+                className="rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+              >
+                Sign In
               </Link>
             )}
 
@@ -246,6 +292,38 @@ const Header = () => {
                   <li>
                     <Link to="/contact" className="block py-2 text-gray-700 hover:text-blue-700">{t('nav.contact')}</Link>
                   </li>
+                  {user ? (
+                    <>
+                      <li>
+                        <Link to="/profile" className="block py-2 text-gray-700 hover:text-blue-700">Profile</Link>
+                      </li>
+                      <li>
+                        <Link to="/orders" className="block py-2 text-gray-700 hover:text-blue-700">Orders</Link>
+                      </li>
+                      {user.is_admin && (
+                        <li>
+                          <Link to="/admin" className="block py-2 text-gray-700 hover:text-blue-700">Admin Dashboard</Link>
+                        </li>
+                      )}
+                      <li>
+                        <button
+                          onClick={handleSignOut}
+                          className="block w-full py-2 text-left text-red-600 hover:text-red-700"
+                        >
+                          Sign Out
+                        </button>
+                      </li>
+                    </>
+                  ) : (
+                    <li>
+                      <Link
+                        to="/login"
+                        className="block rounded-md bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700"
+                      >
+                        Sign In
+                      </Link>
+                    </li>
+                  )}
                 </ul>
               </nav>
             </div>

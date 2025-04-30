@@ -7,7 +7,8 @@
     "profile": "Profile",
     "orders": "Orders",
     "admin": "Admin",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "currency": "CFA"
   },
   "nav": {
     "home": "Home",
@@ -30,7 +31,11 @@
     "description": "Description",
     "quantity": "Quantity",
     "price": "Price",
-    "reviews": "reviews"
+    "reviews": "reviews",
+    "freeShipping": "Free Shipping",
+    "freeShippingDesc": "Free shipping on orders over 25,000 CFA",
+    "securePayment": "Secure Payment",
+    "securePaymentDesc": "100% secure payment"
   },
   "cart": {
     "empty": "Your Cart is Empty",
@@ -40,7 +45,10 @@
     "tax": "Tax",
     "total": "Total",
     "checkout": "Checkout",
-    "clear": "Clear Cart"
+    "clear": "Clear Cart",
+    "clearConfirm": "Are you sure you want to clear your cart?",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
   },
   "auth": {
     "login": "Login",

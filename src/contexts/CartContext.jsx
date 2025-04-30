@@ -1,14 +1,12 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useAuth } from './AuthContext';
 
 const CartContext = createContext();
 
-const CART_STORAGE_KEY = 'shopify_clone_cart';
+const CART_STORAGE_KEY = 'kapital_store_cart';
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
-  const { user } = useAuth();
 
   // Calculate derived values
   const itemCount = items.reduce((count, item) => count + item.quantity, 0);
@@ -21,7 +19,7 @@ export function CartProvider({ children }) {
       try {
         setItems(JSON.parse(savedCart));
       } catch (error) {
-        console.error('Failed to parse cart from localStorage', error);
+        console.error('Failed to parse cart from localStorage:', error);
         localStorage.removeItem(CART_STORAGE_KEY);
       }
     }
@@ -32,57 +30,51 @@ export function CartProvider({ children }) {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
 
-  // Clear cart when user logs out
-  useEffect(() => {
-    if (!user) {
-      clearCart();
-    }
-  }, [user]);
-
-  function addItem(product) {
+  const addItem = (product, quantity = 1) => {
     setItems(currentItems => {
-      // Check if item already exists in cart
-      const existingItemIndex = currentItems.findIndex(item => item.id === product.id);
+      const existingItem = currentItems.find(item => item.id === product.id);
       
-      if (existingItemIndex >= 0) {
-        // Increment quantity if item exists
-        const updatedItems = [...currentItems];
-        updatedItems[existingItemIndex].quantity += 1;
-        toast.success(`Added another ${product.name} to your cart`);
+      if (existingItem) {
+        const updatedItems = currentItems.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+        toast.success(`Updated ${product.name} quantity in cart`);
         return updatedItems;
       } else {
-        // Add new item with quantity 1
-        toast.success(`Added ${product.name} to your cart`);
-        return [...currentItems, { ...product, quantity: 1 }];
+        toast.success(`Added ${product.name} to cart`);
+        return [...currentItems, { ...product, quantity }];
       }
     });
-  }
+  };
 
-  function updateQuantity(id, quantity) {
+  const updateQuantity = (id, quantity) => {
     if (quantity < 1) {
       return removeItem(id);
     }
     
-    setItems(currentItems => 
-      currentItems.map(item => 
+    setItems(currentItems =>
+      currentItems.map(item =>
         item.id === id ? { ...item, quantity } : item
       )
     );
-  }
+  };
 
-  function removeItem(id) {
+  const removeItem = (id) => {
     setItems(currentItems => {
       const item = currentItems.find(item => item.id === id);
       if (item) {
-        toast.success(`Removed ${item.name} from your cart`);
+        toast.success(`Removed ${item.name} from cart`);
       }
       return currentItems.filter(item => item.id !== id);
     });
-  }
+  };
 
-  function clearCart() {
+  const clearCart = () => {
     setItems([]);
-  }
+    toast.success('Cart cleared');
+  };
 
   const value = {
     items,
@@ -99,7 +91,7 @@ export function CartProvider({ children }) {
 
 export function useCart() {
   const context = useContext(CartContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useCart must be used within a CartProvider');
   }
   return context;

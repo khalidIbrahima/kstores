@@ -1,0 +1,162 @@
+/*
+  # Add Product Data and Management Features
+
+  1. Changes
+    - Create product categories and products tables
+    - Add RLS policies for proper access control
+    - Insert sample data for categories and products
+*/
+
+-- Create product categories table first
+CREATE TABLE IF NOT EXISTS categories (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  slug text UNIQUE NOT NULL,
+  created_at timestamptz DEFAULT now()
+);
+
+-- Create products table with reference to categories
+CREATE TABLE IF NOT EXISTS products (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  description text,
+  price numeric NOT NULL CHECK (price >= 0),
+  image_url text NOT NULL,
+  inventory integer NOT NULL DEFAULT 0 CHECK (inventory >= 0),
+  category_id uuid REFERENCES categories(id) ON DELETE SET NULL,
+  created_at timestamptz DEFAULT now()
+);
+
+-- Enable RLS
+ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Products are viewable by everyone" ON products;
+DROP POLICY IF EXISTS "Products are manageable by admins only" ON products;
+DROP POLICY IF EXISTS "Categories are viewable by everyone" ON categories;
+DROP POLICY IF EXISTS "Categories are manageable by admins only" ON categories;
+
+-- Create policies
+CREATE POLICY "Products are viewable by everyone"
+ON products FOR SELECT
+TO public
+USING (true);
+
+CREATE POLICY "Products are manageable by admins only"
+ON products FOR ALL
+TO public
+USING (
+  EXISTS (
+    SELECT 1 FROM profiles
+    WHERE profiles.id = auth.uid()
+    AND profiles.is_admin = true
+  )
+);
+
+CREATE POLICY "Categories are viewable by everyone"
+ON categories FOR SELECT
+TO public
+USING (true);
+
+CREATE POLICY "Categories are manageable by admins only"
+ON categories FOR ALL
+TO public
+USING (
+  EXISTS (
+    SELECT 1 FROM profiles
+    WHERE profiles.id = auth.uid()
+    AND profiles.is_admin = true
+  )
+);
+
+-- Insert sample categories
+INSERT INTO categories (name, slug) VALUES
+  ('Electronics', 'electronics'),
+  ('Fashion', 'fashion'),
+  ('Home & Living', 'home-living'),
+  ('Books', 'books'),
+  ('Sports', 'sports');
+
+-- Insert sample products
+INSERT INTO products (name, description, price, image_url, inventory, category_id) VALUES
+  (
+    'Wireless Headphones',
+    'High-quality wireless headphones with noise cancellation',
+    129.99,
+    'https://images.pexels.com/photos/3945667/pexels-photo-3945667.jpeg',
+    50,
+    (SELECT id FROM categories WHERE slug = 'electronics')
+  ),
+  (
+    'Smart Watch',
+    'Feature-rich smartwatch with health tracking',
+    199.99,
+    'https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg',
+    30,
+    (SELECT id FROM categories WHERE slug = 'electronics')
+  ),
+  (
+    'Cotton T-Shirt',
+    'Comfortable 100% cotton t-shirt',
+    24.99,
+    'https://images.pexels.com/photos/5698851/pexels-photo-5698851.jpeg',
+    100,
+    (SELECT id FROM categories WHERE slug = 'fashion')
+  ),
+  (
+    'Denim Jeans',
+    'Classic fit denim jeans',
+    59.99,
+    'https://images.pexels.com/photos/1082529/pexels-photo-1082529.jpeg',
+    75,
+    (SELECT id FROM categories WHERE slug = 'fashion')
+  ),
+  (
+    'Coffee Table',
+    'Modern wooden coffee table',
+    149.99,
+    'https://images.pexels.com/photos/447592/pexels-photo-447592.jpeg',
+    25,
+    (SELECT id FROM categories WHERE slug = 'home-living')
+  ),
+  (
+    'Table Lamp',
+    'Contemporary table lamp with LED bulb',
+    39.99,
+    'https://images.pexels.com/photos/1112598/pexels-photo-1112598.jpeg',
+    40,
+    (SELECT id FROM categories WHERE slug = 'home-living')
+  ),
+  (
+    'Programming Guide',
+    'Comprehensive programming guide for beginners',
+    34.99,
+    'https://images.pexels.com/photos/2465877/pexels-photo-2465877.jpeg',
+    60,
+    (SELECT id FROM categories WHERE slug = 'books')
+  ),
+  (
+    'Novel Collection',
+    'Collection of bestselling novels',
+    49.99,
+    'https://images.pexels.com/photos/1130980/pexels-photo-1130980.jpeg',
+    45,
+    (SELECT id FROM categories WHERE slug = 'books')
+  ),
+  (
+    'Yoga Mat',
+    'Non-slip yoga mat with carrying strap',
+    29.99,
+    'https://images.pexels.com/photos/4056535/pexels-photo-4056535.jpeg',
+    80,
+    (SELECT id FROM categories WHERE slug = 'sports')
+  ),
+  (
+    'Dumbbells Set',
+    'Set of adjustable dumbbells',
+    89.99,
+    'https://images.pexels.com/photos/4397840/pexels-photo-4397840.jpeg',
+    35,
+    (SELECT id FROM categories WHERE slug = 'sports')
+  );

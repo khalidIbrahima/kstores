@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronRight, Star } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useCart } from '../contexts/CartContext';
 
 const HomePage = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { addItem } = useCart();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,7 +19,7 @@ const HomePage = () => {
         // Fetch featured products
         const { data: products, error: productsError } = await supabase
           .from('products')
-          .select('*')
+          .select('*, categories(*)')
           .order('created_at', { ascending: false })
           .limit(8);
         
@@ -26,7 +28,8 @@ const HomePage = () => {
         // Fetch categories
         const { data: categories, error: categoriesError } = await supabase
           .from('categories')
-          .select('*');
+          .select('*')
+          .order('name');
         
         if (categoriesError) throw categoriesError;
         
@@ -41,26 +44,6 @@ const HomePage = () => {
     
     fetchData();
   }, []);
-
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-  
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.5 }
-    }
-  };
 
   return (
     <div className="min-h-screen">
@@ -91,7 +74,7 @@ const HomePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0 sm:justify-center"
+            className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0"
           >
             <Link to="/products" className="rounded-full bg-yellow-500 px-8 py-3 font-medium text-gray-900 transition-colors hover:bg-yellow-400">
               Shop Now
@@ -153,17 +136,13 @@ const HomePage = () => {
               <div className="h-16 w-16 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
             </div>
           ) : (
-            <motion.div 
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-            >
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {featuredProducts.map((product) => (
                 <motion.div
                   key={product.id}
-                  variants={itemVariants}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
                   className="group overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-lg"
                 >
                   <Link to={`/product/${product.id}`} className="block overflow-hidden">
@@ -186,7 +165,13 @@ const HomePage = () => {
                       </div>
                       <div className="flex items-center justify-between">
                         <p className="text-xl font-bold text-blue-700">${product.price.toFixed(2)}</p>
-                        <button className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-blue-600 hover:text-white">
+                        <button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            addItem(product);
+                          }}
+                          className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-blue-600 hover:text-white"
+                        >
                           Add to cart
                         </button>
                       </div>
@@ -194,7 +179,7 @@ const HomePage = () => {
                   </Link>
                 </motion.div>
               ))}
-            </motion.div>
+            </div>
           )}
 
           <div className="mt-12 text-center">
@@ -214,7 +199,7 @@ const HomePage = () => {
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div className="text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                 </svg>
               </div>
@@ -223,7 +208,7 @@ const HomePage = () => {
             </div>
             <div className="text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
               </div>
@@ -232,7 +217,7 @@ const HomePage = () => {
             </div>
             <div className="text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                 </svg>
               </div>

@@ -11,33 +11,52 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      } else {
-        setIsLoading(false);
+    let mounted = true;
+
+    async function initialize() {
+      try {
+        // Get initial session
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (mounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            await fetchProfile(session.user.id);
+          } else {
+            setIsLoading(false);
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
-    });
+    }
+
+    initialize();
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          await fetchProfile(session.user.id);
-        } else {
-          setProfile(null);
-          setIsLoading(false);
+        if (mounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            await fetchProfile(session.user.id);
+          } else {
+            setProfile(null);
+            setIsLoading(false);
+          }
         }
       }
     );
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
   }, []);
@@ -45,21 +64,19 @@ export function AuthProvider({ children }) {
   async function fetchProfile(userId) {
     try {
       setIsLoading(true);
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
 
-      if (error) {
-        throw error;
-      }
-
-      if (data) {
-        setProfile(data);
-      }
+      if (error) throw error;
+      
+      setProfile(data);
     } catch (error) {
       console.error('Error fetching profile:', error);
+      setProfile(null);
     } finally {
       setIsLoading(false);
     }
@@ -67,31 +84,27 @@ export function AuthProvider({ children }) {
 
   async function signUp(email, password, fullName) {
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
       });
 
-      if (error) {
-        throw error;
-      }
+      if (authError) throw authError;
 
-      if (data.user) {
+      if (authData.user) {
         const { error: profileError } = await supabase
           .from('profiles')
           .insert([
             {
-              id: data.user.id,
+              id: authData.user.id,
               full_name: fullName,
               avatar_url: null,
               is_admin: false,
             },
           ]);
 
-        if (profileError) {
-          throw profileError;
-        }
-
+        if (profileError) throw profileError;
+        
         toast.success('Account created successfully!');
       }
     } catch (error) {
@@ -107,10 +120,8 @@ export function AuthProvider({ children }) {
         password,
       });
 
-      if (error) {
-        throw error;
-      }
-
+      if (error) throw error;
+      
       toast.success('Signed in successfully!');
     } catch (error) {
       toast.error(error.message || 'An error occurred during sign in');
@@ -121,9 +132,7 @@ export function AuthProvider({ children }) {
   async function signOut() {
     try {
       const { error } = await supabase.auth.signOut();
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
       toast.success('Signed out successfully');
     } catch (error) {
       toast.error(error.message || 'An error occurred during sign out');
@@ -137,16 +146,13 @@ export function AuthProvider({ children }) {
       const { error } = await supabase
         .from('profiles')
         .update(data)
-        .eq('id', user.id);
+        .eq('id', user.id)
+        .select()
+        .single();
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
-      if (profile) {
-        setProfile({ ...profile, ...data });
-      }
-
+      setProfile(prev => ({ ...prev, ...data }));
       toast.success('Profile updated successfully');
     } catch (error) {
       toast.error(error.message || 'An error occurred while updating profile');

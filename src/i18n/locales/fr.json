@@ -7,7 +7,8 @@
     "profile": "Profil",
     "orders": "Commandes",
     "admin": "Administration",
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "currency": "F CFA"
   },
   "nav": {
     "home": "Accueil",
@@ -30,7 +31,11 @@
     "description": "Description",
     "quantity": "Quantité",
     "price": "Prix",
-    "reviews": "avis"
+    "reviews": "avis",
+    "freeShipping": "Livraison gratuite",
+    "freeShippingDesc": "Livraison gratuite pour les commandes de plus de 25 000 F CFA",
+    "securePayment": "Paiement sécurisé",
+    "securePaymentDesc": "100% sécurisé"
   },
   "cart": {
     "empty": "Votre panier est vide",
@@ -40,7 +45,10 @@
     "tax": "Taxes",
     "total": "Total",
     "checkout": "Passer à la caisse",
-    "clear": "Vider le panier"
+    "clear": "Vider le panier",
+    "clearConfirm": "Êtes-vous sûr de vouloir vider votre panier ?",
+    "cancel": "Annuler",
+    "confirm": "Confirmer"
   },
   "auth": {
     "login": "Connexion",

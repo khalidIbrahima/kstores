@@ -4,14 +4,16 @@ import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import Layout from './components/layout/Layout';
 import HomePage from './pages/HomePage';
+import ProductsPage from './pages/ProductsPage';
 import ProductPage from './pages/ProductPage';
 import CategoryPage from './pages/CategoryPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import ProfilePage from './pages/ProfilePage';
-import OrdersPage from './pages/OrdersPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import AdminLayout from './components/layout/AdminLayout';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminProducts from './pages/admin/Products';
 import AdminOrders from './pages/admin/Orders';
@@ -27,46 +29,39 @@ function App() {
         <Router>
           <Toaster position="top-center" />
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<Layout />}>
               <Route index element={<HomePage />} />
+              <Route path="products" element={<ProductsPage />} />
               <Route path="product/:id" element={<ProductPage />} />
               <Route path="category/:slug" element={<CategoryPage />} />
               <Route path="cart" element={<CartPage />} />
-              <Route path="checkout" element={<CheckoutPage />} />
+              <Route path="about" element={<AboutPage />} />
+              <Route path="contact" element={<ContactPage />} />
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />
-              <Route path="profile" element={
+              
+              {/* Protected Routes */}
+              <Route path="checkout" element={
                 <ProtectedRoute>
-                  <ProfilePage />
+                  <CheckoutPage />
                 </ProtectedRoute>
               } />
-              <Route path="orders" element={
-                <ProtectedRoute>
-                  <OrdersPage />
-                </ProtectedRoute>
-              } />
-              <Route path="admin" element={
-                <AdminRoute>
-                  <AdminDashboard />
-                </AdminRoute>
-              } />
-              <Route path="admin/products" element={
-                <AdminRoute>
-                  <AdminProducts />
-                </AdminRoute>
-              } />
-              <Route path="admin/orders" element={
-                <AdminRoute>
-                  <AdminOrders />
-                </AdminRoute>
-              } />
-              <Route path="admin/customers" element={
-                <AdminRoute>
-                  <AdminCustomers />
-                </AdminRoute>
-              } />
-              <Route path="*" element={<NotFoundPage />} />
             </Route>
+
+            {/* Admin Routes */}
+            <Route path="/admin" element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }>
+              <Route index element={<AdminDashboard />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="customers" element={<AdminCustomers />} />
+            </Route>
+
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>
       </CartProvider>

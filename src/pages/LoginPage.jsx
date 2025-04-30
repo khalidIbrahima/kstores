@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
+import { Mail, Lock, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -37,6 +38,23 @@ const LoginPage = () => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+      
+      if (error) throw error;
+    } catch (error) {
+      setError(error.message || 'Failed to sign in with Google');
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <motion.div 
@@ -46,7 +64,7 @@ const LoginPage = () => {
         className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg"
       >
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Sign In</h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Sign In to Kapital Store</h2>
           <p className="mt-2 text-sm text-gray-600">
             Or{' '}
             <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
@@ -65,6 +83,25 @@ const LoginPage = () => {
             </div>
           </div>
         )}
+
+        {/* Google Sign In Button */}
+        <button
+          onClick={handleGoogleSignIn}
+          disabled={isLoading}
+          className="flex w-full items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          <img src="https://www.google.com/favicon.ico" alt="Google" className="h-5 w-5" />
+          Continue with Google
+        </button>
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="bg-white px-2 text-gray-500">Or continue with email</span>
+          </div>
+        </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
@@ -142,12 +179,7 @@ const LoginPage = () => {
               {isLoading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
               ) : (
-                <>
-                  Sign in
-                  <span className="absolute right-3 top-3 opacity-0 transition-opacity group-hover:opacity-100">
-                    <ArrowRight className="h-5 w-5" />
-                  </span>
-                </>
+                'Sign in with Email'
               )}
             </button>
           </div>
