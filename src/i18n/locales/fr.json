@@ -8,7 +8,15 @@
     "orders": "Commandes",
     "admin": "Administration",
     "loading": "Chargement...",
-    "currency": "F CFA"
+    "currency": "F CFA",
+    "error": "Erreur",
+    "success": "Succès",
+    "submit": "Soumettre",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "back": "Retour"
   },
   "nav": {
     "home": "Accueil",
@@ -21,7 +29,8 @@
     "electronics": "Électronique",
     "clothing": "Vêtements",
     "home": "Maison",
-    "beauty": "Beauté"
+    "beauty": "Beauté",
+    "all": "Toutes les catégories"
   },
   "product": {
     "addToCart": "Ajouter au panier",
@@ -35,7 +44,16 @@
     "freeShipping": "Livraison gratuite",
     "freeShippingDesc": "Livraison gratuite pour les commandes de plus de 25 000 F CFA",
     "securePayment": "Paiement sécurisé",
-    "securePaymentDesc": "100% sécurisé"
+    "securePaymentDesc": "100% sécurisé",
+    "relatedProducts": "Produits similaires",
+    "noProducts": "Aucun produit trouvé",
+    "sortBy": {
+      "label": "Trier par",
+      "newest": "Plus récent",
+      "priceLow": "Prix croissant",
+      "priceHigh": "Prix décroissant",
+      "name": "Nom"
+    }
   },
   "cart": {
     "empty": "Votre panier est vide",
@@ -48,7 +66,8 @@
     "clear": "Vider le panier",
     "clearConfirm": "Êtes-vous sûr de vouloir vider votre panier ?",
     "cancel": "Annuler",
-    "confirm": "Confirmer"
+    "confirm": "Confirmer",
+    "orderSummary": "Résumé de la commande"
   },
   "auth": {
     "login": "Connexion",
@@ -60,35 +79,88 @@
     "forgotPassword": "Mot de passe oublié ?",
     "rememberMe": "Se souvenir de moi",
     "createAccount": "Créer un compte",
-    "alreadyHaveAccount": "Déjà un compte ?"
+    "alreadyHaveAccount": "Déjà un compte ?",
+    "googleSignIn": "Continuer avec Google",
+    "orContinueWith": "Ou continuer avec email"
   },
-  "footer": {
-    "about": {
-      "title": "ShopWave",
-      "description": "Créer des expériences d'achat exceptionnelles avec des produits de qualité et un service client supérieur."
+  "about": {
+    "title": "À propos de Kapital Store",
+    "subtitle": "Votre destination de confiance pour des produits de qualité et une expérience d'achat exceptionnelle",
+    "story": {
+      "title": "Notre Histoire",
+      "content": "Fondé en 2025, Kapital Store est passé d'une petite boutique locale à une marketplace en ligne leader. Notre mission est de fournir aux clients des produits de haute qualité à des prix compétitifs tout en offrant un service client exceptionnel."
     },
-    "quickLinks": {
-      "title": "Liens rapides",
-      "home": "Accueil",
-      "shop": "Boutique",
-      "about": "À propos",
-      "contact": "Contact",
-      "blog": "Blog"
+    "values": {
+      "title": "Nos Valeurs",
+      "quality": {
+        "title": "La Qualité d'Abord",
+        "desc": "Nous ne faisons jamais de compromis sur la qualité, garantissant que chaque produit répond à nos normes élevées"
+      },
+      "delivery": {
+        "title": "Livraison Rapide",
+        "desc": "Nous assurons une livraison rapide et fiable pour vous faire parvenir vos produits à temps"
+      },
+      "security": {
+        "title": "Achats Sécurisés",
+        "desc": "Votre sécurité est notre priorité avec un paiement sûr et la protection des données"
+      },
+      "customer": {
+        "title": "Focus Client",
+        "desc": "Nous mettons nos clients en premier avec un support et un service dédiés"
+      }
     },
-    "customerService": {
-      "title": "Service client",
-      "faq": "FAQ",
-      "shipping": "Politique de livraison",
-      "returns": "Retours et remboursements",
-      "privacy": "Politique de confidentialité",
-      "terms": "Conditions générales"
+    "team": {
+      "title": "Notre Équipe",
+      "roles": {
+        "ceo": "PDG & Fondateur",
+        "operations": "Responsable des Opérations",
+        "service": "Responsable Service Client"
+      }
+    }
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Nous sommes là pour vous aider ! Envoyez-nous un message et nous vous répondrons dès que possible.",
+    "form": {
+      "name": "Votre Nom",
+      "email": "Adresse Email",
+      "subject": "Sujet",
+      "message": "Message",
+      "send": "Envoyer le Message",
+      "sending": "Envoi en cours..."
     },
-    "contact": {
-      "title": "Contactez-nous",
-      "address": "123 Commerce Street",
-      "city": "San Francisco, CA 94103"
-    },
-    "rights": "Tous droits réservés.",
-    "designed": "Conçu et développé avec soin pour le client moderne."
+    "info": {
+      "title": "Nous Contacter",
+      "email": {
+        "title": "Email",
+        "support": "support@kapitalstore.com",
+        "sales": "ventes@kapitalstore.com"
+      },
+      "phone": {
+        "title": "Téléphone",
+        "number": "+1 (555) 123-4567",
+        "hours": "Lun-Ven 9h à 18h"
+      },
+      "address": {
+        "title": "Adresse",
+        "street": "123 Commerce Street",
+        "city": "San Francisco, CA 94103",
+        "country": "États-Unis"
+      }
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Tableau de Bord",
+      "welcome": "Bienvenue sur votre tableau de bord administrateur",
+      "stats": {
+        "orders": "Total des Commandes",
+        "customers": "Total des Clients",
+        "revenue": "Revenu Total",
+        "products": "Total des Produits"
+      },
+      "recentOrders": "Commandes Récentes",
+      "lowStock": "Produits en Stock Faible"
+    }
   }
 }

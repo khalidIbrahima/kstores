@@ -6,31 +6,33 @@ const CartContext = createContext();
 const CART_STORAGE_KEY = 'kapital_store_cart';
 
 export function CartProvider({ children }) {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(() => {
+    // Initialize cart from localStorage on component mount
+    try {
+      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (error) {
+      console.error('Failed to parse cart from localStorage:', error);
+      return [];
+    }
+  });
 
   // Calculate derived values
   const itemCount = items.reduce((count, item) => count + item.quantity, 0);
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  // Load cart from localStorage on initial render
-  useEffect(() => {
-    const savedCart = localStorage.getItem(CART_STORAGE_KEY);
-    if (savedCart) {
-      try {
-        setItems(JSON.parse(savedCart));
-      } catch (error) {
-        console.error('Failed to parse cart from localStorage:', error);
-        localStorage.removeItem(CART_STORAGE_KEY);
-      }
-    }
-  }, []);
-
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    } catch (error) {
+      console.error('Failed to save cart to localStorage:', error);
+    }
   }, [items]);
 
   const addItem = (product, quantity = 1) => {
+    if (!product) return;
+
     setItems(currentItems => {
       const existingItem = currentItems.find(item => item.id === product.id);
       
@@ -44,12 +46,20 @@ export function CartProvider({ children }) {
         return updatedItems;
       } else {
         toast.success(`Added ${product.name} to cart`);
-        return [...currentItems, { ...product, quantity }];
+        return [...currentItems, { 
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image_url: product.image_url,
+          quantity 
+        }];
       }
     });
   };
 
   const updateQuantity = (id, quantity) => {
+    if (!id) return;
+    
     if (quantity < 1) {
       return removeItem(id);
     }
@@ -62,6 +72,8 @@ export function CartProvider({ children }) {
   };
 
   const removeItem = (id) => {
+    if (!id) return;
+
     setItems(currentItems => {
       const item = currentItems.find(item => item.id === id);
       if (item) {
@@ -73,6 +85,7 @@ export function CartProvider({ children }) {
 
   const clearCart = () => {
     setItems([]);
+    localStorage.removeItem(CART_STORAGE_KEY);
     toast.success('Cart cleared');
   };
 

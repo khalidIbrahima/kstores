@@ -66,6 +66,7 @@ const Header = () => {
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
+      setMobileMenuOpen(false);
     }
   };
 
@@ -87,7 +88,7 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between md:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center text-2xl font-bold text-blue-800">
+          <Link to="/" className="flex items-center text-xl font-bold text-blue-800 md:text-2xl">
             <ShoppingCart className="mr-2" />
             <span>Kapital Store</span>
           </Link>
@@ -152,11 +153,13 @@ const Header = () => {
 
           {/* Search, Cart, Language, User */}
           <div className="flex items-center space-x-4">
-            {/* Language Switcher */}
-            <LanguageSwitcher />
+            {/* Language Switcher - Hidden on mobile */}
+            <div className="hidden md:block">
+              <LanguageSwitcher />
+            </div>
 
-            {/* Search Bar */}
-            <form onSubmit={handleSearchSubmit} className="hidden relative md:block">
+            {/* Search Bar - Hidden on mobile */}
+            <form onSubmit={handleSearchSubmit} className="relative hidden md:block">
               <input
                 type="text"
                 placeholder={t('common.search')}
@@ -226,7 +229,7 @@ const Header = () => {
             ) : (
               <Link
                 to="/login"
-                className="rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                className="hidden rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 md:block"
               >
                 Sign In
               </Link>
@@ -235,7 +238,7 @@ const Header = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="ml-2 text-gray-700 md:hidden"
+              className="text-gray-700 md:hidden"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -254,6 +257,7 @@ const Header = () => {
             className="border-t border-gray-200 bg-white md:hidden"
           >
             <div className="container mx-auto px-4 py-4">
+              {/* Mobile Search */}
               <form onSubmit={handleSearchSubmit} className="mb-4">
                 <div className="relative">
                   <input
@@ -267,6 +271,7 @@ const Header = () => {
                 </div>
               </form>
               
+              {/* Mobile Navigation */}
               <nav>
                 <ul className="space-y-3">
                   <li>
@@ -324,6 +329,10 @@ const Header = () => {
                       </Link>
                     </li>
                   )}
+                  {/* Mobile Language Switcher */}
+                  <li className="pt-4">
+                    <LanguageSwitcher />
+                  </li>
                 </ul>
               </nav>
             </div>

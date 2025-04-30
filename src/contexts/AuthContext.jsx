@@ -16,8 +16,21 @@ export function AuthProvider({ children }) {
     async function initialize() {
       try {
         // Get initial session
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase.auth.getSession();
         
+        if (error) {
+          if (error.message.includes('refresh_token_not_found')) {
+            // Clear the invalid session state
+            await supabase.auth.signOut();
+            if (mounted) {
+              setSession(null);
+              setUser(null);
+              setProfile(null);
+            }
+          }
+          throw error;
+        }
+
         if (mounted) {
           setSession(session);
           setUser(session?.user ?? null);
@@ -40,14 +53,18 @@ export function AuthProvider({ children }) {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      async (event, session) => {
         if (mounted) {
-          setSession(session);
-          setUser(session?.user ?? null);
-          
-          if (session?.user) {
-            await fetchProfile(session.user.id);
-          } else {
+          if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
+            setSession(session);
+            setUser(session?.user ?? null);
+            
+            if (session?.user) {
+              await fetchProfile(session.user.id);
+            }
+          } else if (event === 'SIGNED_OUT') {
+            setSession(null);
+            setUser(null);
             setProfile(null);
             setIsLoading(false);
           }
@@ -131,11 +148,20 @@ export function AuthProvider({ children }) {
 
   async function signOut() {
     try {
+      setIsLoading(true);
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      
+      // Clear all auth state immediately
+      setSession(null);
+      setUser(null);
+      setProfile(null);
+      
       toast.success('Signed out successfully');
     } catch (error) {
       toast.error(error.message || 'An error occurred during sign out');
+    } finally {
+      setIsLoading(false);
     }
   }
 

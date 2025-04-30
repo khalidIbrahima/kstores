@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { CreditCard, Lock } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
+import toast from 'react-hot-toast';
 
 const CheckoutPage = () => {
   const { items, total, clearCart } = useCart();
@@ -35,14 +37,54 @@ const CheckoutPage = () => {
     setIsProcessing(true);
 
     try {
-      // Simulated payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Create order in database
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert([
+          {
+            user_id: user.id,
+            total: total,
+            status: 'pending',
+            shipping_address: {
+              name: formData.name,
+              address: formData.address,
+              city: formData.city,
+              state: formData.state,
+              zip_code: formData.zipCode
+            }
+          }
+        ])
+        .select()
+        .single();
+
+      if (orderError) throw orderError;
+
+      // Create order items
+      const orderItems = items.map(item => ({
+        order_id: order.id,
+        product_id: item.id,
+        quantity: item.quantity,
+        price: item.price
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
+
+      if (itemsError) throw itemsError;
+
+      // Simulate payment processing
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Clear cart and redirect to success page
+      // Clear cart and show success message
       clearCart();
-      navigate('/checkout/success');
+      toast.success('Order placed successfully!');
+      
+      // Redirect to orders page
+      navigate('/orders');
     } catch (error) {
       console.error('Checkout error:', error);
+      toast.error('Failed to process payment. Please try again.');
     } finally {
       setIsProcessing(false);
     }

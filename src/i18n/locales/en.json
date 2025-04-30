@@ -8,7 +8,15 @@
     "orders": "Orders",
     "admin": "Admin",
     "loading": "Loading...",
-    "currency": "CFA"
+    "currency": "CFA",
+    "error": "Error",
+    "success": "Success",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "back": "Back"
   },
   "nav": {
     "home": "Home",
@@ -21,7 +29,8 @@
     "electronics": "Electronics",
     "clothing": "Clothing",
     "home": "Home & Kitchen",
-    "beauty": "Beauty"
+    "beauty": "Beauty",
+    "all": "All Categories"
   },
   "product": {
     "addToCart": "Add to Cart",
@@ -35,7 +44,16 @@
     "freeShipping": "Free Shipping",
     "freeShippingDesc": "Free shipping on orders over 25,000 CFA",
     "securePayment": "Secure Payment",
-    "securePaymentDesc": "100% secure payment"
+    "securePaymentDesc": "100% secure payment",
+    "relatedProducts": "Related Products",
+    "noProducts": "No products found",
+    "sortBy": {
+      "label": "Sort by",
+      "newest": "Newest First",
+      "priceLow": "Price: Low to High",
+      "priceHigh": "Price: High to Low",
+      "name": "Name"
+    }
   },
   "cart": {
     "empty": "Your Cart is Empty",
@@ -48,7 +66,8 @@
     "clear": "Clear Cart",
     "clearConfirm": "Are you sure you want to clear your cart?",
     "cancel": "Cancel",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "orderSummary": "Order Summary"
   },
   "auth": {
     "login": "Login",
@@ -60,35 +79,88 @@
     "forgotPassword": "Forgot Password?",
     "rememberMe": "Remember Me",
     "createAccount": "Create Account",
-    "alreadyHaveAccount": "Already have an account?"
+    "alreadyHaveAccount": "Already have an account?",
+    "googleSignIn": "Continue with Google",
+    "orContinueWith": "Or continue with email"
   },
-  "footer": {
-    "about": {
-      "title": "ShopWave",
-      "description": "Creating exceptional shopping experiences with quality products and superior customer service."
+  "about": {
+    "title": "About Kapital Store",
+    "subtitle": "Your trusted destination for quality products and exceptional shopping experience",
+    "story": {
+      "title": "Our Story",
+      "content": "Founded in 2025, Kapital Store has grown from a small local shop to a leading online marketplace. Our mission is to provide customers with high-quality products at competitive prices while delivering exceptional customer service."
     },
-    "quickLinks": {
-      "title": "Quick Links",
-      "home": "Home",
-      "shop": "Shop",
-      "about": "About",
-      "contact": "Contact",
-      "blog": "Blog"
+    "values": {
+      "title": "Our Values",
+      "quality": {
+        "title": "Quality First",
+        "desc": "We never compromise on quality, ensuring every product meets our high standards"
+      },
+      "delivery": {
+        "title": "Fast Delivery",
+        "desc": "We ensure quick and reliable delivery to get your products to you on time"
+      },
+      "security": {
+        "title": "Secure Shopping",
+        "desc": "Your security is our priority with safe payment and data protection"
+      },
+      "customer": {
+        "title": "Customer Focus",
+        "desc": "We put our customers first with dedicated support and service"
+      }
     },
-    "customerService": {
-      "title": "Customer Service",
-      "faq": "FAQ",
-      "shipping": "Shipping Policy",
-      "returns": "Returns & Refunds",
-      "privacy": "Privacy Policy",
-      "terms": "Terms & Conditions"
+    "team": {
+      "title": "Our Team",
+      "roles": {
+        "ceo": "CEO & Founder",
+        "operations": "Head of Operations",
+        "service": "Customer Service Lead"
+      }
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "We're here to help! Send us a message and we'll get back to you as soon as possible.",
+    "form": {
+      "name": "Your Name",
+      "email": "Email Address",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send Message",
+      "sending": "Sending..."
     },
-    "contact": {
-      "title": "Contact Us",
-      "address": "123 Commerce Street",
-      "city": "San Francisco, CA 94103"
-    },
-    "rights": "All rights reserved.",
-    "designed": "Designed and built with care for the modern shopper."
+    "info": {
+      "title": "Get in Touch",
+      "email": {
+        "title": "Email",
+        "support": "support@kapitalstore.com",
+        "sales": "sales@kapitalstore.com"
+      },
+      "phone": {
+        "title": "Phone",
+        "number": "+1 (555) 123-4567",
+        "hours": "Mon-Fri 9am to 6pm"
+      },
+      "address": {
+        "title": "Address",
+        "street": "123 Commerce Street",
+        "city": "San Francisco, CA 94103",
+        "country": "United States"
+      }
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Dashboard",
+      "welcome": "Welcome to your admin dashboard",
+      "stats": {
+        "orders": "Total Orders",
+        "customers": "Total Customers",
+        "revenue": "Total Revenue",
+        "products": "Total Products"
+      },
+      "recentOrders": "Recent Orders",
+      "lowStock": "Low Stock Products"
+    }
   }
 }

@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-white">ShopWave</h3>
+            <h3 className="mb-4 text-lg font-semibold text-white">Kapital Store</h3>
             <p className="mb-4 text-sm leading-relaxed">
               Creating exceptional shopping experiences with quality products and superior customer service.
             </p>
@@ -80,7 +80,7 @@ const Footer = () => {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start">
                 <Mail size={18} className="mr-2 mt-0.5 flex-shrink-0" />
-                <span>support@shopwave.com</span>
+                <span>support@kapitalstore.com</span>
               </li>
               <li className="flex items-start">
                 <Phone size={18} className="mr-2 mt-0.5 flex-shrink-0" />
@@ -94,9 +94,10 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Bottom Section */}
         <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm">
           <p className="mb-2">
-            &copy; {currentYear} ShopWave. All rights reserved.
+            &copy; {currentYear} Kapital Store. All rights reserved.
           </p>
           <p className="text-gray-500">
             Designed and built with care for the modern shopper.
