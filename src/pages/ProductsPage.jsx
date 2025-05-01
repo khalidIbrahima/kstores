@@ -70,8 +70,8 @@ const ProductsPage = () => {
     <div className="container mx-auto px-4 py-12">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">All Products</h1>
-        <p className="text-gray-600">Browse our collection of quality products</p>
+        <h1 className="text-3xl font-bold">Tous les produits </h1>
+        <p className="text-gray-600">Découvrez notre collection de produits de qualité</p>
       </div>
 
       {/* Filters and Search */}
@@ -95,7 +95,7 @@ const ProductsPage = () => {
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           >
-            <option value="">All Categories</option>
+            <option value="">Toutes les catégories</option>
             {categories.map(category => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -108,10 +108,10 @@ const ProductsPage = () => {
             onChange={(e) => setSortBy(e.target.value)}
             className="rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           >
-            <option value="newest">Newest First</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
-            <option value="name">Name</option>
+            <option value="newest">Plus récent en premier</option>
+            <option value="price-low">Prix: croissant</option>
+            <option value="price-high">Prix: décroissant</option>
+            <option value="name">Nom</option>
           </select>
         </div>
       </div>
@@ -124,8 +124,8 @@ const ProductsPage = () => {
       ) : filteredProducts.length === 0 ? (
         <div className="text-center py-12">
           <Filter className="mx-auto h-16 w-16 text-gray-400" />
-          <h2 className="mt-4 text-xl font-medium">No Products Found</h2>
-          <p className="mt-2 text-gray-600">Try adjusting your search or filter criteria</p>
+          <h2 className="mt-4 text-xl font-medium">Aucun produit trouvé</h2>
+          <p className="mt-2 text-gray-600">Ajuster vos critères de recherche</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -165,7 +165,7 @@ const ProductsPage = () => {
                       }}
                       className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-blue-600 hover:text-white"
                     >
-                      Add to cart
+                      Ajouter au panier
                     </button>
                   </div>
                 </div>
