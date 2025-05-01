@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 
@@ -14,6 +15,7 @@ const LoginPage = () => {
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   
   // Get redirect path from location state or default to home
   const from = location.state?.from?.pathname || '/';
@@ -23,7 +25,7 @@ const LoginPage = () => {
     setError(null);
     
     if (!email || !password) {
-      setError('Please enter both email and password');
+      setError(t('auth.errorEmptyFields'));
       return;
     }
     
@@ -32,7 +34,7 @@ const LoginPage = () => {
       await signIn(email, password);
       navigate(from, { replace: true });
     } catch (error) {
-      setError(error.message || 'Failed to sign in');
+      setError(error.message || t('auth.loginError'));
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +52,8 @@ const LoginPage = () => {
       
       if (error) throw error;
     } catch (error) {
-      setError(error.message || 'Failed to sign in with Google');
+      setError(error.message || t('auth.googleSignInError'));
+    } finally {
       setIsLoading(false);
     }
   };
@@ -64,11 +67,11 @@ const LoginPage = () => {
         className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg"
       >
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Sign In to Kapital Store</h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">{t('auth.login')}</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Or{' '}
+            {t('auth.noAccount')}{' '}
             <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
-              create a new account
+              {t('auth.register')}
             </Link>
           </p>
         </div>
@@ -84,14 +87,13 @@ const LoginPage = () => {
           </div>
         )}
 
-        {/* Google Sign In Button */}
         <button
           onClick={handleGoogleSignIn}
           disabled={isLoading}
           className="flex w-full items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           <img src="https://www.google.com/favicon.ico" alt="Google" className="h-5 w-5" />
-          Continue with Google
+          {t('auth.googleSignIn')}
         </button>
 
         <div className="relative">
@@ -99,7 +101,7 @@ const LoginPage = () => {
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="bg-white px-2 text-gray-500">Or continue with email</span>
+            <span className="bg-white px-2 text-gray-500">{t('auth.orContinueWith')}</span>
           </div>
         </div>
         
@@ -107,7 +109,7 @@ const LoginPage = () => {
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="text-sm font-medium text-gray-700">
-                Email address
+                {t('auth.email')}
               </label>
               <div className="relative mt-1">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -122,14 +124,14 @@ const LoginPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-                  placeholder="you@example.com"
+                  placeholder={t('auth.email')}
                 />
               </div>
             </div>
             
             <div>
               <label htmlFor="password" className="text-sm font-medium text-gray-700">
-                Password
+                {t('auth.password')}
               </label>
               <div className="relative mt-1">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -144,7 +146,7 @@ const LoginPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-                  placeholder="••••••••"
+                  placeholder={t('auth.password')}
                 />
               </div>
             </div>
@@ -159,13 +161,13 @@ const LoginPage = () => {
                 className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
+                {t('auth.rememberMe')}
               </label>
             </div>
 
             <div className="text-sm">
               <Link to="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
-                Forgot your password?
+                {t('auth.forgotPassword')}
               </Link>
             </div>
           </div>
@@ -179,7 +181,7 @@ const LoginPage = () => {
               {isLoading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
               ) : (
-                'Sign in with Email'
+                t('auth.login')
               )}
             </button>
           </div>

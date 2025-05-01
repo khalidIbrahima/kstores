@@ -22,11 +22,18 @@ import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
 
+const router = {
+  future: {
+    v7_startTransition: true,
+    v7_relativeSplatPath: true
+  }
+};
+
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <Router>
+        <Router {...router}>
           <Toaster position="top-center" />
           <Routes>
             {/* Public Routes */}

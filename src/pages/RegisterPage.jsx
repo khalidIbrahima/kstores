@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 
@@ -15,6 +16,7 @@ const RegisterPage = () => {
   
   const { signUp } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,26 +24,26 @@ const RegisterPage = () => {
     
     // Validation
     if (!fullName || !email || !password || !confirmPassword) {
-      setError('All fields are required');
+      setError(t('auth.errorEmptyFields'));
       return;
     }
     
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('auth.errorPasswordMatch'));
       return;
     }
     
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError(t('auth.errorPasswordLength'));
       return;
     }
     
     try {
       setIsLoading(true);
       await signUp(email, password, fullName);
-      navigate('/login', { state: { message: 'Registration successful! Please sign in.' } });
+      navigate('/login', { state: { message: t('auth.registrationSuccess') } });
     } catch (error) {
-      setError(error.message || 'Failed to create account');
+      setError(error.message || t('auth.registrationError'));
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +61,7 @@ const RegisterPage = () => {
       
       if (error) throw error;
     } catch (error) {
-      setError(error.message || 'Failed to sign up with Google');
+      setError(error.message || t('auth.googleSignUpError'));
     } finally {
       setIsLoading(false);
     }
@@ -74,11 +76,11 @@ const RegisterPage = () => {
         className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg"
       >
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Create your account</h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">{t('auth.createAccount')}</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Already have an account?{' '}
+            {t('auth.alreadyHaveAccount')}{' '}
             <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-              Sign in instead
+              {t('auth.login')}
             </Link>
           </p>
         </div>
@@ -94,24 +96,21 @@ const RegisterPage = () => {
           </div>
         )}
 
-        {/* Google Sign Up Button */}
-        <div>
-          <button
-            onClick={handleGoogleSignUp}
-            disabled={isLoading}
-            className="flex w-full justify-center items-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
-            Continue with Google
-          </button>
-        </div>
+        <button
+          onClick={handleGoogleSignUp}
+          disabled={isLoading}
+          className="flex w-full items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          <img src="https://www.google.com/favicon.ico" alt="Google" className="h-5 w-5" />
+          {t('auth.googleSignIn')}
+        </button>
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="bg-white px-2 text-gray-500">Or continue with</span>
+            <span className="bg-white px-2 text-gray-500">{t('auth.orContinueWith')}</span>
           </div>
         </div>
         
@@ -119,7 +118,7 @@ const RegisterPage = () => {
           <div className="space-y-4">
             <div>
               <label htmlFor="fullName" className="text-sm font-medium text-gray-700">
-                Full Name
+                {t('auth.fullName')}
               </label>
               <div className="relative mt-1">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -134,14 +133,14 @@ const RegisterPage = () => {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-                  placeholder="John Doe"
+                  placeholder={t('auth.fullName')}
                 />
               </div>
             </div>
             
             <div>
               <label htmlFor="email" className="text-sm font-medium text-gray-700">
-                Email address
+                {t('auth.email')}
               </label>
               <div className="relative mt-1">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -156,14 +155,14 @@ const RegisterPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-                  placeholder="you@example.com"
+                  placeholder={t('auth.email')}
                 />
               </div>
             </div>
             
             <div>
               <label htmlFor="password" className="text-sm font-medium text-gray-700">
-                Password
+                {t('auth.password')}
               </label>
               <div className="relative mt-1">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -178,14 +177,14 @@ const RegisterPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-                  placeholder="••••••••"
+                  placeholder={t('auth.password')}
                 />
               </div>
             </div>
             
             <div>
               <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
-                Confirm Password
+                {t('auth.confirmPassword')}
               </label>
               <div className="relative mt-1">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -200,7 +199,7 @@ const RegisterPage = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-                  placeholder="••••••••"
+                  placeholder={t('auth.confirmPassword')}
                 />
               </div>
             </div>
@@ -218,14 +217,7 @@ const RegisterPage = () => {
             </div>
             <div className="ml-3 text-sm">
               <label htmlFor="terms" className="font-medium text-gray-700">
-                I agree to the{' '}
-                <Link to="/terms" className="text-blue-600 hover:text-blue-500">
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link to="/privacy" className="text-blue-600 hover:text-blue-500">
-                  Privacy Policy
-                </Link>
+                {t('auth.termsAgree')}
               </label>
             </div>
           </div>
@@ -239,7 +231,7 @@ const RegisterPage = () => {
               {isLoading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
               ) : (
-                'Create Account'
+                t('auth.createAccount')
               )}
             </button>
           </div>

@@ -16,21 +16,69 @@
     "save": "Enregistrer",
     "edit": "Modifier",
     "delete": "Supprimer",
-    "back": "Retour"
+    "back": "Retour",
+    "viewAll": "Voir tout",
+    "quantity": "Quantité",
+    "price": "Prix",
+    "total": "Total",
+    "status": "Statut",
+    "actions": "Actions",
+    "shopNow": "Acheter maintenant"
+  },
+  "home": {
+    "hero": {
+      "title": "Votre destination unique pour",
+      "subtitle": "tout ce dont vous avez besoin",
+      "description": "Découvrez des milliers de produits avec une livraison rapide et un service client exceptionnel.",
+      "shopNow": "Acheter maintenant",
+      "browseCategories": "Parcourir les catégories"
+    },
+    "categories": {
+      "title": "Acheter par catégorie",
+      "description": "Parcourez notre large sélection de produits dans toutes les catégories"
+    },
+    "featured": {
+      "title": "Produits en vedette",
+      "description": "Découvrez nos nouveautés et nos articles les plus populaires"
+    },
+    "features": {
+      "quality": {
+        "title": "Produits de qualité",
+        "description": "Nous nous assurons que tous les produits répondent à nos normes élevées"
+      },
+      "delivery": {
+        "title": "Livraison rapide",
+        "description": "Recevez vos commandes rapidement à votre porte"
+      },
+      "payment": {
+        "title": "Paiements sécurisés",
+        "description": "Vos informations de paiement sont toujours sécurisées avec notre système crypté"
+      }
+    },
+    "newsletter": {
+      "title": "Restez informé",
+      "description": "Abonnez-vous à notre newsletter pour recevoir des mises à jour, des offres exclusives et plus encore !",
+      "placeholder": "Entrez votre email",
+      "subscribe": "S'abonner"
+    }
   },
   "nav": {
     "home": "Accueil",
     "categories": "Catégories",
     "allProducts": "Tous les produits",
     "about": "À propos",
-    "contact": "Contact"
+    "contact": "Contact",
+    "viewStore": "Voir la boutique",
+    "dashboard": "Tableau de bord"
   },
   "categories": {
     "electronics": "Électronique",
     "clothing": "Vêtements",
     "home": "Maison",
     "beauty": "Beauté",
-    "all": "Toutes les catégories"
+    "all": "Toutes les catégories",
+    "notFound": "Catégorie introuvable",
+    "notFoundDesc": "La catégorie que vous recherchez n'existe pas ou a été supprimée"
   },
   "product": {
     "addToCart": "Ajouter au panier",
@@ -47,6 +95,8 @@
     "securePaymentDesc": "100% sécurisé",
     "relatedProducts": "Produits similaires",
     "noProducts": "Aucun produit trouvé",
+    "share": "Partager",
+    "wishlist": "Ajouter aux favoris",
     "sortBy": {
       "label": "Trier par",
       "newest": "Plus récent",
@@ -67,7 +117,10 @@
     "clearConfirm": "Êtes-vous sûr de vouloir vider votre panier ?",
     "cancel": "Annuler",
     "confirm": "Confirmer",
-    "orderSummary": "Résumé de la commande"
+    "orderSummary": "Résumé de la commande",
+    "itemCount": "articles dans le panier",
+    "remove": "Supprimer",
+    "update": "Mettre à jour"
   },
   "auth": {
     "login": "Connexion",
@@ -81,86 +134,10 @@
     "createAccount": "Créer un compte",
     "alreadyHaveAccount": "Déjà un compte ?",
     "googleSignIn": "Continuer avec Google",
-    "orContinueWith": "Ou continuer avec email"
-  },
-  "about": {
-    "title": "À propos de Kapital Store",
-    "subtitle": "Votre destination de confiance pour des produits de qualité et une expérience d'achat exceptionnelle",
-    "story": {
-      "title": "Notre Histoire",
-      "content": "Fondé en 2025, Kapital Store est passé d'une petite boutique locale à une marketplace en ligne leader. Notre mission est de fournir aux clients des produits de haute qualité à des prix compétitifs tout en offrant un service client exceptionnel."
-    },
-    "values": {
-      "title": "Nos Valeurs",
-      "quality": {
-        "title": "La Qualité d'Abord",
-        "desc": "Nous ne faisons jamais de compromis sur la qualité, garantissant que chaque produit répond à nos normes élevées"
-      },
-      "delivery": {
-        "title": "Livraison Rapide",
-        "desc": "Nous assurons une livraison rapide et fiable pour vous faire parvenir vos produits à temps"
-      },
-      "security": {
-        "title": "Achats Sécurisés",
-        "desc": "Votre sécurité est notre priorité avec un paiement sûr et la protection des données"
-      },
-      "customer": {
-        "title": "Focus Client",
-        "desc": "Nous mettons nos clients en premier avec un support et un service dédiés"
-      }
-    },
-    "team": {
-      "title": "Notre Équipe",
-      "roles": {
-        "ceo": "PDG & Fondateur",
-        "operations": "Responsable des Opérations",
-        "service": "Responsable Service Client"
-      }
-    }
-  },
-  "contact": {
-    "title": "Contactez-nous",
-    "subtitle": "Nous sommes là pour vous aider ! Envoyez-nous un message et nous vous répondrons dès que possible.",
-    "form": {
-      "name": "Votre Nom",
-      "email": "Adresse Email",
-      "subject": "Sujet",
-      "message": "Message",
-      "send": "Envoyer le Message",
-      "sending": "Envoi en cours..."
-    },
-    "info": {
-      "title": "Nous Contacter",
-      "email": {
-        "title": "Email",
-        "support": "support@kapitalstore.com",
-        "sales": "ventes@kapitalstore.com"
-      },
-      "phone": {
-        "title": "Téléphone",
-        "number": "+1 (555) 123-4567",
-        "hours": "Lun-Ven 9h à 18h"
-      },
-      "address": {
-        "title": "Adresse",
-        "street": "123 Commerce Street",
-        "city": "San Francisco, CA 94103",
-        "country": "États-Unis"
-      }
-    }
-  },
-  "admin": {
-    "dashboard": {
-      "title": "Tableau de Bord",
-      "welcome": "Bienvenue sur votre tableau de bord administrateur",
-      "stats": {
-        "orders": "Total des Commandes",
-        "customers": "Total des Clients",
-        "revenue": "Revenu Total",
-        "products": "Total des Produits"
-      },
-      "recentOrders": "Commandes Récentes",
-      "lowStock": "Produits en Stock Faible"
-    }
+    "orContinueWith": "Ou continuer avec email",
+    "termsAgree": "J'accepte les conditions d'utilisation et la politique de confidentialité",
+    "registrationSuccess": "Inscription réussie ! Veuillez vous connecter.",
+    "registrationError": "Échec de la création du compte",
+    "googleSignUpError": "Échec de l'inscription avec Google"
   }
 }

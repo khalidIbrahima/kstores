@@ -16,21 +16,69 @@
     "save": "Save",
     "edit": "Edit",
     "delete": "Delete",
-    "back": "Back"
+    "back": "Back",
+    "viewAll": "View All",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "status": "Status",
+    "actions": "Actions",
+    "shopNow": "Shop Now"
+  },
+  "home": {
+    "hero": {
+      "title": "Your One-Stop Shop for",
+      "subtitle": "Everything You Need",
+      "description": "Discover thousands of products with fast shipping and exceptional customer service.",
+      "shopNow": "Shop Now",
+      "browseCategories": "Browse Categories"
+    },
+    "categories": {
+      "title": "Shop by Category",
+      "description": "Browse our wide selection of products across popular categories"
+    },
+    "featured": {
+      "title": "Featured Products",
+      "description": "Check out our newest and most popular items"
+    },
+    "features": {
+      "quality": {
+        "title": "Quality Products",
+        "description": "We ensure that all products meet our high standards of quality"
+      },
+      "delivery": {
+        "title": "Fast Delivery",
+        "description": "Get your orders delivered quickly to your doorstep"
+      },
+      "payment": {
+        "title": "Secure Payments",
+        "description": "Your payment information is always secure with our encrypted system"
+      }
+    },
+    "newsletter": {
+      "title": "Stay Updated",
+      "description": "Subscribe to our newsletter for updates, exclusive offers, and more!",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe"
+    }
   },
   "nav": {
     "home": "Home",
     "categories": "Categories",
     "allProducts": "All Products",
     "about": "About",
-    "contact": "Contact"
+    "contact": "Contact",
+    "viewStore": "View Store",
+    "dashboard": "Dashboard"
   },
   "categories": {
     "electronics": "Electronics",
     "clothing": "Clothing",
     "home": "Home & Kitchen",
     "beauty": "Beauty",
-    "all": "All Categories"
+    "all": "All Categories",
+    "notFound": "Category not found",
+    "notFoundDesc": "The category you're looking for doesn't exist or has been removed"
   },
   "product": {
     "addToCart": "Add to Cart",
@@ -47,6 +95,8 @@
     "securePaymentDesc": "100% secure payment",
     "relatedProducts": "Related Products",
     "noProducts": "No products found",
+    "share": "Share",
+    "wishlist": "Add to Wishlist",
     "sortBy": {
       "label": "Sort by",
       "newest": "Newest First",
@@ -67,7 +117,10 @@
     "clearConfirm": "Are you sure you want to clear your cart?",
     "cancel": "Cancel",
     "confirm": "Confirm",
-    "orderSummary": "Order Summary"
+    "orderSummary": "Order Summary",
+    "itemCount": "items in cart",
+    "remove": "Remove",
+    "update": "Update"
   },
   "auth": {
     "login": "Login",
@@ -81,86 +134,10 @@
     "createAccount": "Create Account",
     "alreadyHaveAccount": "Already have an account?",
     "googleSignIn": "Continue with Google",
-    "orContinueWith": "Or continue with email"
-  },
-  "about": {
-    "title": "About Kapital Store",
-    "subtitle": "Your trusted destination for quality products and exceptional shopping experience",
-    "story": {
-      "title": "Our Story",
-      "content": "Founded in 2025, Kapital Store has grown from a small local shop to a leading online marketplace. Our mission is to provide customers with high-quality products at competitive prices while delivering exceptional customer service."
-    },
-    "values": {
-      "title": "Our Values",
-      "quality": {
-        "title": "Quality First",
-        "desc": "We never compromise on quality, ensuring every product meets our high standards"
-      },
-      "delivery": {
-        "title": "Fast Delivery",
-        "desc": "We ensure quick and reliable delivery to get your products to you on time"
-      },
-      "security": {
-        "title": "Secure Shopping",
-        "desc": "Your security is our priority with safe payment and data protection"
-      },
-      "customer": {
-        "title": "Customer Focus",
-        "desc": "We put our customers first with dedicated support and service"
-      }
-    },
-    "team": {
-      "title": "Our Team",
-      "roles": {
-        "ceo": "CEO & Founder",
-        "operations": "Head of Operations",
-        "service": "Customer Service Lead"
-      }
-    }
-  },
-  "contact": {
-    "title": "Contact Us",
-    "subtitle": "We're here to help! Send us a message and we'll get back to you as soon as possible.",
-    "form": {
-      "name": "Your Name",
-      "email": "Email Address",
-      "subject": "Subject",
-      "message": "Message",
-      "send": "Send Message",
-      "sending": "Sending..."
-    },
-    "info": {
-      "title": "Get in Touch",
-      "email": {
-        "title": "Email",
-        "support": "support@kapitalstore.com",
-        "sales": "sales@kapitalstore.com"
-      },
-      "phone": {
-        "title": "Phone",
-        "number": "+1 (555) 123-4567",
-        "hours": "Mon-Fri 9am to 6pm"
-      },
-      "address": {
-        "title": "Address",
-        "street": "123 Commerce Street",
-        "city": "San Francisco, CA 94103",
-        "country": "United States"
-      }
-    }
-  },
-  "admin": {
-    "dashboard": {
-      "title": "Dashboard",
-      "welcome": "Welcome to your admin dashboard",
-      "stats": {
-        "orders": "Total Orders",
-        "customers": "Total Customers",
-        "revenue": "Total Revenue",
-        "products": "Total Products"
-      },
-      "recentOrders": "Recent Orders",
-      "lowStock": "Low Stock Products"
-    }
+    "orContinueWith": "Or continue with email",
+    "termsAgree": "I agree to the Terms of Service and Privacy Policy",
+    "registrationSuccess": "Registration successful! Please sign in.",
+    "registrationError": "Failed to create account",
+    "googleSignUpError": "Failed to sign up with Google"
   }
 }

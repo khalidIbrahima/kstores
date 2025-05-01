@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronRight, Star } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
 
@@ -10,6 +11,7 @@ const HomePage = () => {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { addItem } = useCart();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,8 +61,8 @@ const HomePage = () => {
             transition={{ duration: 0.6 }}
             className="mb-6 text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
           >
-            Your One-Stop Shop for <br className="hidden md:inline" />
-            <span className="text-yellow-400">Everything You Need</span>
+            {t('home.hero.title')} <br className="hidden md:inline" />
+            <span className="text-yellow-400">{t('home.hero.subtitle')}</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -68,7 +70,7 @@ const HomePage = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mx-auto mb-8 max-w-2xl text-lg text-gray-200 md:text-xl"
           >
-            Discover thousands of products with fast shipping and exceptional customer service.
+            {t('home.hero.description')}
           </motion.p>
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -77,10 +79,10 @@ const HomePage = () => {
             className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0"
           >
             <Link to="/products" className="rounded-full bg-yellow-500 px-8 py-3 font-medium text-gray-900 transition-colors hover:bg-yellow-400">
-              Shop Now
+              {t('home.hero.shopNow')}
             </Link>
             <Link to="/categories" className="rounded-full border border-white px-8 py-3 font-medium text-white transition-colors hover:bg-white hover:text-blue-900">
-              Browse Categories
+              {t('home.hero.browseCategories')}
             </Link>
           </motion.div>
         </div>
@@ -90,9 +92,9 @@ const HomePage = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
-            <h2 className="mb-2 text-3xl font-bold text-gray-900">Shop by Category</h2>
+            <h2 className="mb-2 text-3xl font-bold text-gray-900">{t('home.categories.title')}</h2>
             <p className="mx-auto max-w-2xl text-gray-600">
-              Browse our wide selection of products across popular categories
+              {t('home.categories.description')}
             </p>
           </div>
 
@@ -111,7 +113,7 @@ const HomePage = () => {
                   <div className="p-6 text-center">
                     <h3 className="mb-2 text-lg font-medium text-gray-900">{category.name}</h3>
                     <p className="inline-flex items-center text-sm text-blue-600 group-hover:underline">
-                      Shop now <ChevronRight className="ml-1 h-4 w-4" />
+                      {t('common.shopNow')} <ChevronRight className="ml-1 h-4 w-4" />
                     </p>
                   </div>
                 </Link>
@@ -125,9 +127,9 @@ const HomePage = () => {
       <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
-            <h2 className="mb-2 text-3xl font-bold text-gray-900">Featured Products</h2>
+            <h2 className="mb-2 text-3xl font-bold text-gray-900">{t('home.featured.title')}</h2>
             <p className="mx-auto max-w-2xl text-gray-600">
-              Check out our newest and most popular items
+              {t('home.featured.description')}
             </p>
           </div>
 
@@ -161,10 +163,14 @@ const HomePage = () => {
                             <Star key={i} className="h-4 w-4 fill-current" />
                           ))}
                         </div>
-                        <span className="ml-2 text-sm text-gray-600">(27 reviews)</span>
+                        <span className="ml-2 text-sm text-gray-600">
+                          (27 {t('product.reviews')})
+                        </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <p className="text-xl font-bold text-blue-700">${product.price.toFixed(2)}</p>
+                        <p className="text-xl font-bold text-blue-700">
+                          {t('common.currency')} {product.price.toFixed(2)}
+                        </p>
                         <button 
                           onClick={(e) => {
                             e.preventDefault();
@@ -172,7 +178,7 @@ const HomePage = () => {
                           }}
                           className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-blue-600 hover:text-white"
                         >
-                          Add to cart
+                          {t('product.addToCart')}
                         </button>
                       </div>
                     </div>
@@ -187,7 +193,7 @@ const HomePage = () => {
               to="/products"
               className="inline-flex items-center rounded-full border border-blue-600 px-6 py-3 font-medium text-blue-600 transition-colors hover:bg-blue-600 hover:text-white"
             >
-              View All Products <ChevronRight className="ml-2 h-5 w-5" />
+              {t('common.viewAll')} <ChevronRight className="ml-2 h-5 w-5" />
             </Link>
           </div>
         </div>
@@ -203,8 +209,8 @@ const HomePage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                 </svg>
               </div>
-              <h3 className="mb-2 text-xl font-semibold">Quality Products</h3>
-              <p className="text-gray-600">We ensure that all products meet our high standards of quality.</p>
+              <h3 className="mb-2 text-xl font-semibold">{t('home.features.quality.title')}</h3>
+              <p className="text-gray-600">{t('home.features.quality.description')}</p>
             </div>
             <div className="text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
@@ -212,8 +218,8 @@ const HomePage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
               </div>
-              <h3 className="mb-2 text-xl font-semibold">Fast Delivery</h3>
-              <p className="text-gray-600">Get your orders delivered quickly to your doorstep.</p>
+              <h3 className="mb-2 text-xl font-semibold">{t('home.features.delivery.title')}</h3>
+              <p className="text-gray-600">{t('home.features.delivery.description')}</p>
             </div>
             <div className="text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
@@ -221,8 +227,8 @@ const HomePage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                 </svg>
               </div>
-              <h3 className="mb-2 text-xl font-semibold">Secure Payments</h3>
-              <p className="text-gray-600">Your payment information is always secure with our encrypted system.</p>
+              <h3 className="mb-2 text-xl font-semibold">{t('home.features.payment.title')}</h3>
+              <p className="text-gray-600">{t('home.features.payment.description')}</p>
             </div>
           </div>
         </div>
@@ -232,14 +238,14 @@ const HomePage = () => {
       <section className="bg-blue-800 py-16 text-white">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-4 text-3xl font-bold">Stay Updated</h2>
+            <h2 className="mb-4 text-3xl font-bold">{t('home.newsletter.title')}</h2>
             <p className="mb-8 text-blue-100">
-              Subscribe to our newsletter for updates, exclusive offers, and more!
+              {t('home.newsletter.description')}
             </p>
             <form className="mx-auto flex max-w-md flex-col space-y-3 sm:flex-row sm:space-x-3 sm:space-y-0">
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t('home.newsletter.placeholder')}
                 className="w-full rounded-full px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
@@ -247,7 +253,7 @@ const HomePage = () => {
                 type="submit"
                 className="rounded-full bg-yellow-500 px-6 py-3 font-medium text-gray-900 transition-colors hover:bg-yellow-400"
               >
-                Subscribe
+                {t('home.newsletter.subscribe')}
               </button>
             </form>
           </div>

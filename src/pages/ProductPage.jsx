@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, Truck, ShieldCheck, Heart, Share2, Minus, Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
 import toast from 'react-hot-toast';
@@ -14,6 +15,7 @@ const ProductPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -64,7 +66,6 @@ const ProductPage = () => {
     fetchProduct();
   }, [id]);
 
-  // Handle quantity changes
   const decreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -75,11 +76,10 @@ const ProductPage = () => {
     if (product && quantity < product.inventory) {
       setQuantity(quantity + 1);
     } else {
-      toast.error('Cannot exceed available inventory');
+      toast.error(t('product.errorExceedStock'));
     }
   };
   
-  // Add to cart
   const handleAddToCart = () => {
     if (product) {
       addItem({
@@ -102,10 +102,10 @@ const ProductPage = () => {
   if (!product) {
     return (
       <div className="container mx-auto my-16 px-4 text-center">
-        <h2 className="mb-6 text-2xl font-bold">Product Not Found</h2>
-        <p className="mb-8 text-gray-600">The product you're looking for doesn't exist or has been removed.</p>
+        <h2 className="mb-6 text-2xl font-bold">{t('product.notFound')}</h2>
+        <p className="mb-8 text-gray-600">{t('product.notFoundDesc')}</p>
         <Link to="/products" className="rounded-md bg-blue-600 px-6 py-3 text-white hover:bg-blue-700">
-          Browse All Products
+          {t('product.browseCatalog')}
         </Link>
       </div>
     );
@@ -115,7 +115,7 @@ const ProductPage = () => {
     <div className="container mx-auto px-4 py-12">
       {/* Breadcrumbs */}
       <nav className="mb-8 flex text-sm">
-        <Link to="/" className="text-gray-500 hover:text-blue-600">Home</Link>
+        <Link to="/" className="text-gray-500 hover:text-blue-600">{t('nav.home')}</Link>
         <span className="mx-2 text-gray-400">/</span>
         {category && (
           <>
@@ -158,29 +158,35 @@ const ProductPage = () => {
                 <Star key={i} className="h-5 w-5 fill-current" />
               ))}
             </div>
-            <span className="ml-2 text-gray-600">(24 reviews)</span>
+            <span className="ml-2 text-gray-600">
+              (24 {t('product.reviews')})
+            </span>
           </div>
           
           {/* Price */}
           <div className="mb-6">
-            <span className="text-3xl font-bold text-blue-700">${product.price.toFixed(2)}</span>
+            <span className="text-3xl font-bold text-blue-700">
+              {t('common.currency')} {product.price.toFixed(2)}
+            </span>
             {product.inventory < 10 && product.inventory > 0 && (
-              <span className="ml-4 text-sm text-red-600">Only {product.inventory} left in stock!</span>
+              <span className="ml-4 text-sm text-red-600">
+                {t('product.onlyLeft', { count: product.inventory })}
+              </span>
             )}
             {product.inventory === 0 && (
-              <span className="ml-4 text-sm text-red-600">Out of stock</span>
+              <span className="ml-4 text-sm text-red-600">{t('product.outOfStock')}</span>
             )}
           </div>
           
           {/* Description */}
           <div className="mb-8">
-            <h3 className="mb-2 text-lg font-medium">Description</h3>
+            <h3 className="mb-2 text-lg font-medium">{t('product.description')}</h3>
             <p className="text-gray-600">{product.description}</p>
           </div>
           
           {/* Quantity Selector */}
           <div className="mb-8">
-            <h3 className="mb-2 text-lg font-medium">Quantity</h3>
+            <h3 className="mb-2 text-lg font-medium">{t('product.quantity')}</h3>
             <div className="flex items-center">
               <button 
                 onClick={decreaseQuantity}
@@ -208,10 +214,10 @@ const ProductPage = () => {
               disabled={product.inventory === 0}
               className="flex w-full items-center justify-center rounded-md bg-blue-600 px-8 py-3 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 sm:w-2/3"
             >
-              Add to Cart
+              {t('product.addToCart')}
             </button>
             <button className="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-8 py-3 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-1/3">
-              <Heart className="mr-2 h-5 w-5" /> Wishlist
+              <Heart className="mr-2 h-5 w-5" /> {t('product.wishlist')}
             </button>
           </div>
           
@@ -220,22 +226,22 @@ const ProductPage = () => {
             <div className="flex items-start">
               <Truck className="mr-3 h-5 w-5 flex-shrink-0 text-blue-600" />
               <div>
-                <h4 className="font-medium">Free shipping</h4>
-                <p className="text-sm text-gray-600">Free shipping on orders over $50</p>
+                <h4 className="font-medium">{t('product.freeShipping')}</h4>
+                <p className="text-sm text-gray-600">{t('product.freeShippingDesc')}</p>
               </div>
             </div>
             <div className="flex items-start">
               <ShieldCheck className="mr-3 h-5 w-5 flex-shrink-0 text-blue-600" />
               <div>
-                <h4 className="font-medium">Secure payment</h4>
-                <p className="text-sm text-gray-600">100% secure payment</p>
+                <h4 className="font-medium">{t('product.securePayment')}</h4>
+                <p className="text-sm text-gray-600">{t('product.securePaymentDesc')}</p>
               </div>
             </div>
           </div>
           
           {/* Share */}
           <div className="mt-8 flex items-center">
-            <span className="mr-4 text-gray-700">Share:</span>
+            <span className="mr-4 text-gray-700">{t('product.share')}:</span>
             <div className="flex space-x-3">
               <a href="#" className="text-gray-500 hover:text-blue-600">
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -260,7 +266,7 @@ const ProductPage = () => {
       {/* Related Products */}
       {relatedProducts.length > 0 && (
         <section className="mt-16">
-          <h2 className="mb-8 text-2xl font-bold">Related Products</h2>
+          <h2 className="mb-8 text-2xl font-bold">{t('product.relatedProducts')}</h2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {relatedProducts.map((relatedProduct) => (
               <div key={relatedProduct.id} className="group overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-lg">
@@ -274,7 +280,9 @@ const ProductPage = () => {
                   </div>
                   <div className="p-4">
                     <h3 className="mb-2 text-lg font-medium text-gray-900 line-clamp-1">{relatedProduct.name}</h3>
-                    <p className="text-lg font-bold text-blue-700">${relatedProduct.price.toFixed(2)}</p>
+                    <p className="text-lg font-bold text-blue-700">
+                      {t('common.currency')} {relatedProduct.price.toFixed(2)}
+                    </p>
                   </div>
                 </Link>
               </div>
