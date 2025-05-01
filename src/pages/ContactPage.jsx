@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
 const ContactPage = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,7 +29,7 @@ const ContactPage = () => {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.success('Message sent successfully!');
+      toast.success(t('contact.form.success'));
       setFormData({
         name: '',
         email: '',
@@ -35,7 +37,7 @@ const ContactPage = () => {
         message: ''
       });
     } catch (error) {
-      toast.error('Failed to send message. Please try again.');
+      toast.error(t('contact.form.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -52,9 +54,9 @@ const ContactPage = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="mb-4 text-4xl font-bold md:text-5xl">Contact Us</h1>
+            <h1 className="mb-4 text-4xl font-bold md:text-5xl">{t('contact.title')}</h1>
             <p className="mx-auto max-w-2xl text-lg text-blue-100">
-              We're here to help! Send us a message and we'll get back to you as soon as possible.
+              {t('contact.subtitle')}
             </p>
           </motion.div>
         </div>
@@ -64,7 +66,7 @@ const ContactPage = () => {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
           {/* Contact Information */}
           <div className="lg:col-span-1">
-            <h2 className="mb-8 text-2xl font-bold">Get in Touch</h2>
+            <h2 className="mb-8 text-2xl font-bold">{t('contact.info.title')}</h2>
             
             <div className="space-y-6">
               <motion.div
@@ -77,9 +79,9 @@ const ContactPage = () => {
                   <Mail className="h-6 w-6 text-blue-600" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-lg font-medium">Email</h3>
-                  <p className="mt-1 text-gray-600">support@kapitalstore.com</p>
-                  <p className="text-gray-600">sales@kapitalstore.com</p>
+                  <h3 className="text-lg font-medium">{t('contact.info.email.title')}</h3>
+                  <p className="mt-1 text-gray-600">{t('contact.info.email.support')}</p>
+                  <p className="text-gray-600">{t('contact.info.email.sales')}</p>
                 </div>
               </motion.div>
 
@@ -93,9 +95,9 @@ const ContactPage = () => {
                   <Phone className="h-6 w-6 text-blue-600" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-lg font-medium">Phone</h3>
-                  <p className="mt-1 text-gray-600">+1 (555) 123-4567</p>
-                  <p className="text-gray-600">Mon-Fri 9am to 6pm</p>
+                  <h3 className="text-lg font-medium">{t('contact.info.phone.title')}</h3>
+                  <p className="mt-1 text-gray-600">{t('contact.info.phone.number')}</p>
+                  <p className="text-gray-600">{t('contact.info.phone.hours')}</p>
                 </div>
               </motion.div>
 
@@ -109,11 +111,11 @@ const ContactPage = () => {
                   <MapPin className="h-6 w-6 text-blue-600" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-lg font-medium">Address</h3>
+                  <h3 className="text-lg font-medium">{t('contact.info.address.title')}</h3>
                   <p className="mt-1 text-gray-600">
-                    123 Commerce Street<br />
-                    San Francisco, CA 94103<br />
-                    United States
+                    {t('contact.info.address.line1')}<br />
+                    {t('contact.info.address.line2')}<br />
+                    {t('contact.info.address.line3')}
                   </p>
                 </div>
               </motion.div>
@@ -132,7 +134,7 @@ const ContactPage = () => {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                      Your Name
+                      {t('contact.form.name')}
                     </label>
                     <input
                       type="text"
@@ -146,7 +148,7 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                      Email Address
+                      {t('contact.form.email')}
                     </label>
                     <input
                       type="email"
@@ -162,7 +164,7 @@ const ContactPage = () => {
 
                 <div>
                   <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
-                    Subject
+                    {t('contact.form.subject')}
                   </label>
                   <input
                     type="text"
@@ -177,7 +179,7 @@ const ContactPage = () => {
 
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700">
-                    Message
+                    {t('contact.form.message')}
                   </label>
                   <textarea
                     id="message"
@@ -199,12 +201,12 @@ const ContactPage = () => {
                     {isSubmitting ? (
                       <>
                         <div className="mr-2 h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
-                        Sending...
+                        {t('contact.form.sending')}
                       </>
                     ) : (
                       <>
                         <Send className="mr-2 h-5 w-5" />
-                        Send Message
+                        {t('contact.form.send')}
                       </>
                     )}
                   </button>
@@ -217,10 +219,9 @@ const ContactPage = () => {
 
       {/* Map Section */}
       <div className="mt-16 h-96 w-full bg-gray-200">
-        {/* Add your map component here */}
         <div className="flex h-full items-center justify-center text-gray-500">
           <MapPin className="mr-2 h-6 w-6" />
-          Map will be displayed here
+          {t('contact.map')}
         </div>
       </div>
     </div>

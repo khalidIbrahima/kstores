@@ -8,7 +8,8 @@ import {
   Menu, 
   X, 
   ChevronDown,
-  User
+  User,
+  LogOut
 } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -21,7 +22,7 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const { itemCount } = useCart();
-  const { user, signOut } = useAuth();
+  const { user, signOut, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -73,6 +74,7 @@ const Header = () => {
   const handleSignOut = async () => {
     try {
       await signOut();
+      setUserDropdownOpen(false);
       navigate('/');
     } catch (error) {
       console.error('Error signing out:', error);
@@ -191,37 +193,39 @@ const Header = () => {
                 </button>
                 {userDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 rounded-md bg-white p-2 shadow-lg">
+                    <div className="mb-2 border-b border-gray-100 px-2 pb-2">
+                      <p className="font-medium text-gray-900">{profile?.full_name}</p>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                    </div>
                     <Link
                       to="/profile"
                       className="block rounded p-2 text-gray-700 hover:bg-gray-100"
                       onClick={() => setUserDropdownOpen(false)}
                     >
-                      Profile
+                      {t('common.profile')}
                     </Link>
                     <Link
                       to="/orders"
                       className="block rounded p-2 text-gray-700 hover:bg-gray-100"
                       onClick={() => setUserDropdownOpen(false)}
                     >
-                      Orders
+                      {t('common.orders')}
                     </Link>
-                    {user.is_admin && (
+                    {profile?.is_admin && (
                       <Link
                         to="/admin"
                         className="block rounded p-2 text-gray-700 hover:bg-gray-100"
                         onClick={() => setUserDropdownOpen(false)}
                       >
-                        Admin Dashboard
+                        {t('common.admin')}
                       </Link>
                     )}
                     <button
-                      onClick={() => {
-                        setUserDropdownOpen(false);
-                        handleSignOut();
-                      }}
-                      className="block w-full rounded p-2 text-left text-red-600 hover:bg-red-50"
+                      onClick={handleSignOut}
+                      className="flex w-full items-center rounded p-2 text-red-600 hover:bg-red-50"
                     >
-                      Sign Out
+                      <LogOut className="mr-2 h-4 w-4" />
+                      {t('common.signOut')}
                     </button>
                   </div>
                 )}
@@ -231,7 +235,7 @@ const Header = () => {
                 to="/login"
                 className="hidden rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 md:block"
               >
-                Sign In
+                {t('common.signIn')}
               </Link>
             )}
 
@@ -300,22 +304,23 @@ const Header = () => {
                   {user ? (
                     <>
                       <li>
-                        <Link to="/profile" className="block py-2 text-gray-700 hover:text-blue-700">Profile</Link>
+                        <Link to="/profile" className="block py-2 text-gray-700 hover:text-blue-700">{t('common.profile')}</Link>
                       </li>
                       <li>
-                        <Link to="/orders" className="block py-2 text-gray-700 hover:text-blue-700">Orders</Link>
+                        <Link to="/orders" className="block py-2 text-gray-700 hover:text-blue-700">{t('common.orders')}</Link>
                       </li>
-                      {user.is_admin && (
+                      {profile?.is_admin && (
                         <li>
-                          <Link to="/admin" className="block py-2 text-gray-700 hover:text-blue-700">Admin Dashboard</Link>
+                          <Link to="/admin" className="block py-2 text-gray-700 hover:text-blue-700">{t('common.admin')}</Link>
                         </li>
                       )}
                       <li>
                         <button
                           onClick={handleSignOut}
-                          className="block w-full py-2 text-left text-red-600 hover:text-red-700"
+                          className="flex w-full items-center py-2 text-red-600 hover:text-red-700"
                         >
-                          Sign Out
+                          <LogOut className="mr-2 h-4 w-4" />
+                          {t('common.signOut')}
                         </button>
                       </li>
                     </>
@@ -324,8 +329,9 @@ const Header = () => {
                       <Link
                         to="/login"
                         className="block rounded-md bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700"
+                        onClick={() => setMobileMenuOpen(false)}
                       >
-                        Sign In
+                        {t('common.signIn')}
                       </Link>
                     </li>
                   )}

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
 
@@ -11,6 +12,7 @@ const CategoryPage = () => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { addItem } = useCart();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -58,11 +60,11 @@ const CategoryPage = () => {
   if (!category) {
     return (
       <div className="container mx-auto my-16 px-4 text-center">
-        <h2 className="mb-6 text-2xl font-bold">Category Not Found</h2>
-        <p className="mb-8 text-gray-600">The category you're looking for doesn't exist or has been removed.</p>
+        <h2 className="mb-6 text-2xl font-bold">{t('categories.notFound')}</h2>
+        <p className="mb-8 text-gray-600">{t('categories.notFoundDesc')}</p>
         <Link to="/" className="rounded-md bg-blue-600 px-6 py-3 text-white hover:bg-blue-700">
           <ArrowLeft className="mr-2 inline-block h-5 w-5" />
-          Back to Home
+          {t('nav.home')}
         </Link>
       </div>
     );
@@ -72,19 +74,21 @@ const CategoryPage = () => {
     <div className="container mx-auto px-4 py-12">
       {/* Breadcrumbs */}
       <nav className="mb-8 flex text-sm">
-        <Link to="/" className="text-gray-500 hover:text-blue-600">Home</Link>
+        <Link to="/" className="text-gray-500 hover:text-blue-600">{t('nav.home')}</Link>
         <span className="mx-2 text-gray-400">/</span>
         <span className="text-gray-800">{category.name}</span>
       </nav>
 
       <div className="mb-12">
         <h1 className="mb-4 text-3xl font-bold">{category.name}</h1>
-        <p className="text-lg text-gray-600">Browse our selection of {category.name.toLowerCase()}</p>
+        <p className="text-lg text-gray-600">
+          {t('categories.browseProducts', { category: category.name.toLowerCase() })}
+        </p>
       </div>
 
       {products.length === 0 ? (
         <div className="text-center">
-          <p className="text-lg text-gray-600">No products found in this category.</p>
+          <p className="text-lg text-gray-600">{t('product.noProducts')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -112,10 +116,14 @@ const CategoryPage = () => {
                         <Star key={i} className="h-4 w-4 fill-current" />
                       ))}
                     </div>
-                    <span className="ml-2 text-sm text-gray-600">(27 reviews)</span>
+                    <span className="ml-2 text-sm text-gray-600">
+                      (27 {t('product.reviews')})
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="text-xl font-bold text-blue-700">${product.price.toFixed(2)}</p>
+                    <p className="text-xl font-bold text-blue-700">
+                      {t('common.currency')} {product.price.toFixed(2)}
+                    </p>
                     <button
                       onClick={(e) => {
                         e.preventDefault();
@@ -123,7 +131,7 @@ const CategoryPage = () => {
                       }}
                       className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-blue-600 hover:text-white"
                     >
-                      Add to cart
+                      {t('product.addToCart')}
                     </button>
                   </div>
                 </div>

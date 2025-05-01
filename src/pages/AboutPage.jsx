@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion';
 import { ShoppingBag, Truck, Shield, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const AboutPage = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="bg-white">
       {/* Hero Section */}
@@ -13,9 +16,9 @@ const AboutPage = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="mb-4 text-4xl font-bold md:text-5xl">About Kapital Store</h1>
+            <h1 className="mb-4 text-4xl font-bold md:text-5xl">{t('about.title')}</h1>
             <p className="mx-auto max-w-2xl text-lg text-blue-100">
-              Your trusted destination for quality products and exceptional shopping experience
+              {t('about.subtitle')}
             </p>
           </motion.div>
         </div>
@@ -30,16 +33,12 @@ const AboutPage = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mx-auto max-w-3xl text-center"
           >
-            <h2 className="mb-6 text-3xl font-bold">Our Story</h2>
+            <h2 className="mb-6 text-3xl font-bold">{t('about.story.title')}</h2>
             <p className="mb-8 text-lg text-gray-600">
-              Founded in 2025, Kapital Store has grown from a small local shop to a leading online marketplace. 
-              Our mission is to provide customers with high-quality products at competitive prices while 
-              delivering exceptional customer service.
+              {t('about.story.content1')}
             </p>
             <p className="text-lg text-gray-600">
-              We carefully curate our product selection to ensure that we offer only the best items 
-              across various categories. Our team works tirelessly to source products from reliable 
-              manufacturers and brands that share our commitment to quality and sustainability.
+              {t('about.story.content2')}
             </p>
           </motion.div>
         </div>
@@ -48,7 +47,7 @@ const AboutPage = () => {
       {/* Values */}
       <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
-          <h2 className="mb-12 text-center text-3xl font-bold">Our Values</h2>
+          <h2 className="mb-12 text-center text-3xl font-bold">{t('about.values.title')}</h2>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -59,10 +58,8 @@ const AboutPage = () => {
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
                 <ShoppingBag className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="mb-2 text-xl font-semibold">Quality First</h3>
-              <p className="text-gray-600">
-                We never compromise on quality, ensuring every product meets our high standards
-              </p>
+              <h3 className="mb-2 text-xl font-semibold">{t('about.values.quality.title')}</h3>
+              <p className="text-gray-600">{t('about.values.quality.description')}</p>
             </motion.div>
 
             <motion.div
@@ -74,10 +71,8 @@ const AboutPage = () => {
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
                 <Truck className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="mb-2 text-xl font-semibold">Fast Delivery</h3>
-              <p className="text-gray-600">
-                We ensure quick and reliable delivery to get your products to you on time
-              </p>
+              <h3 className="mb-2 text-xl font-semibold">{t('about.values.delivery.title')}</h3>
+              <p className="text-gray-600">{t('about.values.delivery.description')}</p>
             </motion.div>
 
             <motion.div
@@ -89,10 +84,8 @@ const AboutPage = () => {
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100">
                 <Shield className="h-8 w-8 text-yellow-600" />
               </div>
-              <h3 className="mb-2 text-xl font-semibold">Secure Shopping</h3>
-              <p className="text-gray-600">
-                Your security is our priority with safe payment and data protection
-              </p>
+              <h3 className="mb-2 text-xl font-semibold">{t('about.values.security.title')}</h3>
+              <p className="text-gray-600">{t('about.values.security.description')}</p>
             </motion.div>
 
             <motion.div
@@ -104,10 +97,8 @@ const AboutPage = () => {
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple-100">
                 <Users className="h-8 w-8 text-purple-600" />
               </div>
-              <h3 className="mb-2 text-xl font-semibold">Customer Focus</h3>
-              <p className="text-gray-600">
-                We put our customers first with dedicated support and service
-              </p>
+              <h3 className="mb-2 text-xl font-semibold">{t('about.values.customer.title')}</h3>
+              <p className="text-gray-600">{t('about.values.customer.description')}</p>
             </motion.div>
           </div>
         </div>
@@ -116,22 +107,22 @@ const AboutPage = () => {
       {/* Team */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="mb-12 text-center text-3xl font-bold">Our Team</h2>
+          <h2 className="mb-12 text-center text-3xl font-bold">{t('about.team.title')}</h2>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {[
               {
-                name: 'John Smith',
-                role: 'CEO & Founder',
+                name: t('about.team.members.ceo.name'),
+                role: t('about.team.members.ceo.role'),
                 image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg'
               },
               {
-                name: 'Sarah Johnson',
-                role: 'Head of Operations',
+                name: t('about.team.members.operations.name'),
+                role: t('about.team.members.operations.role'),
                 image: 'https://images.pexels.com/photos/3796217/pexels-photo-3796217.jpeg'
               },
               {
-                name: 'Mike Wilson',
-                role: 'Customer Service Lead',
+                name: t('about.team.members.service.name'),
+                role: t('about.team.members.service.role'),
                 image: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg'
               }
             ].map((member, index) => (

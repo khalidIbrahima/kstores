@@ -27,15 +27,15 @@
   },
   "home": {
     "hero": {
-      "title": "L'endroit unique pour",
-      "subtitle": "tout ce dont vous avez besoin",
+      "title": "Votre destination unique pour",
+      "subtitle": "Tout ce dont vous avez besoin",
       "description": "Découvrez des milliers de produits avec une livraison rapide et un service client exceptionnel.",
       "shopNow": "Acheter maintenant",
       "browseCategories": "Parcourir les catégories"
     },
     "categories": {
       "title": "Acheter par catégorie",
-      "description": "Parcourez notre large sélection de produits dans toutes les catégories"
+      "description": "Parcourez notre large sélection de produits dans différentes catégories"
     },
     "featured": {
       "title": "Produits en vedette",
@@ -44,7 +44,7 @@
     "features": {
       "quality": {
         "title": "Produits de qualité",
-        "description": "Nous nous assurons que tous les produits répondent à nos normes élevées"
+        "description": "Nous nous assurons que tous les produits répondent à nos normes de qualité élevées"
       },
       "delivery": {
         "title": "Livraison rapide",
@@ -61,6 +61,85 @@
       "placeholder": "Entrez votre email",
       "subscribe": "S'abonner"
     }
+  },
+  "about": {
+    "title": "À propos de Kapital Store",
+    "subtitle": "Votre destination de confiance pour des produits de qualité et une expérience d'achat exceptionnelle",
+    "story": {
+      "title": "Notre Histoire",
+      "content1": "Fondé en 2025, Kapital Store est passé d'une petite boutique locale à une place de marché en ligne leader. Notre mission est de fournir aux clients des produits de haute qualité à des prix compétitifs tout en offrant un service client exceptionnel.",
+      "content2": "Nous sélectionnons soigneusement nos produits pour nous assurer de n'offrir que les meilleurs articles dans diverses catégories. Notre équipe travaille sans relâche pour sourcer des produits auprès de fabricants et de marques fiables qui partagent notre engagement envers la qualité et la durabilité."
+    },
+    "values": {
+      "title": "Nos Valeurs",
+      "quality": {
+        "title": "La Qualité d'Abord",
+        "description": "Nous ne faisons jamais de compromis sur la qualité, nous nous assurons que chaque produit répond à nos normes élevées"
+      },
+      "delivery": {
+        "title": "Livraison Rapide",
+        "description": "Nous assurons une livraison rapide et fiable pour vous faire parvenir vos produits à temps"
+      },
+      "security": {
+        "title": "Achats Sécurisés",
+        "description": "Votre sécurité est notre priorité avec un paiement sécurisé et la protection des données"
+      },
+      "customer": {
+        "title": "Focus Client",
+        "description": "Nous mettons nos clients en premier avec un support et un service dédiés"
+      }
+    },
+    "team": {
+      "title": "Notre Équipe",
+      "members": {
+        "ceo": {
+          "name": "John Smith",
+          "role": "PDG & Fondateur"
+        },
+        "operations": {
+          "name": "Sarah Johnson",
+          "role": "Directrice des Opérations"
+        },
+        "service": {
+          "name": "Mike Wilson",
+          "role": "Responsable Service Client"
+        }
+      }
+    }
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Nous sommes là pour vous aider ! Envoyez-nous un message et nous vous répondrons dès que possible.",
+    "form": {
+      "name": "Votre Nom",
+      "email": "Adresse Email",
+      "subject": "Sujet",
+      "message": "Message",
+      "send": "Envoyer le Message",
+      "sending": "Envoi en cours...",
+      "success": "Message envoyé avec succès !",
+      "error": "Échec de l'envoi du message. Veuillez réessayer."
+    },
+    "info": {
+      "title": "Nous Contacter",
+      "email": {
+        "title": "Email",
+        "support": "support@kapitalstore.com",
+        "sales": "ventes@kapitalstore.com"
+      },
+      "phone": {
+        "title": "Téléphone",
+        "number": "+1 (555) 123-4567",
+        "hours": "Lun-Ven 9h à 18h"
+      },
+      "address": {
+        "title": "Adresse",
+        "line1": "123 Commerce Street",
+        "line2": "San Francisco, CA 94103",
+        "line3": "États-Unis"
+      }
+    },
+    "map": "La carte sera affichée ici"
   },
   "nav": {
     "home": "Accueil",
