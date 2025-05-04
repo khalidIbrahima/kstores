@@ -34,70 +34,66 @@ const Dashboard = () => {
       try {
         setIsLoading(true);
         
-        // Fetch orders count
-        const { count: ordersCount } = await supabase
+        // Fetch orders count and data
+        const { data: orders, error: ordersError } = await supabase
           .from('orders')
-          .select('*', { count: 'exact' });
+          .select(`
+            *,
+            profiles (
+              full_name
+            ),
+            order_items (
+              quantity,
+              price,
+              products (
+                name,
+                image_url
+              )
+            )
+          `)
+          .order('created_at', { ascending: false });
+
+        if (ordersError) throw ordersError;
+
+        // Calculate total revenue and process orders data
+        const totalRevenue = orders?.reduce((sum, order) => sum + order.total, 0) || 0;
+
+        // Get current and previous month orders for growth calculation
+        const now = new Date();
+        const currentMonthOrders = orders?.filter(order => {
+          const orderDate = new Date(order.created_at);
+          return orderDate.getMonth() === now.getMonth();
+        });
+
+        const lastMonthOrders = orders?.filter(order => {
+          const orderDate = new Date(order.created_at);
+          return orderDate.getMonth() === now.getMonth() - 1;
+        });
+
+        // Calculate growth rates
+        const orderGrowth = lastMonthOrders?.length 
+          ? ((currentMonthOrders?.length - lastMonthOrders?.length) / lastMonthOrders?.length) * 100 
+          : 0;
+
+        const currentRevenue = currentMonthOrders?.reduce((sum, order) => sum + order.total, 0) || 0;
+        const lastRevenue = lastMonthOrders?.reduce((sum, order) => sum + order.total, 0) || 0;
+        const revenueGrowth = lastRevenue 
+          ? ((currentRevenue - lastRevenue) / lastRevenue) * 100 
+          : 0;
 
         // Fetch customers count
         const { count: customersCount } = await supabase
           .from('profiles')
           .select('*', { count: 'exact' });
 
-        // Fetch total revenue
-        const { data: orders } = await supabase
-          .from('orders')
-          .select('total, created_at')
-          .order('created_at', { ascending: false });
-        
-        const totalRevenue = orders?.reduce((sum, order) => sum + order.total, 0) || 0;
-
-        // Calculate growth rates
-        const currentMonth = orders?.filter(order => {
-          const orderDate = new Date(order.created_at);
-          const now = new Date();
-          return orderDate.getMonth() === now.getMonth();
-        });
-
-        const lastMonth = orders?.filter(order => {
-          const orderDate = new Date(order.created_at);
-          const now = new Date();
-          return orderDate.getMonth() === now.getMonth() - 1;
-        });
-
-        const orderGrowth = lastMonth?.length 
-          ? ((currentMonth?.length - lastMonth?.length) / lastMonth?.length) * 100 
-          : 0;
-
-        const currentRevenue = currentMonth?.reduce((sum, order) => sum + order.total, 0) || 0;
-        const lastRevenue = lastMonth?.reduce((sum, order) => sum + order.total, 0) || 0;
-        const revenueGrowth = lastRevenue 
-          ? ((currentRevenue - lastRevenue) / lastRevenue) * 100 
-          : 0;
-
-        // Fetch products count
-        const { count: productsCount } = await supabase
-          .from('products')
-          .select('*', { count: 'exact' });
-
-        // Fetch recent orders
-        const { data: recentOrders } = await supabase
-          .from('orders')
-          .select(`
-            *,
-            profiles (full_name)
-          `)
-          .order('created_at', { ascending: false })
-          .limit(5);
-
-        // Fetch top products
-        const { data: topProducts } = await supabase
+        // Fetch products with inventory info
+        const { data: products } = await supabase
           .from('products')
           .select('*')
           .order('inventory', { ascending: true })
           .limit(5);
 
-        // Generate sales data for chart
+        // Generate sales data for the last 7 days
         const salesData = Array.from({ length: 7 }, (_, i) => {
           const date = new Date();
           date.setDate(date.getDate() - i);
@@ -112,12 +108,12 @@ const Dashboard = () => {
         }).reverse();
 
         setStats({
-          totalOrders: ordersCount || 0,
+          totalOrders: orders?.length || 0,
           totalCustomers: customersCount || 0,
           totalRevenue,
-          totalProducts: productsCount || 0,
-          recentOrders: recentOrders || [],
-          topProducts: topProducts || [],
+          totalProducts: products?.length || 0,
+          recentOrders: orders?.slice(0, 5) || [],
+          topProducts: products || [],
           salesData,
           orderGrowth,
           revenueGrowth
@@ -152,84 +148,83 @@ const Dashboard = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
           className="rounded-lg bg-white p-6 shadow-md"
         >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Orders</p>
               <h3 className="text-2xl font-bold">{stats.totalOrders}</h3>
-              <div className={`mt-2 flex items-center text-sm ${stats.orderGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {stats.orderGrowth >= 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
-                <span>{Math.abs(stats.orderGrowth).toFixed(1)}% from last month</span>
-              </div>
             </div>
             <div className="rounded-full bg-blue-100 p-3">
               <ShoppingBag className="h-6 w-6 text-blue-600" />
             </div>
+          </div>
+          <div className={`mt-2 flex items-center text-sm ${stats.orderGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {stats.orderGrowth >= 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+            <span>{Math.abs(stats.orderGrowth).toFixed(1)}% from last month</span>
           </div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
+          transition={{ delay: 0.1 }}
           className="rounded-lg bg-white p-6 shadow-md"
         >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Revenue</p>
               <h3 className="text-2xl font-bold">${stats.totalRevenue.toFixed(2)}</h3>
-              <div className={`mt-2 flex items-center text-sm ${stats.revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {stats.revenueGrowth >= 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
-                <span>{Math.abs(stats.revenueGrowth).toFixed(1)}% from last month</span>
-              </div>
             </div>
             <div className="rounded-full bg-green-100 p-3">
               <DollarSign className="h-6 w-6 text-green-600" />
             </div>
+          </div>
+          <div className={`mt-2 flex items-center text-sm ${stats.revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {stats.revenueGrowth >= 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+            <span>{Math.abs(stats.revenueGrowth).toFixed(1)}% from last month</span>
           </div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
+          transition={{ delay: 0.2 }}
           className="rounded-lg bg-white p-6 shadow-md"
         >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Customers</p>
               <h3 className="text-2xl font-bold">{stats.totalCustomers}</h3>
-              <div className="mt-2 flex items-center text-sm text-green-600">
-                <ArrowUpRight className="h-4 w-4" />
-                <span>12.5% from last month</span>
-              </div>
             </div>
             <div className="rounded-full bg-purple-100 p-3">
               <Users className="h-6 w-6 text-purple-600" />
             </div>
+          </div>
+          <div className="mt-2 flex items-center text-sm text-green-600">
+            <ArrowUpRight className="h-4 w-4" />
+            <span>12.5% from last month</span>
           </div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.3 }}
+          transition={{ delay: 0.3 }}
           className="rounded-lg bg-white p-6 shadow-md"
         >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Products</p>
               <h3 className="text-2xl font-bold">{stats.totalProducts}</h3>
-              <div className="mt-2 flex items-center text-sm text-blue-600">
-                <Package className="mr-1 h-4 w-4" />
-                <span>{stats.topProducts.filter(p => p.inventory < 10).length} low stock</span>
-              </div>
             </div>
             <div className="rounded-full bg-yellow-100 p-3">
               <Package className="h-6 w-6 text-yellow-600" />
             </div>
+          </div>
+          <div className="mt-2 flex items-center text-sm text-blue-600">
+            <Package className="mr-1 h-4 w-4" />
+            <span>{stats.topProducts.filter(p => p.inventory < 10).length} low stock</span>
           </div>
         </motion.div>
       </div>
@@ -256,7 +251,7 @@ const Dashboard = () => {
                   }}
                 ></div>
                 <span className="mt-2 text-sm text-gray-600">{data.date}</span>
-                <span className="text-xs text-gray-500">${data.sales}</span>
+                <span className="text-xs text-gray-500">${data.sales.toFixed(2)}</span>
               </div>
             ))}
           </div>

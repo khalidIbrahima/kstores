@@ -23,8 +23,7 @@ const Orders = () => {
         .select(`
           *,
           profiles (
-            full_name,
-            email
+            full_name
           ),
           order_items (
             *,
