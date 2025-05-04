@@ -17,12 +17,15 @@ export function AuthProvider({ children }) {
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
-          if (error.message.includes('refresh_token_not_found')) {
+          if (error.message.includes('refresh_token_not_found') || 
+              error.message.includes('Invalid Refresh Token')) {
             await supabase.auth.signOut();
             if (mounted) {
               setSession(null);
               setUser(null);
+              toast.error('Your session has expired. Please sign in again.');
             }
+            return;
           }
           throw error;
         }
@@ -53,6 +56,14 @@ export function AuthProvider({ children }) {
             setSession(null);
             setUser(null);
             setIsLoading(false);
+          } else if (event === 'TOKEN_REFRESHED') {
+            if (!session) {
+              // If token refresh failed, sign out the user
+              await supabase.auth.signOut();
+              setSession(null);
+              setUser(null);
+              toast.error('Your session has expired. Please sign in again.');
+            }
           }
         }
       }
@@ -104,13 +115,25 @@ export function AuthProvider({ children }) {
     try {
       setIsLoading(true);
       const { error } = await supabase.auth.signOut();
+      
+      // If we get a session_not_found error, just clear the local state
+      if (error?.message?.includes('session_not_found') || 
+          error?.message?.includes('refresh_token_not_found')) {
+        setSession(null);
+        setUser(null);
+        toast.success('Signed out successfully');
+        return;
+      }
+      
       if (error) throw error;
       
       setSession(null);
       setUser(null);
-      
       toast.success('Signed out successfully');
     } catch (error) {
+      // Clear local state even if there's an error
+      setSession(null);
+      setUser(null);
       toast.error(error.message || 'An error occurred during sign out');
     } finally {
       setIsLoading(false);

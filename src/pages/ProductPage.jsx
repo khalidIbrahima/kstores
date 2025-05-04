@@ -82,12 +82,8 @@ const ProductPage = () => {
   
   const handleAddToCart = () => {
     if (product) {
-      addItem({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image_url: product.image_url,
-      });
+      addItem(product, quantity);
+      setQuantity(1); // Reset quantity after adding to cart
     }
   };
 

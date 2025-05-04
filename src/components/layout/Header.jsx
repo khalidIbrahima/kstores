@@ -22,7 +22,7 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const { itemCount } = useCart();
-  const { user, signOut, profile } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -194,24 +194,9 @@ const Header = () => {
                 {userDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 rounded-md bg-white p-2 shadow-lg">
                     <div className="mb-2 border-b border-gray-100 px-2 pb-2">
-                      <p className="font-medium text-gray-900">{profile?.full_name}</p>
-                      <p className="text-sm text-gray-500">{user.email}</p>
+                      <p className="font-medium text-gray-900">{user.email}</p>
                     </div>
-                    <Link
-                      to="/profile"
-                      className="block rounded p-2 text-gray-700 hover:bg-gray-100"
-                      onClick={() => setUserDropdownOpen(false)}
-                    >
-                      {t('common.profile')}
-                    </Link>
-                    <Link
-                      to="/orders"
-                      className="block rounded p-2 text-gray-700 hover:bg-gray-100"
-                      onClick={() => setUserDropdownOpen(false)}
-                    >
-                      {t('common.orders')}
-                    </Link>
-                    {profile?.is_admin && (
+                    {isAdmin && (
                       <Link
                         to="/admin"
                         className="block rounded p-2 text-gray-700 hover:bg-gray-100"
@@ -303,13 +288,7 @@ const Header = () => {
                   </li>
                   {user ? (
                     <>
-                      <li>
-                        <Link to="/profile" className="block py-2 text-gray-700 hover:text-blue-700">{t('common.profile')}</Link>
-                      </li>
-                      <li>
-                        <Link to="/orders" className="block py-2 text-gray-700 hover:text-blue-700">{t('common.orders')}</Link>
-                      </li>
-                      {profile?.is_admin && (
+                      {isAdmin && (
                         <li>
                           <Link to="/admin" className="block py-2 text-gray-700 hover:text-blue-700">{t('common.admin')}</Link>
                         </li>

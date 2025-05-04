@@ -7,7 +7,6 @@ const CART_STORAGE_KEY = 'kapital_store_cart';
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState(() => {
-    // Initialize cart from localStorage on component mount
     try {
       const savedCart = localStorage.getItem(CART_STORAGE_KEY);
       return savedCart ? JSON.parse(savedCart) : [];
@@ -17,11 +16,9 @@ export function CartProvider({ children }) {
     }
   });
 
-  // Calculate derived values
-  const itemCount = items.reduce((count, item) => count + item.quantity, 0);
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const itemCount = items.reduce((total, item) => total + (parseInt(item.quantity) || 0), 0);
+  const total = items.reduce((sum, item) => sum + (item.price * (parseInt(item.quantity) || 0)), 0);
 
-  // Save cart to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
@@ -33,25 +30,44 @@ export function CartProvider({ children }) {
   const addItem = (product, quantity = 1) => {
     if (!product) return;
 
+    const parsedQuantity = parseInt(quantity);
+    if (isNaN(parsedQuantity) || parsedQuantity < 1) {
+      toast.error('Invalid quantity');
+      return;
+    }
+
     setItems(currentItems => {
       const existingItem = currentItems.find(item => item.id === product.id);
       
       if (existingItem) {
+        const newQuantity = existingItem.quantity + parsedQuantity;
+        
+        if (product.inventory && newQuantity > product.inventory) {
+          toast.error(`Only ${product.inventory} items available in stock`);
+          return currentItems;
+        }
+
         const updatedItems = currentItems.map(item =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
+            ? { ...item, quantity: newQuantity }
             : item
         );
         toast.success(`Updated ${product.name} quantity in cart`);
         return updatedItems;
       } else {
+        if (product.inventory && parsedQuantity > product.inventory) {
+          toast.error(`Only ${product.inventory} items available in stock`);
+          return currentItems;
+        }
+
         toast.success(`Added ${product.name} to cart`);
         return [...currentItems, { 
           id: product.id,
           name: product.name,
           price: product.price,
           image_url: product.image_url,
-          quantity 
+          inventory: product.inventory,
+          quantity: parsedQuantity
         }];
       }
     });
@@ -60,15 +76,30 @@ export function CartProvider({ children }) {
   const updateQuantity = (id, quantity) => {
     if (!id) return;
     
-    if (quantity < 1) {
-      return removeItem(id);
+    const parsedQuantity = parseInt(quantity);
+    if (isNaN(parsedQuantity)) {
+      toast.error('Invalid quantity');
+      return;
     }
-    
-    setItems(currentItems =>
-      currentItems.map(item =>
-        item.id === id ? { ...item, quantity } : item
-      )
-    );
+
+    setItems(currentItems => {
+      const item = currentItems.find(item => item.id === id);
+      
+      if (!item) return currentItems;
+
+      if (parsedQuantity < 1) {
+        return currentItems.filter(item => item.id !== id);
+      }
+
+      if (item.inventory && parsedQuantity > item.inventory) {
+        toast.error(`Only ${item.inventory} items available in stock`);
+        return currentItems;
+      }
+
+      return currentItems.map(item =>
+        item.id === id ? { ...item, quantity: parsedQuantity } : item
+      );
+    });
   };
 
   const removeItem = (id) => {
