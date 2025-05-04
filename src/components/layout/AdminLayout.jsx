@@ -82,7 +82,7 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-white shadow-lg transition-transform duration-300 ease-in-out ${
@@ -158,7 +158,7 @@ const AdminLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <div className={`flex-1 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
+      <div className="flex flex-1 flex-col">
         {/* Top Bar */}
         <header className="sticky top-0 z-40 bg-white shadow-sm">
           <div className="flex h-16 items-center justify-between px-4">
@@ -183,7 +183,7 @@ const AdminLayout = () => {
         </header>
 
         {/* Page Content */}
-        <main className="p-4">
+        <main className="flex-1 overflow-x-hidden p-8">
           <Outlet />
         </main>
       </div>
