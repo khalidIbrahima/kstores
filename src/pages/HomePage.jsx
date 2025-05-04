@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronRight, Star } from 'lucide-react';
+import { ChevronRight, Star, ShoppingBag, Truck, Shield } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
@@ -18,6 +18,29 @@ const HomePage = () => {
       try {
         setIsLoading(true);
         
+        // Fetch categories with their hero images
+        const { data: categoriesData, error: categoriesError } = await supabase
+          .from('categories')
+          .select(`
+            *,
+            category_hero_images (
+              url,
+              is_active
+            )
+          `)
+          .order('name');
+        
+        if (categoriesError) throw categoriesError;
+        
+        // Process categories to get active hero image
+        const processedCategories = categoriesData.map(category => ({
+          ...category,
+          hero_image: category.category_hero_images?.find(img => img.is_active)?.url || 
+            'https://images.pexels.com/photos/3165335/pexels-photo-3165335.jpeg' // Default hero image
+        }));
+        
+        setCategories(processedCategories || []);
+        
         // Fetch featured products
         const { data: products, error: productsError } = await supabase
           .from('products')
@@ -26,17 +49,7 @@ const HomePage = () => {
           .limit(8);
         
         if (productsError) throw productsError;
-        
-        // Fetch categories
-        const { data: categories, error: categoriesError } = await supabase
-          .from('categories')
-          .select('*')
-          .order('name');
-        
-        if (categoriesError) throw categoriesError;
-        
         setFeaturedProducts(products || []);
-        setCategories(categories || []);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -103,18 +116,28 @@ const HomePage = () => {
               <div className="h-16 w-16 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {categories.map((category) => (
                 <Link
                   key={category.id}
                   to={`/category/${category.slug}`}
-                  className="group overflow-hidden rounded-lg bg-gray-100 transition-transform hover:-translate-y-1"
+                  className="group relative overflow-hidden rounded-lg bg-gray-900 transition-transform hover:-translate-y-1"
                 >
-                  <div className="p-6 text-center">
-                    <h3 className="mb-2 text-lg font-medium text-gray-900">{category.name}</h3>
-                    <p className="inline-flex items-center text-sm text-blue-600 group-hover:underline">
-                      {t('common.shopNow')} <ChevronRight className="ml-1 h-4 w-4" />
-                    </p>
+                  <div className="aspect-w-16 aspect-h-9 relative h-64">
+                    <div 
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-110"
+                      style={{ backgroundImage: `url(${category.hero_image})` }}
+                    >
+                      <div className="absolute inset-0 bg-black opacity-40 transition-opacity group-hover:opacity-30"></div>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center p-6">
+                      <div className="text-center">
+                        <h3 className="mb-2 text-2xl font-bold text-white">{category.name}</h3>
+                        <span className="inline-flex items-center rounded-full bg-white/20 px-4 py-2 text-sm text-white backdrop-blur-sm transition-colors group-hover:bg-white/30">
+                          {t('common.shopNow')} <ChevronRight className="ml-1 h-4 w-4" />
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </Link>
               ))}
@@ -156,6 +179,7 @@ const HomePage = () => {
                       />
                     </div>
                     <div className="p-4">
+                      <div className="mb-2 text-sm text-blue-600">{product.categories?.name}</div>
                       <h3 className="mb-2 text-lg font-medium text-gray-900 line-clamp-2">{product.name}</h3>
                       <div className="mb-2 flex items-center">
                         <div className="flex text-yellow-400">
@@ -171,10 +195,10 @@ const HomePage = () => {
                         <p className="text-xl font-bold text-blue-700">
                           {t('common.currency')} {product.price.toFixed(2)}
                         </p>
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.preventDefault();
-                            addItem(product);
+                            addItem(product, 1);
                           }}
                           className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-blue-600 hover:text-white"
                         >
@@ -205,27 +229,21 @@ const HomePage = () => {
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div className="text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                </svg>
+                <ShoppingBag className="h-8 w-8" />
               </div>
               <h3 className="mb-2 text-xl font-semibold">{t('home.features.quality.title')}</h3>
               <p className="text-gray-600">{t('home.features.quality.description')}</p>
             </div>
             <div className="text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+                <Truck className="h-8 w-8" />
               </div>
               <h3 className="mb-2 text-xl font-semibold">{t('home.features.delivery.title')}</h3>
               <p className="text-gray-600">{t('home.features.delivery.description')}</p>
             </div>
             <div className="text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                </svg>
+                <Shield className="h-8 w-8" />
               </div>
               <h3 className="mb-2 text-xl font-semibold">{t('home.features.payment.title')}</h3>
               <p className="text-gray-600">{t('home.features.payment.description')}</p>

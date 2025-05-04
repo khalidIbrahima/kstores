@@ -15,7 +15,14 @@ import {
   Tags,
   Bell,
   CreditCard,
-  HelpCircle
+  HelpCircle,
+  Store,
+  LineChart,
+  Boxes,
+  UserCog,
+  Wallet,
+  Cog,
+  MessageSquare
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -30,30 +37,41 @@ const AdminLayout = () => {
       title: 'Overview',
       items: [
         { path: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
-        { path: '/admin/reports', icon: BarChart3, label: 'Analytics' }
+        { path: '/admin/analytics', icon: LineChart, label: 'Analytics' }
       ]
     },
     {
       title: 'Store Management',
       items: [
+        { path: '/admin/store', icon: Store, label: 'Store Overview' },
         { path: '/admin/products', icon: Package, label: 'Products' },
         { path: '/admin/categories', icon: Tags, label: 'Categories' },
-        { path: '/admin/orders', icon: ShoppingCart, label: 'Orders' }
+        { path: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
+        { path: '/admin/inventory', icon: Boxes, label: 'Inventory' }
       ]
     },
     {
       title: 'Customer Management',
       items: [
         { path: '/admin/customers', icon: Users, label: 'Customers' },
-        { path: '/admin/payments', icon: CreditCard, label: 'Payments' }
+        { path: '/admin/customer-groups', icon: UserCog, label: 'Customer Groups' },
+        { path: '/admin/payments', icon: Wallet, label: 'Payments' }
+      ]
+    },
+    {
+      title: 'Analytics & Reports',
+      items: [
+        { path: '/admin/reports/sales', icon: BarChart3, label: 'Sales Reports' },
+        { path: '/admin/reports/customers', icon: LineChart, label: 'Customer Analytics' },
+        { path: '/admin/reports/inventory', icon: BarChart3, label: 'Inventory Reports' }
       ]
     },
     {
       title: 'System',
       items: [
         { path: '/admin/notifications', icon: Bell, label: 'Notifications' },
-        { path: '/admin/settings', icon: Settings, label: 'Settings' },
-        { path: '/admin/support', icon: HelpCircle, label: 'Support' }
+        { path: '/admin/settings', icon: Cog, label: 'Settings' },
+        { path: '/admin/support', icon: MessageSquare, label: 'Support' }
       ]
     }
   ];
@@ -74,9 +92,11 @@ const AdminLayout = () => {
         <div className="flex h-full flex-col">
           {/* Logo */}
           <div className="flex h-16 items-center justify-between border-b border-gray-200 px-4">
-            <Link to="/admin" className="flex items-center space-x-2 font-bold text-gray-900">
-              <LayoutDashboard className="h-6 w-6 text-blue-600" />
-              <span>Admin Panel</span>
+            <Link to="/admin" className="flex items-center space-x-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
+                <LayoutDashboard className="h-5 w-5 text-white" />
+              </div>
+              <span className="font-bold text-gray-900">Admin Panel</span>
             </Link>
             <button
               onClick={() => setIsSidebarOpen(false)}
@@ -123,7 +143,7 @@ const AdminLayout = () => {
               to="/"
               className="mb-4 flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
             >
-              <Package className="h-5 w-5 text-gray-400" />
+              <Store className="h-5 w-5 text-gray-400" />
               <span>View Store</span>
             </Link>
             <button
@@ -148,6 +168,17 @@ const AdminLayout = () => {
             >
               <Menu className="h-6 w-6" />
             </button>
+            <div className="flex items-center space-x-4">
+              <button className="relative text-gray-500 hover:text-gray-600">
+                <Bell className="h-6 w-6" />
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                  3
+                </span>
+              </button>
+              <button className="rounded-full bg-gray-100 p-2 text-gray-500 hover:bg-gray-200">
+                <Settings className="h-5 w-5" />
+              </button>
+            </div>
           </div>
         </header>
 
