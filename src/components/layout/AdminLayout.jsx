@@ -11,7 +11,11 @@ import {
   X,
   ChevronRight,
   BarChart3,
-  Settings
+  Settings,
+  Tags,
+  Bell,
+  CreditCard,
+  HelpCircle
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -21,13 +25,37 @@ const AdminLayout = () => {
   const navigate = useNavigate();
   const { signOut } = useAuth();
 
-  const menuItems = [
-    { path: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/admin/products', icon: Package, label: 'Products' },
-    { path: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
-    { path: '/admin/customers', icon: Users, label: 'Customers' },
-    { path: '/admin/reports', icon: BarChart3, label: 'Reports' },
-    { path: '/admin/settings', icon: Settings, label: 'Settings' }
+  const menuSections = [
+    {
+      title: 'Overview',
+      items: [
+        { path: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
+        { path: '/admin/reports', icon: BarChart3, label: 'Analytics' }
+      ]
+    },
+    {
+      title: 'Store Management',
+      items: [
+        { path: '/admin/products', icon: Package, label: 'Products' },
+        { path: '/admin/categories', icon: Tags, label: 'Categories' },
+        { path: '/admin/orders', icon: ShoppingCart, label: 'Orders' }
+      ]
+    },
+    {
+      title: 'Customer Management',
+      items: [
+        { path: '/admin/customers', icon: Users, label: 'Customers' },
+        { path: '/admin/payments', icon: CreditCard, label: 'Payments' }
+      ]
+    },
+    {
+      title: 'System',
+      items: [
+        { path: '/admin/notifications', icon: Bell, label: 'Notifications' },
+        { path: '/admin/settings', icon: Settings, label: 'Settings' },
+        { path: '/admin/support', icon: HelpCircle, label: 'Support' }
+      ]
+    }
   ];
 
   const handleSignOut = async () => {
@@ -45,10 +73,10 @@ const AdminLayout = () => {
       >
         <div className="flex h-full flex-col">
           {/* Logo */}
-          <div className="flex h-16 items-center justify-between px-4">
+          <div className="flex h-16 items-center justify-between border-b border-gray-200 px-4">
             <Link to="/admin" className="flex items-center space-x-2 font-bold text-gray-900">
-              <LayoutDashboard className="h-6 w-6" />
-              <span>Kapital Store</span>
+              <LayoutDashboard className="h-6 w-6 text-blue-600" />
+              <span>Admin Panel</span>
             </Link>
             <button
               onClick={() => setIsSidebarOpen(false)}
@@ -59,31 +87,45 @@ const AdminLayout = () => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1 px-2 py-4">
-            {menuItems.map((item) => {
-              const isActive = location.pathname === item.path;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium ${
-                    isActive
-                      ? 'bg-blue-50 text-blue-700'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.label}</span>
-                  {isActive && (
-                    <ChevronRight className="ml-auto h-4 w-4" />
-                  )}
-                </Link>
-              );
-            })}
+          <nav className="flex-1 space-y-6 overflow-y-auto p-4">
+            {menuSections.map((section, index) => (
+              <div key={index} className="space-y-2">
+                <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                  {section.title}
+                </h3>
+                {section.items.map((item) => {
+                  const isActive = location.pathname === item.path;
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      className={`flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                        isActive
+                          ? 'bg-blue-50 text-blue-700'
+                          : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
+                      }`}
+                    >
+                      <item.icon className={`h-5 w-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
+                      <span>{item.label}</span>
+                      {isActive && (
+                        <ChevronRight className="ml-auto h-4 w-4" />
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            ))}
           </nav>
 
           {/* Footer */}
           <div className="border-t border-gray-200 p-4">
+            <Link
+              to="/"
+              className="mb-4 flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+            >
+              <Package className="h-5 w-5 text-gray-400" />
+              <span>View Store</span>
+            </Link>
             <button
               onClick={handleSignOut}
               className="flex w-full items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
@@ -106,14 +148,6 @@ const AdminLayout = () => {
             >
               <Menu className="h-6 w-6" />
             </button>
-            <div className="flex items-center space-x-4">
-              <Link
-                to="/"
-                className="text-sm font-medium text-blue-600 hover:text-blue-500"
-              >
-                View Store
-              </Link>
-            </div>
           </div>
         </header>
 
