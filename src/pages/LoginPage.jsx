@@ -17,7 +17,6 @@ const LoginPage = () => {
   const location = useLocation();
   const { t } = useTranslation();
   
-  // Get redirect path from location state or default to home
   const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (e) => {
@@ -46,13 +45,18 @@ const LoginPage = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
           redirectTo: `${window.location.origin}/auth/callback`
         }
       });
       
       if (error) throw error;
     } catch (error) {
-      setError(error.message || t('auth.googleSignInError'));
+      console.error('Google sign in error:', error);
+      setError(t('auth.googleSignInError'));
     } finally {
       setIsLoading(false);
     }
