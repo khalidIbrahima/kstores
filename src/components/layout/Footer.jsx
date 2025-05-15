@@ -12,7 +12,7 @@ const Footer = () => {
           <div>
             <h3 className="mb-4 text-lg font-semibold text-white">Kapital Store</h3>
             <p className="mb-4 text-sm leading-relaxed">
-              Creating exceptional shopping experiences with quality products and superior customer service.
+              Créer des expériences d'achat exceptionnelles avec des produits de qualité et un service client supérieur.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 transition-colors hover:text-white">
@@ -32,16 +32,16 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-white">Quick Links</h3>
+            <h3 className="mb-4 text-lg font-semibold text-white">Liens Rapides</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/" className="hover:text-white">Home</Link>
+                <Link to="/" className="hover:text-white">Accueil</Link>
               </li>
               <li>
-                <Link to="/products" className="hover:text-white">Shop</Link>
+                <Link to="/products" className="hover:text-white">Boutique</Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-white">About Us</Link>
+                <Link to="/about" className="hover:text-white">À Propos</Link>
               </li>
               <li>
                 <Link to="/contact" className="hover:text-white">Contact</Link>
@@ -54,29 +54,29 @@ const Footer = () => {
 
           {/* Customer Service */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-white">Customer Service</h3>
+            <h3 className="mb-4 text-lg font-semibold text-white">Service Client</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/faq" className="hover:text-white">FAQ</Link>
               </li>
               <li>
-                <Link to="/shipping" className="hover:text-white">Shipping Policy</Link>
+                <Link to="/shipping" className="hover:text-white">Politique de Livraison</Link>
               </li>
               <li>
-                <Link to="/returns" className="hover:text-white">Returns & Refunds</Link>
+                <Link to="/returns" className="hover:text-white">Retours et Remboursements</Link>
               </li>
               <li>
-                <Link to="/privacy" className="hover:text-white">Privacy Policy</Link>
+                <Link to="/privacy" className="hover:text-white">Politique de Confidentialité</Link>
               </li>
               <li>
-                <Link to="/terms" className="hover:text-white">Terms & Conditions</Link>
+                <Link to="/terms" className="hover:text-white">Conditions Générales</Link>
               </li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-white">Contact Us</h3>
+            <h3 className="mb-4 text-lg font-semibold text-white">Contactez-nous</h3>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start">
                 <Mail size={18} className="mr-2 mt-0.5 flex-shrink-0" />
@@ -97,10 +97,10 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm">
           <p className="mb-2">
-            &copy; {currentYear} Kapital Store. All rights reserved.
+            &copy; {currentYear} Kapital Store. Tous droits réservés.
           </p>
           <p className="text-gray-500">
-            Designed and built with care for the modern shopper.
+            Conçu et développé avec soin pour le client moderne.
           </p>
         </div>
       </div>
