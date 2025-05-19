@@ -182,7 +182,9 @@
       "priceLow": "Prix croissant",
       "priceHigh": "Prix décroissant",
       "name": "Nom"
-    }
+    },
+    "allProducts" : "Tous les produits" ,
+    "browseDescription" : ""
   },
   "cart": {
     "empty": "Votre panier est vide",
@@ -217,6 +219,7 @@
     "termsAgree": "J'accepte les conditions d'utilisation et la politique de confidentialité",
     "registrationSuccess": "Inscription réussie ! Veuillez vous connecter.",
     "registrationError": "Échec de la création du compte",
-    "googleSignUpError": "Échec de l'inscription avec Google"
+    "googleSignUpError": "Échec de l'inscription avec Google",
+    "noAccount": "Pas encore inscrit ?"
   }
 }

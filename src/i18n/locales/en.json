@@ -181,7 +181,9 @@
       "newest": "Newest First",
       "priceLow": "Price: Low to High",
       "priceHigh": "Price: High to Low",
-      "name": "Name"
+      "name": "Name",
+      "allProducts" : "All products" ,
+      "browseDescription" : ""
     }
   },
   "cart": {
@@ -217,6 +219,8 @@
     "termsAgree": "I agree to the Terms of Service and Privacy Policy",
     "registrationSuccess": "Registration successful! Please sign in.",
     "registrationError": "Failed to create account",
-    "googleSignUpError": "Failed to sign up with Google"
+    "googleSignUpError": "Failed to sign up with Google",
+    "noAccount": "Not registered yet ?"
+
   }
 }
