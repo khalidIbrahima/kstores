@@ -22,7 +22,8 @@ import {
   UserCog,
   Wallet,
   Cog,
-  MessageSquare
+  MessageSquare,
+  Tv
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -47,7 +48,8 @@ const AdminLayout = () => {
         { path: '/admin/products', icon: Package, label: 'Products' },
         { path: '/admin/categories', icon: Tags, label: 'Categories' },
         { path: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
-        { path: '/admin/inventory', icon: Boxes, label: 'Inventory' }
+        { path: '/admin/inventory', icon: Boxes, label: 'Inventory' },
+        { path: '/admin/iptv-plans', icon: Tv, label: 'IPTV Plans' }
       ]
     },
     {

@@ -67,8 +67,7 @@ const Orders = () => {
 
   const filteredOrders = orders.filter(order =>
     order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    order.profiles.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    order.profiles.email.toLowerCase().includes(searchQuery.toLowerCase())
+    (order.profiles?.full_name || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -133,10 +132,7 @@ const Orders = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900">
-                      {order.profiles.full_name}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {order.profiles.email}
+                      {order.profiles?.full_name || 'Unknown Customer'}
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
@@ -196,8 +192,7 @@ const Orders = () => {
               <div>
                 <h3 className="mb-2 text-lg font-medium">Customer Information</h3>
                 <div className="rounded-lg bg-gray-50 p-4">
-                  <p><strong>Name:</strong> {selectedOrder.profiles.full_name}</p>
-                  <p><strong>Email:</strong> {selectedOrder.profiles.email}</p>
+                  <p><strong>Name:</strong> {selectedOrder.profiles?.full_name || 'Unknown Customer'}</p>
                 </div>
               </div>
               
@@ -240,13 +235,13 @@ const Orders = () => {
                             <div className="h-10 w-10 flex-shrink-0">
                               <img
                                 className="h-10 w-10 rounded-full object-cover"
-                                src={item.products.image_url}
-                                alt={item.products.name}
+                                src={item.products?.image_url}
+                                alt={item.products?.name}
                               />
                             </div>
                             <div className="ml-4">
                               <div className="text-sm font-medium text-gray-900">
-                                {item.products.name}
+                                {item.products?.name || 'Unknown Product'}
                               </div>
                             </div>
                           </div>

@@ -20,7 +20,7 @@ const Payments = () => {
         .from('orders')
         .select(`
           *,
-          profiles (full_name, email)
+          profiles (full_name)
         `)
         .order('created_at', { ascending: false });
 
@@ -109,10 +109,7 @@ const Payments = () => {
                 </td>
                 <td className="px-6 py-4">
                   <div className="text-sm font-medium text-gray-900">
-                    {payment.profiles?.full_name}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    {payment.profiles?.email}
+                    {payment.profiles?.full_name || 'Unknown Customer'}
                   </div>
                 </td>
                 <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">

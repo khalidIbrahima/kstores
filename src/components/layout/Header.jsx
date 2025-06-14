@@ -9,7 +9,10 @@ import {
   X, 
   ChevronDown,
   User,
-  LogOut
+  LogOut,
+  Package,
+  Heart,
+  Tv
 } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -145,6 +148,9 @@ const Header = () => {
                 <Link to="/products" className="text-gray-700 hover:text-blue-700">{t('nav.allProducts')}</Link>
               </li>
               <li>
+                <Link to="/iptv" className="text-gray-700 hover:text-blue-700">IPTV</Link>
+              </li>
+              <li>
                 <Link to="/about" className="text-gray-700 hover:text-blue-700">{t('nav.about')}</Link>
               </li>
               <li>
@@ -196,12 +202,29 @@ const Header = () => {
                     <div className="mb-2 border-b border-gray-100 px-2 pb-2">
                       <p className="font-medium text-gray-900">{user.email}</p>
                     </div>
+                    <Link
+                      to="/orders"
+                      className="flex items-center rounded p-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setUserDropdownOpen(false)}
+                    >
+                      <Package className="mr-2 h-4 w-4" />
+                      Orders
+                    </Link>
+                    <Link
+                      to="/favorites"
+                      className="flex items-center rounded p-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setUserDropdownOpen(false)}
+                    >
+                      <Heart className="mr-2 h-4 w-4" />
+                      Favorites
+                    </Link>
                     {isAdmin && (
                       <Link
                         to="/admin"
-                        className="block rounded p-2 text-gray-700 hover:bg-gray-100"
+                        className="flex items-center rounded p-2 text-gray-700 hover:bg-gray-100"
                         onClick={() => setUserDropdownOpen(false)}
                       >
+                        <Tv className="mr-2 h-4 w-4" />
                         {t('common.admin')}
                       </Link>
                     )}
@@ -281,6 +304,9 @@ const Header = () => {
                     <Link to="/products" className="block py-2 text-gray-700 hover:text-blue-700">{t('nav.allProducts')}</Link>
                   </li>
                   <li>
+                    <Link to="/iptv" className="block py-2 text-gray-700 hover:text-blue-700">IPTV</Link>
+                  </li>
+                  <li>
                     <Link to="/about" className="block py-2 text-gray-700 hover:text-blue-700">{t('nav.about')}</Link>
                   </li>
                   <li>
@@ -288,9 +314,24 @@ const Header = () => {
                   </li>
                   {user ? (
                     <>
+                      <li>
+                        <Link to="/orders" className="flex items-center py-2 text-gray-700 hover:text-blue-700">
+                          <Package className="mr-2 h-4 w-4" />
+                          Orders
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/favorites" className="flex items-center py-2 text-gray-700 hover:text-blue-700">
+                          <Heart className="mr-2 h-4 w-4" />
+                          Favorites
+                        </Link>
+                      </li>
                       {isAdmin && (
                         <li>
-                          <Link to="/admin" className="block py-2 text-gray-700 hover:text-blue-700">{t('common.admin')}</Link>
+                          <Link to="/admin" className="flex items-center py-2 text-gray-700 hover:text-blue-700">
+                            <Tv className="mr-2 h-4 w-4" />
+                            {t('common.admin')}
+                          </Link>
                         </li>
                       )}
                       <li>

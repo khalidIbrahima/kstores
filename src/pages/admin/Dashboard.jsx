@@ -275,7 +275,7 @@ const Dashboard = () => {
             {stats.recentOrders.map((order) => (
               <div key={order.id} className="flex items-center py-4">
                 <div className="flex-1">
-                  <p className="font-medium">{order.profiles.full_name}</p>
+                  <p className="font-medium">{order.profiles?.full_name || 'Unknown User'}</p>
                   <p className="text-sm text-gray-600">
                     {new Date(order.created_at).toLocaleDateString()}
                   </p>

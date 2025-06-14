@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Package, ChevronRight } from 'lucide-react';
+import { Package, ChevronRight, ShoppingBag } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 const OrdersPage = () => {
   const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -21,7 +24,7 @@ const OrdersPage = () => {
             *,
             order_items (
               *,
-              product:products (*)
+              products (*)
             )
           `)
           .eq('user_id', user.id)
@@ -31,6 +34,7 @@ const OrdersPage = () => {
         setOrders(data || []);
       } catch (error) {
         console.error('Error fetching orders:', error);
+        toast.error('Failed to fetch orders');
       } finally {
         setIsLoading(false);
       }
@@ -53,14 +57,14 @@ const OrdersPage = () => {
     return (
       <div className="container mx-auto my-16 px-4 text-center">
         <div className="flex flex-col items-center">
-          <Package className="h-16 w-16 text-gray-400" />
+          <ShoppingBag className="h-16 w-16 text-gray-400" />
           <h2 className="mt-6 mb-4 text-2xl font-bold">No Orders Yet</h2>
-          <p className="mb-8 text-gray-600">Looks like you haven't placed any orders yet.</p>
+          <p className="mb-8 text-gray-600">Start shopping to see your order history here</p>
           <Link
             to="/products"
             className="inline-flex items-center rounded-md bg-blue-600 px-6 py-3 text-white hover:bg-blue-700"
           >
-            Start Shopping <ChevronRight className="ml-2 h-5 w-5" />
+            Browse Products <ChevronRight className="ml-2 h-5 w-5" />
           </Link>
         </div>
       </div>
@@ -81,7 +85,7 @@ const OrdersPage = () => {
             className="overflow-hidden rounded-lg bg-white shadow-md"
           >
             <div className="border-b border-gray-200 bg-gray-50 p-4">
-              <div className="flex flex-wrap items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <p className="text-sm text-gray-600">Order placed</p>
                   <p className="font-medium">
@@ -97,8 +101,14 @@ const OrdersPage = () => {
                   <p className="font-medium">{order.id}</p>
                 </div>
                 <div>
-                  <span className="inline-flex rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
-                    {order.status}
+                  <span className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${
+                    order.status === 'delivered'
+                      ? 'bg-green-100 text-green-800'
+                      : order.status === 'cancelled'
+                      ? 'bg-red-100 text-red-800'
+                      : 'bg-blue-100 text-blue-800'
+                  }`}>
+                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                   </span>
                 </div>
               </div>
@@ -109,8 +119,8 @@ const OrdersPage = () => {
                 <div key={item.id} className="flex items-center p-4">
                   <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
                     <img
-                      src={item.product.image_url}
-                      alt={item.product.name}
+                      src={item.products?.image_url}
+                      alt={item.products?.name}
                       className="h-full w-full object-cover"
                     />
                   </div>
@@ -118,8 +128,8 @@ const OrdersPage = () => {
                     <div>
                       <div className="flex justify-between">
                         <h3 className="text-lg font-medium text-gray-900">
-                          <Link to={`/product/${item.product.id}`} className="hover:text-blue-600">
-                            {item.product.name}
+                          <Link to={`/product/${item.products?.id}`} className="hover:text-blue-600">
+                            {item.products?.name}
                           </Link>
                         </h3>
                         <p className="ml-4 text-lg font-medium text-gray-900">
@@ -150,4 +160,4 @@ const OrdersPage = () => {
   );
 };
 
-export default OrdersPage;
+export default OrdersPage

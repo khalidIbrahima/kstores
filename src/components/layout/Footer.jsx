@@ -84,11 +84,11 @@ const Footer = () => {
               </li>
               <li className="flex items-start">
                 <Phone size={18} className="mr-2 mt-0.5 flex-shrink-0" />
-                <span>+1 (555) 123-4567</span>
+                <span>+221 77</span>
               </li>
               <li>
-                <p>123 Commerce Street</p>
-                <p>San Francisco, CA 94103</p>
+                <p>Rue FA 21</p>
+                <p>Fass Delorme, Dakar</p>
               </li>
             </ul>
           </div>
