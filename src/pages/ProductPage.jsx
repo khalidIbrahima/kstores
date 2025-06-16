@@ -7,6 +7,11 @@ import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
 import { useFavorites } from '../contexts/FavoritesContext';
 import toast from 'react-hot-toast';
+import ProductImageCarousel from '../components/ProductImageCarousel';
+import { formatPrice } from '../utils/currency';
+import LocationPicker from '../components/LocationPicker';
+import OrderLocationMap from '../components/OrderLocationMap';
+import { Helmet } from 'react-helmet';
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -18,6 +23,7 @@ const ProductPage = () => {
   const { addItem } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const { t } = useTranslation();
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -53,6 +59,7 @@ const ProductPage = () => {
             .from('products')
             .select('*')
             .eq('category_id', productData.category_id)
+            .eq('isActive', true)
             .neq('id', id)
             .limit(4);
           
@@ -86,6 +93,7 @@ const ProductPage = () => {
     }
   };
 
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -106,8 +114,25 @@ const ProductPage = () => {
     );
   }
 
+  const images = [
+    product.image_url,
+    product.image_url1,
+    product.image_url2,
+    product.image_url3,
+    product.image_url4
+  ].filter(Boolean);
+
   return (
     <div className="container mx-auto px-4 py-12">
+      <Helmet>
+        <title>{product.name} - KStores</title>
+        <meta name="description" content={product.description?.slice(0, 160) || 'Produit KStores'} />
+        <meta property="og:title" content={product.name + ' - KStores'} />
+        <meta property="og:description" content={product.description?.slice(0, 160) || 'Produit KStores'} />
+        <meta property="og:image" content={product.image_url} />
+        <meta property="og:url" content={window.location.href} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
       {/* Breadcrumbs */}
       <nav className="mb-8 flex text-sm">
         <Link to="/" className="text-gray-500 hover:text-blue-600">{t('nav.home')}</Link>
@@ -131,11 +156,7 @@ const ProductPage = () => {
           transition={{ duration: 0.5 }}
           className="overflow-hidden rounded-lg bg-white"
         >
-          <img 
-            src={product.image_url} 
-            alt={product.name} 
-            className="h-full w-full object-contain"
-          />
+          <ProductImageCarousel images={images} />
         </motion.div>
 
         {/* Product Details */}
@@ -161,15 +182,15 @@ const ProductPage = () => {
           {/* Price */}
           <div className="mb-6">
             <span className="text-3xl font-bold text-blue-700">
-              ${product.price.toFixed(2)}
+              {formatPrice(product.price)}
             </span>
             {product.inventory < 10 && product.inventory > 0 && (
               <span className="ml-4 text-sm text-red-600">
-                Only {product.inventory} left in stock
+                {t('product.onlyLeft', { count: product.inventory })}
               </span>
             )}
             {product.inventory === 0 && (
-              <span className="ml-4 text-sm text-red-600">Out of Stock</span>
+              <span className="ml-4 text-sm text-red-600">{t('product.outOfStock')}</span>
             )}
           </div>
           
@@ -260,6 +281,13 @@ const ProductPage = () => {
               </a>
             </div>
           </div>
+          
+          <div className="mb-4"><span className="font-semibold text-gray-700">Catégorie :</span> {category?.name || '-'}</div>
+          {isFavorite(product.id) && product.inventory === 0 && (
+            <div className="mb-4 flex items-center gap-2">
+              <span className="px-3 py-1 rounded bg-red-100 text-red-700 text-sm font-semibold">Ce produit est dans vos favoris mais il est en rupture de stock</span>
+            </div>
+          )}
         </motion.div>
       </div>
 
@@ -290,7 +318,7 @@ const ProductPage = () => {
                     </h3>
                     <div className="flex items-center justify-between">
                       <p className="text-lg font-bold text-blue-700">
-                        ${relatedProduct.price.toFixed(2)}
+                        {formatPrice(relatedProduct.price)}
                       </p>
                       <button
                         onClick={(e) => {

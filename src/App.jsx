@@ -41,6 +41,7 @@ import AdminNotifications from './pages/admin/Notifications';
 import AdminSettings from './pages/admin/Settings';
 import AdminSupport from './pages/admin/Support';
 import AdminIPTVPlans from './pages/admin/IPTVPlans';
+import ProductDetailPage from './pages/admin/ProductDetailPage';
 
 const router = {
   future: {
@@ -103,6 +104,7 @@ function App() {
                 <Route path="analytics" element={<AdminAnalytics />} />
                 <Route path="store" element={<AdminStore />} />
                 <Route path="products" element={<AdminProducts />} />
+                <Route path="products/:id" element={<ProductDetailPage />} />
                 <Route path="categories" element={<AdminCategories />} />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="inventory" element={<AdminInventory />} />

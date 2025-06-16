@@ -63,11 +63,11 @@
     }
   },
   "about": {
-    "title": "À propos de Kapital Store",
+    "title": "À propos de Kapital Stores",
     "subtitle": "Votre destination de confiance pour des produits de qualité et une expérience d'achat exceptionnelle",
     "story": {
       "title": "Notre Histoire",
-      "content1": "Fondé en 2025, Kapital Store est passé d'une petite boutique locale à une place de marché en ligne leader. Notre mission est de fournir aux clients des produits de haute qualité à des prix compétitifs tout en offrant un service client exceptionnel.",
+      "content1": "Fondé en 2022, Kapital Stores est passé d'une petite boutique locale à une place de marché en ligne leader. Notre mission est de fournir aux clients des produits de haute qualité à des prix compétitifs tout en offrant un service client exceptionnel.",
       "content2": "Nous sélectionnons soigneusement nos produits pour nous assurer de n'offrir que les meilleurs articles dans diverses catégories. Notre équipe travaille sans relâche pour sourcer des produits auprès de fabricants et de marques fiables qui partagent notre engagement envers la qualité et la durabilité."
     },
     "values": {
@@ -93,15 +93,15 @@
       "title": "Notre Équipe",
       "members": {
         "ceo": {
-          "name": "John Smith",
+          "name": "Khalidou Sow BA",
           "role": "PDG & Fondateur"
         },
         "operations": {
-          "name": "Sarah Johnson",
-          "role": "Directrice des Opérations"
+          "name": "Khalidou Sow BA",
+          "role": "Directeur des Opérations"
         },
         "service": {
-          "name": "Mike Wilson",
+          "name": "Mariama Ndiaye",
           "role": "Responsable Service Client"
         }
       }
@@ -124,19 +124,18 @@
       "title": "Nous Contacter",
       "email": {
         "title": "Email",
-        "support": "support@kapitalstore.com",
-        "sales": "ventes@kapitalstore.com"
+        "support": "support@kapitalstores.shop",
+        "sales": "sales@kapitalstores.shop"
       },
       "phone": {
-        "title": "Téléphone",
-        "number": "+1 (555) 123-4567",
-        "hours": "Lun-Ven 9h à 18h"
+        "title": "Phone",
+        "number": "+221 77 240 50 63",
+        "hours": "Mon-Fri 9am to 6pm"
       },
       "address": {
-        "title": "Adresse",
-        "line1": "123 Commerce Street",
-        "line2": "San Francisco, CA 94103",
-        "line3": "États-Unis"
+        "title": "Address",
+        "line2": "Fass Delorme, Dakar",
+        "line3": "Sénégal"
       }
     },
     "map": "La carte sera affichée ici"
@@ -151,6 +150,20 @@
     "dashboard": "Tableau de bord"
   },
   "categories": {
+    "title": "Catégories",
+    "name": "Nom de la catégorie",
+    "slug": "Slug",
+    "created_at": "Créé le",
+    "actions": "Actions",
+    "add": "Ajouter une catégorie",
+    "update": "Mettre à jour la catégorie",
+    "delete_confirm": "Êtes-vous sûr de vouloir supprimer cette catégorie ?",
+    "delete_success": "Catégorie supprimée avec succès",
+    "delete_error": "Erreur lors de la suppression de la catégorie",
+    "create_success": "Catégorie créée avec succès",
+    "update_success": "Catégorie mise à jour avec succès",
+    "fetch_error": "Erreur lors du chargement des catégories",
+    "no_categories": "Aucune catégorie trouvée",
     "electronics": "Électronique",
     "clothing": "Vêtements",
     "home": "Maison",
@@ -182,7 +195,11 @@
       "priceLow": "Prix croissant",
       "priceHigh": "Prix décroissant",
       "name": "Nom"
-    }
+    },
+    "images": "Images du produit",
+    "addImage": "Ajouter une image",
+    "noImage": "Aucune image",
+    "error": "Erreur lors de l'enregistrement du produit"
   },
   "cart": {
     "empty": "Votre panier est vide",
@@ -218,5 +235,437 @@
     "registrationSuccess": "Inscription réussie ! Veuillez vous connecter.",
     "registrationError": "Échec de la création du compte",
     "googleSignUpError": "Échec de l'inscription avec Google"
+  },
+  "iptv": {
+    "title": "Services IPTV",
+    "subtitle": "Profitez de vos chaînes préférées en streaming",
+    "hero": {
+      "title": "Expérience IPTV Premium",
+      "description": "Profitez de milliers de chaînes et de contenus VOD en qualité HD sur tous vos appareils"
+    },
+    "features": {
+      "title": "Pourquoi choisir notre service IPTV ?",
+      "subtitle": "Découvrez le meilleur du divertissement avec nos fonctionnalités premium",
+      "global": {
+        "title": "Couverture mondiale",
+        "description": "Accédez à des chaînes du monde entier avec notre couverture internationale étendue"
+      },
+      "vod": {
+        "title": "Vidéo à la demande",
+        "description": "Profitez de milliers de films et d'émissions de télévision à la demande"
+      },
+      "availability": {
+        "title": "Disponibilité 24/7",
+        "description": "Regardez votre contenu préféré à tout moment, n'importe où avec notre service fiable"
+      },
+      "devices": {
+        "title": "Support multi-appareils",
+        "description": "Diffusez sur n'importe quel appareil avec nos applications dédiées et notre lecteur web"
+      }
+    },
+    "devices": {
+      "tv": "Smart TV",
+      "smartphone": "Smartphone",
+      "computer": "Ordinateur",
+      "tablet": "Tablette"
+    },
+    "plans": {
+      "title": "Choisissez votre forfait",
+      "subtitle": "Sélectionnez le forfait parfait pour vos besoins en divertissement",
+      "popular": "Populaire",
+      "select": "Choisir",
+      "duration": {
+        "monthly": "mois",
+        "yearly": "an"
+      }
+    },
+    "faq": {
+      "title": "Questions fréquemment posées",
+      "subtitle": "Trouvez des réponses aux questions courantes sur notre service IPTV",
+      "devices": {
+        "question": "Quels appareils sont pris en charge ?",
+        "answer": "Notre service IPTV fonctionne sur les Smart TV, les appareils Android, iOS, les ordinateurs et plus encore via nos applications dédiées et notre lecteur web."
+      },
+      "legal": {
+        "question": "Le service est-il légal ?",
+        "answer": "Nous opérons en conformité avec toutes les lois et réglementations applicables, fournissant du contenu sous licence via des partenariats officiels."
+      },
+      "refund": {
+        "question": "Quelle est votre politique de remboursement ?",
+        "answer": "Nous offrons une garantie de remboursement de 7 jours si vous n'êtes pas satisfait de notre service."
+      },
+      "support": {
+        "question": "Offrez-vous un support technique ?",
+        "answer": "Oui, nous fournissons un support technique 24/7 via chat en direct, email et téléphone."
+      }
+    },
+    "checkout": {
+      "title": "Finaliser votre commande IPTV",
+      "planDetails": "Détails du forfait",
+      "duration": "Durée",
+      "price": "Prix",
+      "paymentMethod": "Méthode de paiement",
+      "confirmOrder": "Confirmer la commande",
+      "terms": "J'accepte les conditions d'utilisation du service IPTV"
+    }
+  },
+  "orders": {
+    "title": "Commandes",
+    "manage_customer_orders": "Gérer les commandes des clients",
+    "search_orders": "Rechercher des commandes...",
+    "order_id": "ID de commande",
+    "customer": "Client",
+    "date": "Date",
+    "total": "Total",
+    "status": "Statut",
+    "actions": "Actions",
+    "pending": "En attente",
+    "processing": "En traitement",
+    "shipped": "Expédiée",
+    "delivered": "Livrée",
+    "cancelled": "Annulée",
+    "order_details": "Détails de la commande",
+    "customer_information": "Informations client",
+    "name": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "city": "Ville",
+    "state": "État/Région",
+    "zip_code": "Code postal",
+    "order_information": "Informations de commande",
+    "customer_location": "Localisation du client",
+    "lat": "Latitude",
+    "lng": "Longitude",
+    "scan_to_open_in_google_maps": "Scanner pour ouvrir dans Google Maps",
+    "no_geolocation_data_available": "Aucune donnée de géolocalisation disponible",
+    "order_items": "Articles commandés",
+    "product": "Produit",
+    "price": "Prix",
+    "quantity": "Quantité",
+    "fetch_error": "Erreur lors du chargement des commandes",
+    "update_success": "Statut de la commande mis à jour avec succès",
+    "update_error": "Erreur lors de la mise à jour du statut de la commande"
+  },
+  "errors": {
+    "general": "Une erreur est survenue",
+    "network": "Erreur de connexion",
+    "notFound": "Page non trouvée",
+    "unauthorized": "Accès non autorisé",
+    "serverError": "Erreur serveur",
+    "validation": "Veuillez vérifier vos informations",
+    "payment": "Erreur de paiement",
+    "checkout": "Erreur lors de la finalisation de la commande"
+  },
+  "success": {
+    "orderPlaced": "Commande passée avec succès",
+    "paymentProcessed": "Paiement traité avec succès",
+    "profileUpdated": "Profil mis à jour",
+    "passwordChanged": "Mot de passe modifié",
+    "itemAdded": "Article ajouté au panier",
+    "itemRemoved": "Article retiré du panier"
+  },
+  "checkout": {
+    "title": "Validation de commande",
+    "contact": {
+      "title": "Informations de contact",
+      "email": "Email",
+      "phone": "Téléphone"
+    },
+    "shipping": {
+      "title": "Adresse de livraison",
+      "fullName": "Nom complet",
+      "streetAddress": "Adresse",
+      "city": "Ville",
+      "state": "État/Région",
+      "zipCode": "Code postal"
+    },
+    "payment": {
+      "title": "Informations de paiement",
+      "cardNumber": "Numéro de carte",
+      "expiryDate": "Date d'expiration",
+      "cvv": "CVV",
+      "cardPlaceholder": "1234 5678 9012 3456"
+    },
+    "location": {
+      "title": "Sélectionnez votre adresse",
+      "instructions": "Cliquez sur la carte pour sélectionner votre adresse de livraison",
+      "currentLocation": "Utiliser ma position actuelle",
+      "error": "Impossible d'obtenir votre position",
+      "required": "Veuillez sélectionner une adresse de livraison",
+      "coordinates": {
+        "latitude": "Latitude",
+        "longitude": "Longitude"
+      }
+    },
+    "order": {
+      "title": "Récapitulatif de la commande",
+      "subtotal": "Sous-total",
+      "shipping": "Livraison",
+      "total": "Total",
+      "placeOrder": "Passer la commande",
+      "processing": "Traitement en cours...",
+      "success": "Commande passée avec succès !",
+      "error": "Échec du traitement du paiement. Veuillez réessayer."
+    }
+  },
+  "admin": {
+    "title": "Panneau d'administration",
+    "nav": {
+      "orders": "Commandes",
+      "products": "Produits",
+      "users": "Utilisateurs",
+      "backToSite": "Retour au site"
+    },
+    "currency": {
+      "code": "XOF",
+      "symbol": "FCFA",
+      "format": "{{value}} FCFA"
+    },
+    "orders": {
+      "title": "Gestion des commandes",
+      "fetchError": "Erreur lors du chargement des commandes",
+      "updateError": "Erreur lors de la mise à jour du statut",
+      "noLocation": "Aucune position géographique disponible",
+      "table": {
+        "orderId": "N° Commande",
+        "customer": "Client",
+        "date": "Date",
+        "total": "Total",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "status": {
+        "pending": "En attente",
+        "processing": "En cours",
+        "completed": "Terminée",
+        "cancelled": "Annulée"
+      },
+      "details": {
+        "title": "Détails de la commande",
+        "select": "Sélectionnez une commande pour voir les détails",
+        "customer": "Client",
+        "shipping": "Adresse de livraison",
+        "location": "Position du client",
+        "date": "Date de commande",
+        "total": "Montant total",
+        "items": "Articles",
+        "status": "Statut de la commande"
+      }
+    },
+    "dashboard": {
+      "title": "Tableau de bord",
+      "totalOrders": "Total des commandes",
+      "totalRevenue": "Chiffre d'affaires",
+      "totalProducts": "Total des produits",
+      "totalUsers": "Total des utilisateurs",
+      "recentActivity": "Activité récente",
+      "completedOrders": "Commandes complétées",
+      "last30Days": "30 derniers jours",
+      "fetchError": "Erreur lors du chargement des statistiques"
+    },
+    "products": {
+      "title": "Gestion des produits",
+      "addProduct": "Ajouter un produit",
+      "name": "Nom",
+      "price": "Prix",
+      "stock": "Stock",
+      "status": "Statut",
+      "actions": "Actions",
+      "edit": "Modifier",
+      "activate": "Activer",
+      "deactivate": "Désactiver",
+      "fetchError": "Erreur lors du chargement des produits",
+      "updateError": "Erreur lors de la mise à jour du produit",
+      "statuses": {
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "images": "Images du produit",
+      "image": "Image",
+      "imageUrlPlaceholder": "URL de l'image",
+      "invalidImageUrl": "L'URL de l'image n'est pas valide",
+      "removeImage": "Supprimer l'image",
+      "preview": "Aperçu"
+    },
+    "sidebar": {
+      "overview": "Aperçu",
+      "dashboard": "Tableau de bord",
+      "analytics": "Statistiques",
+      "storeManagement": "Gestion de la boutique",
+      "storeOverview": "Vue d'ensemble",
+      "products": "Produits",
+      "categories": "Catégories",
+      "orders": "Commandes",
+      "inventory": "Inventaire",
+      "iptvPlans": "Forfaits IPTV",
+      "customerManagement": "Gestion des clients",
+      "customers": "Clients",
+      "customerGroups": "Groupes de clients",
+      "payments": "Paiements",
+      "analyticsReports": "Analyses & Rapports",
+      "salesReports": "Rapports de ventes",
+      "customerAnalytics": "Analyse clients",
+      "inventoryReports": "Rapports d'inventaire",
+      "system": "Système",
+      "notifications": "Notifications",
+      "settings": "Paramètres"
+    },
+    "users": {
+      "title": "Gestion des utilisateurs",
+      "name": "Nom",
+      "email": "Email",
+      "role": "Rôle",
+      "actions": "Actions",
+      "makeAdmin": "Rendre administrateur",
+      "makeUser": "Rendre utilisateur",
+      "fetchError": "Erreur lors du chargement des utilisateurs",
+      "updateError": "Erreur lors de la mise à jour du rôle",
+      "roles": {
+        "admin": "Administrateur",
+        "user": "Utilisateur"
+      }
+    }
+  },
+  "store": {
+    "overview": {
+      "title": "Vue d'ensemble de la boutique",
+      "description": "Surveillez les performances et l'inventaire de votre boutique",
+      "totalProducts": { "label": "Total des produits" },
+      "lowStockProducts": { "label": "produits en stock faible", "title": "Produits en stock faible" },
+      "totalOrders": { "label": "Total des commandes" },
+      "newOrdersToday": { "label": "nouvelles commandes aujourd'hui" },
+      "totalRevenue": { "label": "Chiffre d'affaires total" },
+      "vsLastMonth": "par rapport au mois dernier",
+      "avgOrderValue": { "label": "Valeur moyenne de commande" },
+      "recentOrders": {
+        "title": "Commandes récentes",
+        "table": {
+          "orderId": "N° Commande",
+          "customer": "Client",
+          "amount": "Montant",
+          "status": "Statut",
+          "date": "Date"
+        }
+      },
+      "lowStockAlert": "Alerte stock faible"
+    }
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bienvenue sur votre tableau de bord administrateur",
+    "total_orders": "Total des commandes",
+    "total_revenue": "Revenu total",
+    "total_customers": "Total des clients",
+    "total_products": "Total des produits",
+    "from_last_month": "par rapport au mois dernier",
+    "low_stock": "articles en stock faible",
+    "sales_overview": "Aperçu des ventes",
+    "last_7_days": "7 derniers jours",
+    "last_30_days": "30 derniers jours",
+    "last_90_days": "90 derniers jours",
+    "recent_orders": "Commandes récentes",
+    "view_all": "Voir tout",
+    "order_id": "ID de commande",
+    "customer": "Client",
+    "amount": "Montant",
+    "status": "Statut",
+    "date": "Date",
+    "top_products": "Meilleurs produits",
+    "product_name": "Nom du produit",
+    "inventory": "Inventaire",
+    "price": "Prix",
+    "fetch_error": "Erreur lors du chargement des données du tableau de bord",
+    "low_stock_products": "Produits en stock faible"
+  },
+  "products": {
+    "title": "Produits",
+    "manage_inventory": "Gérer votre inventaire de produits",
+    "search_placeholder": "Rechercher des produits...",
+    "add_product": "Ajouter un produit",
+    "edit_product": "Modifier le produit",
+    "delete_confirm": "Êtes-vous sûr de vouloir supprimer ce produit ?",
+    "delete_success": "Produit supprimé avec succès",
+    "delete_error": "Erreur lors de la suppression du produit",
+    "create_success": "Produit créé avec succès",
+    "update_success": "Produit mis à jour avec succès",
+    "fetch_error": "Erreur lors du chargement des produits",
+    "name": "Nom du produit",
+    "description": "Description",
+    "price": "Prix",
+    "inventory": "Inventaire",
+    "category": "Catégorie",
+    "status": "Statut",
+    "actions": "Actions",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "no_products": "Aucun produit trouvé",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "select_category": "Sélectionner une catégorie",
+    "image_url": "URL de l'image principale",
+    "additional_images": "Images supplémentaires",
+    "image_url1": "URL de l'image 1",
+    "image_url2": "URL de l'image 2",
+    "image_url3": "URL de l'image 3",
+    "image_url4": "URL de l'image 4"
+  },
+  "users": {
+    "management": {
+      "title": "Gestion des utilisateurs",
+      "name": "Nom",
+      "email": "Email",
+      "role": "Rôle",
+      "actions": "Actions",
+      "makeAdmin": "Rendre admin",
+      "makeUser": "Rendre utilisateur",
+      "fetchError": "Erreur lors du chargement des utilisateurs",
+      "updateError": "Erreur lors de la mise à jour du rôle",
+      "roles": {
+        "admin": "Administrateur",
+        "user": "Utilisateur"
+      }
+    }
+  },
+  "analytics": {
+    "overview": {
+      "title": "Statistiques avancées",
+      "description": "Analysez les performances de votre boutique avec des graphiques détaillés",
+      "totalOrders": { "label": "Total des commandes" },
+      "totalRevenue": { "label": "Chiffre d'affaires total" },
+      "growth": "Croissance",
+      "vsLastMonth": "par rapport au mois dernier"
+    },
+    "revenue": { "label": "Revenu" },
+    "orders": { "label": "Commandes" },
+    "customers": { "label": "Clients" },
+    "vsLastMonth": "par rapport au mois dernier",
+    "revenueTrend": { "title": "Tendance du revenu" },
+    "revenueChart": { "placeholder": "Le graphique du revenu apparaîtra ici" },
+    "ordersOverview": { "title": "Aperçu des commandes" },
+    "ordersChart": { "placeholder": "Le graphique des commandes apparaîtra ici" }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "manage": "Gérez vos notifications et alertes",
+    "order_received_title": "Nouvelle commande reçue",
+    "order_received_body": "La commande #{{orderId}} a été passée",
+    "low_stock_title": "Alerte de stock bas",
+    "low_stock_body": "Le produit \"{{productName}}\" est en stock faible",
+    "payment_failed_title": "Paiement échoué",
+    "payment_failed_body": "Le paiement pour la commande #{{orderId}} a échoué",
+    "settings": {
+      "order": "Notifications de commande",
+      "order_desc": "Recevez une notification lors de nouvelles commandes",
+      "inventory": "Alertes d'inventaire",
+      "inventory_desc": "Recevez des alertes pour les articles en stock faible",
+      "payment": "Notifications de paiement",
+      "payment_desc": "Recevez des notifications sur les changements de statut de paiement",
+      "system": "Alertes système",
+      "system_desc": "Recevez des notifications système importantes"
+    },
+    "no_notifications": "Aucune notification",
+    "all_caught_up": "Vous avez lu toutes les notifications ",
+    "clear_all": "Tout effacer"
   }
 }

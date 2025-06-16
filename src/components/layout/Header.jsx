@@ -95,7 +95,7 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center text-xl font-bold text-blue-800 md:text-2xl">
             <ShoppingCart className="mr-2" />
-            <span>Kapital Store</span>
+            <span>Kapital Stores</span>
           </Link>
 
           {/* Desktop Navigation */}

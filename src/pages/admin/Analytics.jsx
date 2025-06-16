@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LineChart, BarChart, PieChart, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { useTranslation } from 'react-i18next';
 
 const Analytics = () => {
+  const { t, i18n } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState({
     revenue: { current: 0, previous: 0 },
@@ -80,8 +82,8 @@ const Analytics = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Analytics Overview</h1>
-        <p className="text-gray-600">Track your business performance and growth</p>
+        <h1 className="text-2xl font-bold">{t('admin.sidebar.analytics')}</h1>
+        <p className="text-gray-600">{t('analytics.overview.description')}</p>
       </div>
 
       {/* Key Metrics */}
@@ -94,7 +96,7 @@ const Analytics = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Revenue</p>
+              <p className="text-sm text-gray-600">{t('analytics.revenue.label')}</p>
               <h3 className="text-2xl font-bold">${data.revenue.current.toFixed(2)}</h3>
             </div>
             <div className="rounded-full bg-blue-100 p-3">
@@ -114,7 +116,7 @@ const Analytics = () => {
             }`}>
               {Math.abs(calculateGrowth(data.revenue.current, data.revenue.previous)).toFixed(1)}%
             </span>
-            <span className="ml-1 text-sm text-gray-500">vs last month</span>
+            <span className="ml-1 text-sm text-gray-500">{t('analytics.vsLastMonth')}</span>
           </div>
         </motion.div>
 
@@ -127,7 +129,7 @@ const Analytics = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Orders</p>
+              <p className="text-sm text-gray-600">{t('analytics.orders.label')}</p>
               <h3 className="text-2xl font-bold">{data.orders.current}</h3>
             </div>
             <div className="rounded-full bg-purple-100 p-3">
@@ -147,7 +149,7 @@ const Analytics = () => {
             }`}>
               {Math.abs(calculateGrowth(data.orders.current, data.orders.previous)).toFixed(1)}%
             </span>
-            <span className="ml-1 text-sm text-gray-500">vs last month</span>
+            <span className="ml-1 text-sm text-gray-500">{t('analytics.vsLastMonth')}</span>
           </div>
         </motion.div>
 
@@ -160,7 +162,7 @@ const Analytics = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Customers</p>
+              <p className="text-sm text-gray-600">{t('analytics.customers.label')}</p>
               <h3 className="text-2xl font-bold">{data.customers.current}</h3>
             </div>
             <div className="rounded-full bg-green-100 p-3">
@@ -180,7 +182,7 @@ const Analytics = () => {
             }`}>
               {Math.abs(calculateGrowth(data.customers.current, data.customers.previous)).toFixed(1)}%
             </span>
-            <span className="ml-1 text-sm text-gray-500">vs last month</span>
+            <span className="ml-1 text-sm text-gray-500">{t('analytics.vsLastMonth')}</span>
           </div>
         </motion.div>
       </div>
@@ -194,11 +196,11 @@ const Analytics = () => {
           transition={{ delay: 0.3 }}
           className="rounded-lg bg-white p-6 shadow-md"
         >
-          <h3 className="mb-4 text-lg font-medium">Revenue Trend</h3>
+          <h3 className="mb-4 text-lg font-medium">{t('analytics.revenueTrend.title')}</h3>
           <div className="h-64 w-full">
             {/* Add chart component here */}
             <div className="flex h-full items-center justify-center text-gray-500">
-              Revenue chart will be displayed here
+              {t('analytics.revenueChart.placeholder')}
             </div>
           </div>
         </motion.div>
@@ -210,11 +212,11 @@ const Analytics = () => {
           transition={{ delay: 0.4 }}
           className="rounded-lg bg-white p-6 shadow-md"
         >
-          <h3 className="mb-4 text-lg font-medium">Orders Overview</h3>
+          <h3 className="mb-4 text-lg font-medium">{t('analytics.ordersOverview.title')}</h3>
           <div className="h-64 w-full">
             {/* Add chart component here */}
             <div className="flex h-full items-center justify-center text-gray-500">
-              Orders chart will be displayed here
+              {t('analytics.ordersChart.placeholder')}
             </div>
           </div>
         </motion.div>

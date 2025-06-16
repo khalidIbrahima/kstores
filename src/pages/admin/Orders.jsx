@@ -3,8 +3,12 @@ import { motion } from 'framer-motion';
 import { Search, Eye, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
+import OrderLocationMap from '../../components/OrderLocationMap';
+import QRCode from 'react-qr-code';
+import { useTranslation } from 'react-i18next';
 
 const Orders = () => {
+  const { t, i18n } = useTranslation();
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -74,14 +78,14 @@ const Orders = () => {
     <div className="container mx-auto px-4 py-12">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Orders</h1>
-          <p className="text-gray-600">Manage customer orders</p>
+          <h1 className="text-3xl font-bold">{t('orders.title')}</h1>
+          <p className="text-gray-600">{t('orders.manage_customer_orders')}</p>
         </div>
         
         <div className="relative">
           <input
             type="text"
-            placeholder="Search orders..."
+            placeholder={t('search_orders')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-64 rounded-md border border-gray-300 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
@@ -100,22 +104,22 @@ const Orders = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Order ID
+                  {t('order_id')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Customer
+                  {t('customer')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Date
+                  {t('date')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Total
+                  {t('total')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Status
+                  {t('status')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Actions
+                  {t('actions')}
                 </th>
               </tr>
             </thead>
@@ -132,14 +136,14 @@ const Orders = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900">
-                      {order.profiles?.full_name || 'Unknown Customer'}
+                      {order.shipping_address?.name || 'Unknown Customer'}
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                     {new Date(order.created_at).toLocaleDateString()}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-                    ${order.total.toFixed(2)}
+                    {order.total.toFixed(2) } FCFA
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
                     <select
@@ -147,11 +151,11 @@ const Orders = () => {
                       onChange={(e) => handleStatusChange(order.id, e.target.value)}
                       className="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                     >
-                      <option value="pending">Pending</option>
-                      <option value="processing">Processing</option>
-                      <option value="shipped">Shipped</option>
-                      <option value="delivered">Delivered</option>
-                      <option value="cancelled">Cancelled</option>
+                      <option value="pending">{t('pending')}</option>
+                      <option value="processing">{t('processing')}</option>
+                      <option value="shipped">{t('shipped')}</option>
+                      <option value="delivered">{t('delivered')}</option>
+                      <option value="cancelled">{t('cancelled')}</option>
                     </select>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
@@ -174,87 +178,115 @@ const Orders = () => {
 
       {/* Order Details Modal */}
       {showModal && selectedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black bg-opacity-50 p-4">
-          <div className="relative w-full max-w-4xl rounded-lg bg-white p-8 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/40 overflow-y-auto p-4">
+          <div className="relative w-full max-w-4xl rounded-2xl bg-white p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
             <button
               onClick={() => {
                 setShowModal(false);
                 setSelectedOrder(null);
               }}
-              className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
+              className="absolute right-4 top-4 text-gray-400 hover:text-gray-700 text-2xl font-bold focus:outline-none"
+              aria-label="Close"
             >
-              <X className="h-6 w-6" />
+              &times;
             </button>
-            
-            <h2 className="mb-6 text-2xl font-bold">Order Details</h2>
-            
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div>
-                <h3 className="mb-2 text-lg font-medium">Customer Information</h3>
-                <div className="rounded-lg bg-gray-50 p-4">
-                  <p><strong>Name:</strong> {selectedOrder.profiles?.full_name || 'Unknown Customer'}</p>
+            <h2 className="mb-6 text-2xl font-bold text-center text-gray-900">{t('order_details')}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Infos client & commande */}
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-1">{t('customer_information')}</h3>
+                  <div className="rounded-lg bg-gray-50 p-4 space-y-1">
+                    <p><strong>{t('name')}:</strong> {selectedOrder.profiles?.full_name || 'Unknown Customer'}</p>
+                    {selectedOrder.shipping_address?.email && (
+                      <p><strong>{t('email')}:</strong> {selectedOrder.shipping_address.email}</p>
+                    )}
+                    {selectedOrder.shipping_address?.phone && (
+                      <p><strong>{t('phone')}:</strong> {selectedOrder.shipping_address.phone}</p>
+                    )}
+                    {selectedOrder.shipping_address?.address && (
+                      <p><strong>{t('address')}:</strong> {selectedOrder.shipping_address.address}</p>
+                    )}
+                    {selectedOrder.shipping_address?.city && (
+                      <p><strong>{t('city')}:</strong> {selectedOrder.shipping_address.city}</p>
+                    )}
+                    {selectedOrder.shipping_address?.state && (
+                      <p><strong>{t('state')}:</strong> {selectedOrder.shipping_address.state}</p>
+                    )}
+                    {selectedOrder.shipping_address?.zip_code && (
+                      <p><strong>{t('zip_code')}:</strong> {selectedOrder.shipping_address.zip_code}</p>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-1">{t('order_information')}</h3>
+                  <div className="rounded-lg bg-gray-50 p-4 space-y-1">
+                    <p><strong>{t('order_id')}:</strong> {selectedOrder.id}</p>
+                    <p><strong>{t('date')}:</strong> {new Date(selectedOrder.created_at).toLocaleString()}</p>
+                    <p><strong>{t('status')}:</strong> {selectedOrder.status}</p>
+                    <p><strong>{t('total')}:</strong> {selectedOrder.total ? `${selectedOrder.total.toLocaleString()} FCFA` : ''}</p>
+                  </div>
                 </div>
               </div>
-              
-              <div>
-                <h3 className="mb-2 text-lg font-medium">Order Information</h3>
-                <div className="rounded-lg bg-gray-50 p-4">
-                  <p><strong>Order ID:</strong> {selectedOrder.id}</p>
-                  <p><strong>Date:</strong> {new Date(selectedOrder.created_at).toLocaleString()}</p>
-                  <p><strong>Status:</strong> {selectedOrder.status}</p>
-                  <p><strong>Total:</strong> ${selectedOrder.total.toFixed(2)}</p>
+              {/* Carte de localisation */}
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-2">{t('customer_location')}</h3>
+                  {(() => {
+                    let geo = selectedOrder.userGeolocation;
+                    if (typeof geo === 'string') {
+                      try {
+                        geo = JSON.parse(geo);
+                      } catch (e) {
+                        geo = null;
+                      }
+                    }
+                    if (geo && geo.latitude && geo.longitude) {
+                      return <>
+                        <OrderLocationMap
+                          userGeolocation={geo}
+                          userName={selectedOrder.profiles?.full_name || 'Unknown Customer'}
+                        />
+                        <div className="mt-2 text-xs text-gray-500">
+                          <span>{t('lat')}: {geo.latitude}, {t('lng')}: {geo.longitude}</span>
+                        </div>
+                        <div className="mt-4 flex flex-col items-center gap-2">
+                          <span className="text-xs text-gray-600">{t('scan_to_open_in_google_maps')}</span>
+                          <QRCode value={`https://www.google.com/maps/search/?api=1&query=${geo.latitude},${geo.longitude}`} size={96} />
+                        </div>
+                      </>;
+                    } else {
+                      return <div className="text-sm text-gray-400">{t('no_geolocation_data_available')}</div>;
+                    }
+                  })()}
                 </div>
               </div>
             </div>
-
+            {/* Items de la commande */}
             <div className="mt-8">
-              <h3 className="mb-4 text-lg font-medium">Order Items</h3>
-              <div className="overflow-x-auto rounded-lg border border-gray-200">
+              <h3 className="mb-2 text-lg font-medium">{t('order_items')}</h3>
+              <div className="overflow-x-auto rounded-lg bg-gray-50 p-2">
                 <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                  <thead>
                     <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Product
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Price
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Quantity
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Total
-                      </th>
+                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">{t('product')}</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">{t('price')}</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">{t('quantity')}</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">{t('total')}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200 bg-white">
-                    {selectedOrder.order_items.map((item) => (
+                  <tbody className="divide-y divide-gray-200">
+                    {selectedOrder.order_items?.map((item) => (
                       <tr key={item.id}>
-                        <td className="whitespace-nowrap px-6 py-4">
-                          <div className="flex items-center">
-                            <div className="h-10 w-10 flex-shrink-0">
-                              <img
-                                className="h-10 w-10 rounded-full object-cover"
-                                src={item.products?.image_url}
-                                alt={item.products?.name}
-                              />
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">
-                                {item.products?.name || 'Unknown Product'}
-                              </div>
-                            </div>
-                          </div>
+                        <td className="flex items-center gap-2 px-4 py-2">
+                          {item.products?.image_url && (
+                            <img src={item.products.image_url} alt={item.products.name} className="h-8 w-8 rounded object-cover" />
+                          )}
+                          <span>{item.products?.name}</span>
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                          ${item.price.toFixed(2)}
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                          {item.quantity}
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-                          ${(item.price * item.quantity).toFixed(2)}
-                        </td>
+                        <td className="px-4 py-2">{item.price ? `${item.price.toLocaleString()} FCFA` : ''}</td>
+                        <td className="px-4 py-2">{item.quantity}</td>
+                        <td className="px-4 py-2 font-semibold">{item.price && item.quantity ? `${(item.price * item.quantity).toLocaleString()} FCFA` : ''}</td>
                       </tr>
                     ))}
                   </tbody>

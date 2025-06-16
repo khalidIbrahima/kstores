@@ -5,6 +5,8 @@ import { Star, ArrowLeft, ShoppingCart, Monitor, Gamepad, Cpu, ChevronLeft, Chev
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
+import { formatPrice } from '../utils/currency';
+import { Helmet } from 'react-helmet';
 
 const CategoryPage = () => {
   const { slug } = useParams();
@@ -57,7 +59,8 @@ const CategoryPage = () => {
               is_primary
             )
           `)
-          .eq('category_id', categoryData.id);
+          .eq('category_id', categoryData.id)
+          .eq('isActive', true);
         
         if (productsError) throw productsError;
         
@@ -128,6 +131,15 @@ const CategoryPage = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>{category?.name ? `${category.name} - KStores` : 'Catégorie - KStores'}</title>
+        <meta name="description" content={category?.description?.slice(0, 160) || 'Catégorie de produits KStores'} />
+        <meta property="og:title" content={category?.name ? `${category.name} - KStores` : 'Catégorie - KStores'} />
+        <meta property="og:description" content={category?.description?.slice(0, 160) || 'Catégorie de produits KStores'} />
+        <meta property="og:image" content={category?.hero_image || '/logo192.png'} />
+        <meta property="og:url" content={window.location.href} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
       {/* Hero Section for Gaming Category */}
       {isGamingCategory && heroImages.length > 0 && (
         <div className="relative overflow-hidden bg-gray-900 py-24 text-white">
@@ -265,7 +277,7 @@ const CategoryPage = () => {
                     </div>
                     <div className="flex items-center justify-between">
                       <p className={`text-xl font-bold ${isGamingCategory ? 'text-purple-600' : 'text-blue-700'}`}>
-                        {t('common.currency')} {product.price.toFixed(2)}
+                        {formatPrice(product.price)}
                       </p>
                       <button
                         onClick={(e) => {

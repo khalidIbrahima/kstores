@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Package, ShoppingCart, Users, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { useTranslation } from 'react-i18next';
 
 const Store = () => {
+  const { t, i18n } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [storeData, setStoreData] = useState({
     totalProducts: 0,
@@ -77,8 +79,8 @@ const Store = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Store Overview</h1>
-        <p className="text-gray-600">Monitor your store's performance and inventory</p>
+        <h1 className="text-2xl font-bold">{t('store.overview.title')}</h1>
+        <p className="text-gray-600">{t('store.overview.description')}</p>
       </div>
 
       {/* Key Metrics */}
@@ -91,7 +93,7 @@ const Store = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Products</p>
+              <p className="text-sm text-gray-600">{t('store.overview.totalProducts.label')}</p>
               <h3 className="text-2xl font-bold">{storeData.totalProducts}</h3>
             </div>
             <div className="rounded-full bg-blue-100 p-3">
@@ -99,7 +101,7 @@ const Store = () => {
             </div>
           </div>
           <p className="mt-2 text-sm text-gray-500">
-            {storeData.lowStockProducts.length} products low in stock
+            {storeData.lowStockProducts.length} {t('store.overview.lowStockProducts.label')}
           </p>
         </motion.div>
 
@@ -112,7 +114,7 @@ const Store = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Orders</p>
+              <p className="text-sm text-gray-600">{t('store.overview.totalOrders.label')}</p>
               <h3 className="text-2xl font-bold">{storeData.totalOrders}</h3>
             </div>
             <div className="rounded-full bg-green-100 p-3">
@@ -120,7 +122,7 @@ const Store = () => {
             </div>
           </div>
           <p className="mt-2 text-sm text-gray-500">
-            {storeData.recentOrders.length} new orders today
+            {storeData.recentOrders.length} {t('store.overview.newOrdersToday.label')}
           </p>
         </motion.div>
 
@@ -133,7 +135,7 @@ const Store = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Revenue</p>
+              <p className="text-sm text-gray-600">{t('store.overview.totalRevenue.label')}</p>
               <h3 className="text-2xl font-bold">${storeData.totalRevenue.toFixed(2)}</h3>
             </div>
             <div className="rounded-full bg-purple-100 p-3">
@@ -143,7 +145,7 @@ const Store = () => {
           <div className="mt-2 flex items-center text-sm">
             <TrendingUp className="mr-1 h-4 w-4 text-green-500" />
             <span className="text-green-500">12%</span>
-            <span className="ml-1 text-gray-500">vs last month</span>
+            <span className="ml-1 text-gray-500">{t('store.overview.vsLastMonth')}</span>
           </div>
         </motion.div>
 
@@ -156,7 +158,7 @@ const Store = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Avg. Order Value</p>
+              <p className="text-sm text-gray-600">{t('store.overview.avgOrderValue.label')}</p>
               <h3 className="text-2xl font-bold">
                 ${storeData.totalOrders > 0 
                   ? (storeData.totalRevenue / storeData.totalOrders).toFixed(2)
@@ -171,7 +173,7 @@ const Store = () => {
           <div className="mt-2 flex items-center text-sm">
             <TrendingDown className="mr-1 h-4 w-4 text-red-500" />
             <span className="text-red-500">3%</span>
-            <span className="ml-1 text-gray-500">vs last month</span>
+            <span className="ml-1 text-gray-500">{t('store.overview.vsLastMonth')}</span>
           </div>
         </motion.div>
       </div>
@@ -183,25 +185,25 @@ const Store = () => {
         transition={{ delay: 0.4 }}
         className="rounded-lg bg-white p-6 shadow-md"
       >
-        <h2 className="mb-4 text-lg font-medium">Recent Orders</h2>
+        <h2 className="mb-4 text-lg font-medium">{t('store.overview.recentOrders.title')}</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Order ID
+                  {t('store.overview.recentOrders.table.orderId')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Customer
+                  {t('store.overview.recentOrders.table.customer')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Amount
+                  {t('store.overview.recentOrders.table.amount')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Status
+                  {t('store.overview.recentOrders.table.status')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Date
+                  {t('store.overview.recentOrders.table.date')}
                 </th>
               </tr>
             </thead>
@@ -245,7 +247,7 @@ const Store = () => {
         transition={{ delay: 0.5 }}
         className="rounded-lg bg-white p-6 shadow-md"
       >
-        <h2 className="mb-4 text-lg font-medium">Low Stock Products</h2>
+        <h2 className="mb-4 text-lg font-medium">{t('store.overview.lowStockProducts.title')}</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {storeData.lowStockProducts.map((product) => (
             <div
@@ -263,7 +265,7 @@ const Store = () => {
                 <h3 className="font-medium text-gray-900">{product.name}</h3>
                 <p className="text-sm text-gray-500">Stock: {product.inventory}</p>
                 <p className="text-sm font-medium text-red-600">
-                  Low stock alert
+                  {t('store.overview.lowStockAlert')}
                 </p>
               </div>
             </div>

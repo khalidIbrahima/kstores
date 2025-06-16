@@ -38,59 +38,57 @@ const IPTVPage = () => {
         setPlans(data || []);
       } catch (error) {
         console.error('Error fetching plans:', error);
-        toast.error('Failed to load plans');
+        toast.error(t('errors.general'));
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchPlans();
-  }, []);
+  }, [t]);
 
   const handleChoosePlan = (plan) => {
     if (!user) {
-      // If user is not logged in, redirect to login page with return path
       navigate('/login', { 
         state: { 
           from: `/checkout?plan=${plan.id}`,
-          message: 'Please log in to subscribe to this plan'
+          message: t('auth.loginRequired')
         }
       });
       return;
     }
 
-    // If user is logged in, redirect to checkout with plan
     navigate(`/checkout?plan=${plan.id}`);
   };
   
   const features = [
     {
       icon: Globe,
-      title: 'Global Coverage',
-      description: 'Access channels from around the world with our extensive international coverage'
+      title: t('iptv.features.global.title'),
+      description: t('iptv.features.global.description')
     },
     {
       icon: PlayCircle,
-      title: 'Video on Demand',
-      description: 'Enjoy thousands of movies and TV shows on demand'
+      title: t('iptv.features.vod.title'),
+      description: t('iptv.features.vod.description')
     },
     {
       icon: Clock,
-      title: '24/7 Availability',
-      description: 'Watch your favorite content anytime, anywhere with our reliable service'
+      title: t('iptv.features.availability.title'),
+      description: t('iptv.features.availability.description')
     },
     {
       icon: Wifi,
-      title: 'Multi-device Support',
-      description: 'Stream on any device with our compatible apps and web player'
+      title: t('iptv.features.devices.title'),
+      description: t('iptv.features.devices.description')
     }
   ];
 
   const devices = [
-    { icon: Tv, name: 'Smart TV' },
-    { icon: Smartphone, name: 'Smartphone' },
-    { icon: Monitor, name: 'Computer' },
-    { icon: Tablet, name: 'Tablet' }
+    { icon: Tv, name: t('iptv.devices.tv') },
+    { icon: Smartphone, name: t('iptv.devices.smartphone') },
+    { icon: Monitor, name: t('iptv.devices.computer') },
+    { icon: Tablet, name: t('iptv.devices.tablet') }
   ];
 
   return (
@@ -106,10 +104,10 @@ const IPTVPage = () => {
             className="text-center"
           >
             <h1 className="mb-6 text-4xl font-bold leading-tight md:text-6xl">
-              Premium IPTV Experience
+              {t('iptv.hero.title')}
             </h1>
             <p className="mx-auto mb-8 max-w-2xl text-lg text-gray-300">
-              Enjoy thousands of channels and VOD content in HD quality on all your devices
+              {t('iptv.hero.description')}
             </p>
             <div className="flex justify-center space-x-4">
               {devices.map((device, index) => (
@@ -135,8 +133,8 @@ const IPTVPage = () => {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold">Why Choose Our IPTV Service?</h2>
-            <p className="text-gray-400">Experience the best in entertainment with our premium features</p>
+            <h2 className="mb-4 text-3xl font-bold">{t('iptv.features.title')}</h2>
+            <p className="text-gray-400">{t('iptv.features.subtitle')}</p>
           </div>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {features.map((feature, index) => (
@@ -162,8 +160,8 @@ const IPTVPage = () => {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold">Choose Your Plan</h2>
-            <p className="text-gray-400">Select the perfect plan for your entertainment needs</p>
+            <h2 className="mb-4 text-3xl font-bold">{t('iptv.plans.title')}</h2>
+            <p className="text-gray-400">{t('iptv.plans.subtitle')}</p>
           </div>
           {isLoading ? (
             <div className="flex justify-center py-12">
@@ -183,13 +181,13 @@ const IPTVPage = () => {
                 >
                   {plan.is_popular && (
                     <div className="absolute -top-4 right-4 rounded-full bg-purple-500 px-4 py-1 text-sm font-medium">
-                      Popular
+                      {t('iptv.plans.popular')}
                     </div>
                   )}
                   <h3 className="mb-4 text-2xl font-bold">{plan.name}</h3>
                   <div className="mb-6">
-                    <span className="text-4xl font-bold">${plan.price}</span>
-                    <span className="text-gray-400">/{plan.duration}</span>
+                    <span className="text-4xl font-bold">{t('common.currency')} {plan.price}</span>
+                    <span className="text-gray-400">/{t(`iptv.plans.duration.${plan.duration}`)}</span>
                   </div>
                   <ul className="mb-8 space-y-4">
                     {plan.features.map((feature) => (
@@ -207,7 +205,7 @@ const IPTVPage = () => {
                         : 'bg-blue-600 hover:bg-blue-700'
                     } px-6 py-3 font-medium transition-colors`}
                   >
-                    Choose {plan.name}
+                    {t('iptv.plans.select')} {plan.name}
                   </button>
                 </motion.div>
               ))}
@@ -220,26 +218,26 @@ const IPTVPage = () => {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold">Frequently Asked Questions</h2>
-            <p className="text-gray-400">Find answers to common questions about our IPTV service</p>
+            <h2 className="mb-4 text-3xl font-bold">{t('iptv.faq.title')}</h2>
+            <p className="text-gray-400">{t('iptv.faq.subtitle')}</p>
           </div>
           <div className="mx-auto max-w-3xl space-y-6">
             {[
               {
-                question: 'What devices are supported?',
-                answer: 'Our IPTV service works on Smart TVs, Android devices, iOS devices, computers, and more through our dedicated apps and web player.'
+                question: t('iptv.faq.devices.question'),
+                answer: t('iptv.faq.devices.answer')
               },
               {
-                question: 'Is the service legal?',
-                answer: 'We operate in compliance with all applicable laws and regulations, providing licensed content through official partnerships.'
+                question: t('iptv.faq.legal.question'),
+                answer: t('iptv.faq.legal.answer')
               },
               {
-                question: 'What\'s your refund policy?',
-                answer: 'We offer a 7-day money-back guarantee if you\'re not satisfied with our service.'
+                question: t('iptv.faq.refund.question'),
+                answer: t('iptv.faq.refund.answer')
               },
               {
-                question: 'Do you offer technical support?',
-                answer: 'Yes, we provide 24/7 technical support through live chat, email, and phone.'
+                question: t('iptv.faq.support.question'),
+                answer: t('iptv.faq.support.answer')
               }
             ].map((faq, index) => (
               <motion.div
@@ -249,7 +247,7 @@ const IPTVPage = () => {
                 transition={{ delay: index * 0.1 }}
                 className="rounded-lg bg-gray-800 p-6"
               >
-                <h3 className="mb-3 text-lg font-medium">{faq.question}</h3>
+                <h3 className="mb-2 text-xl font-semibold">{faq.question}</h3>
                 <p className="text-gray-400">{faq.answer}</p>
               </motion.div>
             ))}

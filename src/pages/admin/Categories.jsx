@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { PlusCircle, Pencil, Trash2, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 export default function Categories() {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newCategory, setNewCategory] = useState({ name: '', slug: '' });
@@ -23,7 +25,7 @@ export default function Categories() {
       if (error) throw error;
       setCategories(data);
     } catch (error) {
-      toast.error('Error loading categories');
+      toast.error(t('categories.fetch_error'));
       console.error('Error:', error);
     } finally {
       setLoading(false);
@@ -45,7 +47,7 @@ export default function Categories() {
           .eq('id', editingCategory.id);
 
         if (error) throw error;
-        toast.success('Category updated successfully');
+        toast.success(t('categories.update_success'));
       } else {
         const { error } = await supabase
           .from('categories')
@@ -55,7 +57,7 @@ export default function Categories() {
           }]);
 
         if (error) throw error;
-        toast.success('Category created successfully');
+        toast.success(t('categories.create_success'));
       }
 
       setNewCategory({ name: '', slug: '' });
@@ -70,7 +72,7 @@ export default function Categories() {
   }
 
   async function handleDelete(id) {
-    if (!window.confirm('Are you sure you want to delete this category?')) return;
+    if (!window.confirm(t('categories.delete_confirm'))) return;
 
     try {
       const { error } = await supabase
@@ -79,10 +81,10 @@ export default function Categories() {
         .eq('id', id);
 
       if (error) throw error;
-      toast.success('Category deleted successfully');
+      toast.success(t('categories.delete_success'));
       await fetchCategories();
     } catch (error) {
-      toast.error('Error deleting category');
+      toast.error(t('categories.delete_error'));
       console.error('Error:', error);
     }
   }
@@ -106,12 +108,12 @@ export default function Categories() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Categories</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('categories.title')}</h1>
         
         <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Category Name
+              {t('categories.name')}
             </label>
             <input
               type="text"
@@ -129,7 +131,7 @@ export default function Categories() {
 
           <div>
             <label htmlFor="slug" className="block text-sm font-medium text-gray-700">
-              Slug
+              {t('categories.slug')}
             </label>
             <input
               type="text"
@@ -147,7 +149,7 @@ export default function Categories() {
             className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             <PlusCircle className="h-4 w-4 mr-2" />
-            {editingCategory ? 'Update Category' : 'Add Category'}
+            {editingCategory ? t('categories.update') : t('categories.add')}
           </button>
         </form>
       </div>
@@ -158,16 +160,16 @@ export default function Categories() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
+                  {t('categories.name')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Slug
+                  {t('categories.slug')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Created At
+                  {t('categories.created_at')}
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
+                  {t('categories.actions')}
                 </th>
               </tr>
             </thead>
@@ -204,7 +206,7 @@ export default function Categories() {
                   <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
                     <div className="flex items-center justify-center text-gray-400">
                       <AlertCircle className="h-5 w-5 mr-2" />
-                      No categories found
+                      {t('categories.no_categories')}
                     </div>
                   </td>
                 </tr>

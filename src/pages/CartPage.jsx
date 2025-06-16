@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Trash2, ArrowLeft, Minus, Plus, X } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import { formatPrice } from '../utils/currency';
 
 const CartPage = () => {
   const { items, total, updateQuantity, removeItem, clearCart } = useCart();
@@ -83,7 +84,7 @@ const CartPage = () => {
                           </div>
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                          ${item.price.toFixed(2)}
+                          {formatPrice(item.price)}
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                           <div className="flex items-center">
@@ -105,7 +106,7 @@ const CartPage = () => {
                           </div>
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          {formatPrice(item.price * item.quantity)}
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                           <button
@@ -140,7 +141,7 @@ const CartPage = () => {
           <div className="space-y-4">
             <div className="flex justify-between">
               <span className="text-gray-600">Subtotal</span>
-              <span className="font-medium">${total.toFixed(2)}</span>
+              <span className="font-medium">{formatPrice(total)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Shipping</span>
@@ -153,7 +154,7 @@ const CartPage = () => {
             <div className="my-4 border-t border-gray-200 pt-4">
               <div className="flex justify-between">
                 <span className="text-lg font-bold">Total</span>
-                <span className="text-lg font-bold">${total.toFixed(2)}</span>
+                <span className="text-lg font-bold">{formatPrice(total)}</span>
               </div>
             </div>
           </div>

@@ -5,6 +5,8 @@ import { ChevronRight, Star, ShoppingBag, Truck, Shield } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
+import { formatPrice } from '../utils/currency';
+import { Helmet } from 'react-helmet';
 
 const HomePage = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -45,6 +47,7 @@ const HomePage = () => {
         const { data: products, error: productsError } = await supabase
           .from('products')
           .select('*, categories(*)')
+          .eq('isActive', true)
           .order('created_at', { ascending: false })
           .limit(8);
         
@@ -62,6 +65,15 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>{t('home.seo.title', 'Accueil - KStores')}</title>
+        <meta name="description" content={t('home.seo.description', 'Boutique en ligne, produits tech, livraison rapide, prix bas.')} />
+        <meta property="og:title" content={t('home.seo.title', 'Accueil - KStores')} />
+        <meta property="og:description" content={t('home.seo.description', 'Boutique en ligne, produits tech, livraison rapide, prix bas.')} />
+        <meta property="og:image" content="/logo192.png" />
+        <meta property="og:url" content={window.location.href} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 py-20 text-white md:py-32">
         <div className="absolute inset-0 overflow-hidden">
@@ -193,7 +205,7 @@ const HomePage = () => {
                       </div>
                       <div className="flex items-center justify-between">
                         <p className="text-xl font-bold text-blue-700">
-                          {t('common.currency')} {product.price.toFixed(2)}
+                          {formatPrice(product.price)}
                         </p>
                         <button
                           onClick={(e) => {

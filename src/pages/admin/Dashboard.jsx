@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { 
   ShoppingBag, 
   Users, 
@@ -16,6 +17,7 @@ import {
 import { supabase } from '../../lib/supabase';
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const [stats, setStats] = useState({
     totalOrders: 0,
     totalCustomers: 0,
@@ -139,8 +141,8 @@ const Dashboard = () => {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Kapital Store Dashboard</h1>
-        <p className="text-gray-600">Welcome to your admin dashboard</p>
+        <h1 className="text-3xl font-bold">{t('dashboard.title')}</h1>
+        <p className="text-gray-600">{t('dashboard.welcome')}</p>
       </div>
 
       {/* Stats Grid */}
@@ -152,7 +154,7 @@ const Dashboard = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Orders</p>
+              <p className="text-sm text-gray-600">{t('dashboard.total_orders')}</p>
               <h3 className="text-2xl font-bold">{stats.totalOrders}</h3>
             </div>
             <div className="rounded-full bg-blue-100 p-3">
@@ -161,7 +163,7 @@ const Dashboard = () => {
           </div>
           <div className={`mt-2 flex items-center text-sm ${stats.orderGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {stats.orderGrowth >= 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
-            <span>{Math.abs(stats.orderGrowth).toFixed(1)}% from last month</span>
+            <span>{Math.abs(stats.orderGrowth).toFixed(1)}% {t('dashboard.from_last_month')}</span>
           </div>
         </motion.div>
 
@@ -173,8 +175,8 @@ const Dashboard = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Revenue</p>
-              <h3 className="text-2xl font-bold">${stats.totalRevenue.toFixed(2)}</h3>
+              <p className="text-sm text-gray-600">{t('dashboard.total_revenue')}</p>
+              <h3 className="text-2xl font-bold">{stats.totalRevenue.toFixed(2)} FCFA</h3>
             </div>
             <div className="rounded-full bg-green-100 p-3">
               <DollarSign className="h-6 w-6 text-green-600" />
@@ -182,7 +184,7 @@ const Dashboard = () => {
           </div>
           <div className={`mt-2 flex items-center text-sm ${stats.revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {stats.revenueGrowth >= 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
-            <span>{Math.abs(stats.revenueGrowth).toFixed(1)}% from last month</span>
+            <span>{Math.abs(stats.revenueGrowth).toFixed(1)}% {t('dashboard.from_last_month')}</span>
           </div>
         </motion.div>
 
@@ -194,7 +196,7 @@ const Dashboard = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Customers</p>
+              <p className="text-sm text-gray-600">{t('dashboard.total_customers')}</p>
               <h3 className="text-2xl font-bold">{stats.totalCustomers}</h3>
             </div>
             <div className="rounded-full bg-purple-100 p-3">
@@ -203,7 +205,7 @@ const Dashboard = () => {
           </div>
           <div className="mt-2 flex items-center text-sm text-green-600">
             <ArrowUpRight className="h-4 w-4" />
-            <span>12.5% from last month</span>
+            <span>12.5% {t('dashboard.from_last_month')}</span>
           </div>
         </motion.div>
 
@@ -215,7 +217,7 @@ const Dashboard = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Products</p>
+              <p className="text-sm text-gray-600">{t('dashboard.total_products')}</p>
               <h3 className="text-2xl font-bold">{stats.totalProducts}</h3>
             </div>
             <div className="rounded-full bg-yellow-100 p-3">
@@ -224,7 +226,7 @@ const Dashboard = () => {
           </div>
           <div className="mt-2 flex items-center text-sm text-blue-600">
             <Package className="mr-1 h-4 w-4" />
-            <span>{stats.topProducts.filter(p => p.inventory < 10).length} low stock</span>
+            <span>{stats.topProducts.filter(p => p.inventory < 10).length} {t('dashboard.low_stock')}</span>
           </div>
         </motion.div>
       </div>
@@ -232,11 +234,11 @@ const Dashboard = () => {
       {/* Sales Chart */}
       <div className="mb-12 rounded-lg bg-white p-6 shadow-md">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold">Sales Overview</h2>
+          <h2 className="text-xl font-bold">{t('dashboard.sales_overview')}</h2>
           <select className="rounded-md border border-gray-300 px-3 py-1 text-sm">
-            <option>Last 7 days</option>
-            <option>Last 30 days</option>
-            <option>Last 90 days</option>
+            <option>{t('dashboard.last_7_days')}</option>
+            <option>{t('dashboard.last_30_days')}</option>
+            <option>{t('dashboard.last_90_days')}</option>
           </select>
         </div>
         <div className="h-64">
@@ -251,7 +253,7 @@ const Dashboard = () => {
                   }}
                 ></div>
                 <span className="mt-2 text-sm text-gray-600">{data.date}</span>
-                <span className="text-xs text-gray-500">${data.sales.toFixed(2)}</span>
+                <span className="text-xs text-gray-500">{data.sales.toFixed(2)} FCFA</span>
               </div>
             ))}
           </div>
@@ -262,7 +264,7 @@ const Dashboard = () => {
         {/* Recent Orders */}
         <div className="rounded-lg bg-white p-6 shadow-md">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-bold">Recent Orders</h2>
+            <h2 className="text-xl font-bold">{t('dashboard.recent_orders')}</h2>
             <Link
               to="/admin/orders"
               className="text-sm font-medium text-blue-600 hover:text-blue-500"
@@ -281,7 +283,7 @@ const Dashboard = () => {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-medium">${order.total.toFixed(2)}</p>
+                  <p className="font-medium">{order.total.toFixed(2)} FCFA</p>
                   <span className="inline-flex rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
                     {order.status}
                   </span>
@@ -294,7 +296,7 @@ const Dashboard = () => {
         {/* Low Stock Products */}
         <div className="rounded-lg bg-white p-6 shadow-md">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-bold">Low Stock Products</h2>
+            <h2 className="text-xl font-bold">{t('dashboard.low_stock_products')}</h2>
             <Link
               to="/admin/products"
               className="text-sm font-medium text-blue-600 hover:text-blue-500"
@@ -315,7 +317,7 @@ const Dashboard = () => {
                 </div>
                 <div className="ml-4 flex-1">
                   <p className="font-medium">{product.name}</p>
-                  <p className="text-sm text-gray-600">${product.price.toFixed(2)}</p>
+                  <p className="text-sm text-gray-600">{product.price.toFixed(2)} FCFA</p>
                 </div>
                 <div className="text-right">
                   <p className="font-medium">Stock: {product.inventory}</p>

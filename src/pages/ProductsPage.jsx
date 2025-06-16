@@ -21,10 +21,11 @@ const ProductsPage = () => {
       try {
         setIsLoading(true);
         
-        // Fetch products
+        // Fetch active products only
         const { data: products, error: productsError } = await supabase
           .from('products')
-          .select('*, categories(*)');
+          .select('*, categories(*)')
+          .eq('isActive', true);
         
         if (productsError) throw productsError;
         

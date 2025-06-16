@@ -110,21 +110,21 @@ const AboutPage = () => {
           <h2 className="mb-12 text-center text-3xl font-bold">{t('about.team.title')}</h2>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {[
-              {
+              /* {
                 name: t('about.team.members.ceo.name'),
                 role: t('about.team.members.ceo.role'),
                 image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg'
-              },
+              }, */
               {
                 name: t('about.team.members.operations.name'),
                 role: t('about.team.members.operations.role'),
-                image: 'https://images.pexels.com/photos/3796217/pexels-photo-3796217.jpeg'
-              },
+                image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg'
+              }/* ,
               {
                 name: t('about.team.members.service.name'),
                 role: t('about.team.members.service.role'),
-                image: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg'
-              }
+                image: 'https://images.pexels.com/photos/3796217/pexels-photo-3796217.jpeg'
+              } */
             ].map((member, index) => (
               <motion.div
                 key={member.name}

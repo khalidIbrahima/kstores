@@ -23,6 +23,11 @@
     "total": "Total",
     "status": "Status",
     "actions": "Actions",
+    "shopNow": "Shop Now",
+    "confirm": "Confirm",
+    "create": "Create",
+    "update": "Update",
+    "next": "Next",
     "shopNow": "Shop Now"
   },
   "home": {
@@ -63,11 +68,11 @@
     }
   },
   "about": {
-    "title": "About Kapital Store",
+    "title": "About Kapital Stores",
     "subtitle": "Your trusted destination for quality products and exceptional shopping experience",
     "story": {
       "title": "Our Story",
-      "content1": "Founded in 2025, Kapital Store has grown from a small local shop to a leading online marketplace. Our mission is to provide customers with high-quality products at competitive prices while delivering exceptional customer service.",
+      "content1": "Founded in 2022, Kapital Stores has grown from a small local shop to a leading online marketplace. Our mission is to provide customers with high-quality products at competitive prices while delivering exceptional customer service.",
       "content2": "We carefully curate our product selection to ensure that we offer only the best items across various categories. Our team works tirelessly to source products from reliable manufacturers and brands that share our commitment to quality and sustainability."
     },
     "values": {
@@ -93,16 +98,16 @@
       "title": "Our Team",
       "members": {
         "ceo": {
-          "name": "John Smith",
-          "role": "CEO & Founder"
+          "name": "Khalidou Sow BA",
+          "role": "PDG & Fondateur"
         },
         "operations": {
-          "name": "Sarah Johnson",
-          "role": "Head of Operations"
+          "name": "Khalidou Sow BA",
+          "role": "Directeur des Opérations"
         },
         "service": {
-          "name": "Mike Wilson",
-          "role": "Customer Service Lead"
+          "name": "Mariama Ndiaye",
+          "role": "Responsable Service Client"
         }
       }
     }
@@ -124,19 +129,18 @@
       "title": "Get in Touch",
       "email": {
         "title": "Email",
-        "support": "support@kapitalstore.com",
-        "sales": "sales@kapitalstore.com"
+        "support": "support@kapitalstores.shop",
+        "sales": "sales@kapitalstores.shop"
       },
       "phone": {
         "title": "Phone",
-        "number": "+1 (555) 123-4567",
+        "number": "+221 77 240 50 63",
         "hours": "Mon-Fri 9am to 6pm"
       },
       "address": {
         "title": "Address",
-        "line1": "123 Commerce Street",
-        "line2": "San Francisco, CA 94103",
-        "line3": "United States"
+        "line2": "Fass Delorme, Dakar",
+        "line3": "Sénégal"
       }
     },
     "map": "Map will be displayed here"
@@ -151,6 +155,20 @@
     "dashboard": "Dashboard"
   },
   "categories": {
+    "title": "Categories",
+    "name": "Category Name",
+    "slug": "Slug",
+    "created_at": "Created At",
+    "actions": "Actions",
+    "add": "Add Category",
+    "update": "Update Category",
+    "delete_confirm": "Are you sure you want to delete this category?",
+    "delete_success": "Category deleted successfully",
+    "delete_error": "Error deleting category",
+    "create_success": "Category created successfully",
+    "update_success": "Category updated successfully",
+    "fetch_error": "Error loading categories",
+    "no_categories": "No categories found",
     "electronics": "Electronics",
     "clothing": "Clothing",
     "home": "Home & Kitchen",
@@ -182,7 +200,11 @@
       "priceLow": "Price: Low to High",
       "priceHigh": "Price: High to Low",
       "name": "Name"
-    }
+    },
+    "images": "Product Images",
+    "addImage": "Add Image",
+    "noImage": "No Image",
+    "error": "Error saving product"
   },
   "cart": {
     "empty": "Your Cart is Empty",
@@ -218,5 +240,437 @@
     "registrationSuccess": "Registration successful! Please sign in.",
     "registrationError": "Failed to create account",
     "googleSignUpError": "Failed to sign up with Google"
+  },
+  "iptv": {
+    "title": "IPTV Services",
+    "subtitle": "Enjoy your favorite channels streaming",
+    "hero": {
+      "title": "Premium IPTV Experience",
+      "description": "Enjoy thousands of channels and VOD content in HD quality on all your devices"
+    },
+    "features": {
+      "title": "Why Choose Our IPTV Service?",
+      "subtitle": "Experience the best in entertainment with our premium features",
+      "global": {
+        "title": "Global Coverage",
+        "description": "Access channels from around the world with our extensive international coverage"
+      },
+      "vod": {
+        "title": "Video on Demand",
+        "description": "Enjoy thousands of movies and TV shows on demand"
+      },
+      "availability": {
+        "title": "24/7 Availability",
+        "description": "Watch your favorite content anytime, anywhere with our reliable service"
+      },
+      "devices": {
+        "title": "Multi-device Support",
+        "description": "Stream on any device with our compatible apps and web player"
+      }
+    },
+    "devices": {
+      "tv": "Smart TV",
+      "smartphone": "Smartphone",
+      "computer": "Computer",
+      "tablet": "Tablet"
+    },
+    "plans": {
+      "title": "Choose Your Plan",
+      "subtitle": "Select the perfect plan for your entertainment needs",
+      "popular": "Popular",
+      "select": "Choose",
+      "duration": {
+        "monthly": "month",
+        "yearly": "year"
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Find answers to common questions about our IPTV service",
+      "devices": {
+        "question": "What devices are supported?",
+        "answer": "Our IPTV service works on Smart TVs, Android devices, iOS devices, computers, and more through our dedicated apps and web player."
+      },
+      "legal": {
+        "question": "Is the service legal?",
+        "answer": "We operate in compliance with all applicable laws and regulations, providing licensed content through official partnerships."
+      },
+      "refund": {
+        "question": "What's your refund policy?",
+        "answer": "We offer a 7-day money-back guarantee if you're not satisfied with our service."
+      },
+      "support": {
+        "question": "Do you offer technical support?",
+        "answer": "Yes, we provide 24/7 technical support through live chat, email, and phone."
+      }
+    },
+    "checkout": {
+      "title": "Complete Your IPTV Order",
+      "planDetails": "Plan Details",
+      "duration": "Duration",
+      "price": "Price",
+      "paymentMethod": "Payment Method",
+      "confirmOrder": "Confirm Order",
+      "terms": "I agree to the IPTV service terms and conditions"
+    }
+  },
+  "orders": {
+    "title": "Orders",
+    "manage_customer_orders": "Manage customer orders",
+    "search_orders": "Search orders...",
+    "order_id": "Order ID",
+    "customer": "Customer",
+    "date": "Date",
+    "total": "Total",
+    "status": "Status",
+    "actions": "Actions",
+    "pending": "Pending",
+    "processing": "Processing",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled",
+    "order_details": "Order Details",
+    "customer_information": "Customer Information",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "city": "City",
+    "state": "State",
+    "zip_code": "ZIP Code",
+    "order_information": "Order Information",
+    "customer_location": "Customer Location",
+    "lat": "Latitude",
+    "lng": "Longitude",
+    "scan_to_open_in_google_maps": "Scan to open in Google Maps",
+    "no_geolocation_data_available": "No geolocation data available",
+    "order_items": "Order Items",
+    "product": "Product",
+    "price": "Price",
+    "quantity": "Quantity",
+    "fetch_error": "Failed to fetch orders",
+    "update_success": "Order status updated successfully",
+    "update_error": "Failed to update order status"
+  },
+  "errors": {
+    "general": "An error occurred",
+    "network": "Connection error",
+    "notFound": "Page not found",
+    "unauthorized": "Unauthorized access",
+    "serverError": "Server error",
+    "validation": "Please check your information",
+    "payment": "Payment error",
+    "checkout": "Error processing checkout"
+  },
+  "success": {
+    "orderPlaced": "Order placed successfully",
+    "paymentProcessed": "Payment processed successfully",
+    "profileUpdated": "Profile updated",
+    "passwordChanged": "Password changed",
+    "itemAdded": "Item added to cart",
+    "itemRemoved": "Item removed from cart"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "contact": {
+      "title": "Contact Information",
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "shipping": {
+      "title": "Shipping Address",
+      "fullName": "Full Name",
+      "streetAddress": "Street Address",
+      "city": "City",
+      "state": "State/Region",
+      "zipCode": "ZIP Code"
+    },
+    "payment": {
+      "title": "Payment Information",
+      "cardNumber": "Card Number",
+      "expiryDate": "Expiry Date",
+      "cvv": "CVV",
+      "cardPlaceholder": "1234 5678 9012 3456"
+    },
+    "location": {
+      "title": "Select your location",
+      "instructions": "Click on the map to select your delivery location",
+      "currentLocation": "Use my current location",
+      "error": "Unable to get your location",
+      "required": "Please select a delivery location",
+      "coordinates": {
+        "latitude": "Latitude",
+        "longitude": "Longitude"
+      }
+    },
+    "order": {
+      "title": "Order Summary",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "total": "Total",
+      "placeOrder": "Place Order",
+      "processing": "Processing...",
+      "success": "Order placed successfully!",
+      "error": "Failed to process payment. Please try again."
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "nav": {
+      "orders": "Orders",
+      "products": "Products",
+      "users": "Users",
+      "backToSite": "Back to Site"
+    },
+    "currency": {
+      "code": "XOF",
+      "symbol": "FCFA",
+      "format": "FCFA {{value}}"
+    },
+    "orders": {
+      "title": "Order Management",
+      "fetchError": "Error loading orders",
+      "updateError": "Error updating order status",
+      "noLocation": "No geolocation available",
+      "table": {
+        "orderId": "Order ID",
+        "customer": "Customer",
+        "date": "Date",
+        "total": "Total",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "pending": "Pending",
+        "processing": "Processing",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "details": {
+        "title": "Order Details",
+        "select": "Select an order to view details",
+        "customer": "Customer",
+        "shipping": "Shipping Address",
+        "location": "Customer Location",
+        "date": "Order Date",
+        "total": "Total Amount",
+        "items": "Items",
+        "status": "Order Status"
+      }
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "totalOrders": "Total Orders",
+      "totalRevenue": "Total Revenue",
+      "totalProducts": "Total Products",
+      "totalUsers": "Total Users",
+      "recentActivity": "Recent Activity",
+      "completedOrders": "Completed Orders",
+      "last30Days": "Last 30 Days",
+      "fetchError": "Error loading statistics"
+    },
+    "products": {
+      "title": "Product Management",
+      "addProduct": "Add Product",
+      "name": "Name",
+      "price": "Price",
+      "stock": "Stock",
+      "status": "Status",
+      "actions": "Actions",
+      "edit": "Edit",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "fetchError": "Error loading products",
+      "updateError": "Error updating product",
+      "statuses": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "images": "Product Images",
+      "image": "Image",
+      "imageUrlPlaceholder": "Image URL",
+      "invalidImageUrl": "Invalid image URL",
+      "removeImage": "Remove image",
+      "preview": "Preview"
+    },
+    "users": {
+      "title": "User Management",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "actions": "Actions",
+      "makeAdmin": "Make Admin",
+      "makeUser": "Make User",
+      "fetchError": "Error loading users",
+      "updateError": "Error updating user role",
+      "roles": {
+        "admin": "Administrator",
+        "user": "User"
+      }
+    },
+    "sidebar": {
+      "overview": "Overview",
+      "dashboard": "Dashboard",
+      "analytics": "Analytics",
+      "storeManagement": "Store Management",
+      "storeOverview": "Store Overview",
+      "products": "Products",
+      "categories": "Categories",
+      "orders": "Orders",
+      "inventory": "Inventory",
+      "iptvPlans": "IPTV Plans",
+      "customerManagement": "Customer Management",
+      "customers": "Customers",
+      "customerGroups": "Customer Groups",
+      "payments": "Payments",
+      "analyticsReports": "Analytics & Reports",
+      "salesReports": "Sales Reports",
+      "customerAnalytics": "Customer Analytics",
+      "inventoryReports": "Inventory Reports",
+      "system": "System",
+      "notifications": "Notifications",
+      "settings": "Settings"
+    }
+  },
+  "store": {
+    "overview": {
+      "title": "Store Overview",
+      "description": "Monitor your store's performance and inventory",
+      "totalProducts": { "label": "Total Products" },
+      "lowStockProducts": { "label": "products low in stock", "title": "Low Stock Products" },
+      "totalOrders": { "label": "Total Orders" },
+      "newOrdersToday": { "label": "new orders today" },
+      "totalRevenue": { "label": "Total Revenue" },
+      "vsLastMonth": "vs last month",
+      "avgOrderValue": { "label": "Avg. Order Value" },
+      "recentOrders": {
+        "title": "Recent Orders",
+        "table": {
+          "orderId": "Order ID",
+          "customer": "Customer",
+          "amount": "Amount",
+          "status": "Status",
+          "date": "Date"
+        }
+      },
+      "lowStockAlert": "Low stock alert"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome to your admin dashboard",
+    "total_orders": "Total Orders",
+    "total_revenue": "Total Revenue",
+    "total_customers": "Total Customers",
+    "total_products": "Total Products",
+    "from_last_month": "from last month",
+    "low_stock": "items low in stock",
+    "sales_overview": "Sales Overview",
+    "last_7_days": "Last 7 Days",
+    "last_30_days": "Last 30 Days",
+    "last_90_days": "Last 90 Days",
+    "recent_orders": "Recent Orders",
+    "view_all": "View All",
+    "order_id": "Order ID",
+    "customer": "Customer",
+    "amount": "Amount",
+    "status": "Status",
+    "date": "Date",
+    "top_products": "Top Products",
+    "product_name": "Product Name",
+    "inventory": "Inventory",
+    "price": "Price",
+    "fetch_error": "Error loading dashboard data",
+    "low_stock_products": "Low Stock Products"
+  },
+  "products": {
+    "title": "Products",
+    "manage_inventory": "Manage your product inventory",
+    "search_placeholder": "Search products...",
+    "add_product": "Add Product",
+    "edit_product": "Edit Product",
+    "delete_confirm": "Are you sure you want to delete this product?",
+    "delete_success": "Product deleted successfully",
+    "delete_error": "Error deleting product",
+    "create_success": "Product created successfully",
+    "update_success": "Product updated successfully",
+    "fetch_error": "Error loading products",
+    "name": "Product Name",
+    "description": "Description",
+    "price": "Price",
+    "inventory": "Inventory",
+    "category": "Category",
+    "status": "Status",
+    "actions": "Actions",
+    "active": "Active",
+    "inactive": "Inactive",
+    "no_products": "No products found",
+    "save": "Save",
+    "cancel": "Cancel",
+    "select_category": "Select a category",
+    "image_url": "Main Image URL",
+    "additional_images": "Additional Images",
+    "image_url1": "Image 1 URL",
+    "image_url2": "Image 2 URL",
+    "image_url3": "Image 3 URL",
+    "image_url4": "Image 4 URL"
+  },
+  "users": {
+    "management": {
+      "title": "User Management",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "actions": "Actions",
+      "makeAdmin": "Make Admin",
+      "makeUser": "Make User",
+      "fetchError": "Error loading users",
+      "updateError": "Error updating role",
+      "roles": {
+        "admin": "Administrator",
+        "user": "User"
+      }
+    }
+  },
+  "analytics": {
+    "overview": {
+      "title": "Advanced Analytics",
+      "description": "Analyze your store's performance with detailed charts",
+      "totalOrders": { "label": "Total Orders" },
+      "totalRevenue": { "label": "Total Revenue" },
+      "growth": "Growth",
+      "vsLastMonth": "vs last month"
+    },
+    "revenue": { "label": "Revenue" },
+    "orders": { "label": "Orders" },
+    "customers": { "label": "Customers" },
+    "vsLastMonth": "from last month",
+    "revenueTrend": { "title": "Revenue Trend" },
+    "revenueChart": { "placeholder": "Revenue chart will appear here" },
+    "ordersOverview": { "title": "Orders Overview" },
+    "ordersChart": { "placeholder": "Orders chart will appear here" }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "manage": "Manage your notifications and alerts",
+    "order_received_title": "New Order Received",
+    "order_received_body": "Order #{{orderId}} has been placed",
+    "low_stock_title": "Low Stock Alert",
+    "low_stock_body": "Product \"{{productName}}\" is running low on stock",
+    "payment_failed_title": "Payment Failed",
+    "payment_failed_body": "Payment for order #{{orderId}} has failed",
+    "settings": {
+      "order": "Order notifications",
+      "order_desc": "Get notified when new orders are placed",
+      "inventory": "Inventory alerts",
+      "inventory_desc": "Receive alerts for low stock items",
+      "payment": "Payment notifications",
+      "payment_desc": "Get notified about payment status changes",
+      "system": "System alerts",
+      "system_desc": "Receive important system notifications"
+    },
+    "no_notifications": "No notifications",
+    "all_caught_up": "You have all notifications read",
+    "clear_all": "Clear All"
   }
 }

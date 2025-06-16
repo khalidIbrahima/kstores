@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Plus, Edit2, Trash2, Save, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../../utils/currency';
 
 const IPTVPlans = () => {
   const [plans, setPlans] = useState([]);
@@ -219,7 +220,7 @@ const IPTVPlans = () => {
               </div>
             </div>
             <div className="mb-4">
-              <span className="text-3xl font-bold">${plan.price}</span>
+              <span className="text-3xl font-bold">{formatPrice(plan.price)}</span>
               <span className="text-gray-300">/{plan.duration}</span>
             </div>
             <div className="mb-4">

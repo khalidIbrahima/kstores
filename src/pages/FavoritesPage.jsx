@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../utils/currency';
 
 const FavoritesPage = () => {
   const [favorites, setFavorites] = useState([]);
@@ -122,7 +123,10 @@ const FavoritesPage = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-xl font-bold text-blue-700">
-                    ${favorite.products.price.toFixed(2)}
+                    {formatPrice(favorite.products.price)}
+                    {favorite.products.inventory === 0 && (
+                      <span className="ml-2 px-2 py-1 rounded bg-red-100 text-red-700 text-xs font-semibold">Rupture de stock</span>
+                    )}
                   </p>
                   <div className="flex space-x-2">
                     <button
@@ -132,6 +136,7 @@ const FavoritesPage = () => {
                       }}
                       className="rounded-full bg-gray-100 p-2 text-gray-700 transition-colors hover:bg-blue-600 hover:text-white"
                       title="Add to Cart"
+                      disabled={favorite.products.inventory === 0}
                     >
                       <ShoppingCart className="h-5 w-5" />
                     </button>
