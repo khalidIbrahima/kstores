@@ -27,7 +27,12 @@ const LocationMarker = ({ position, setPosition }) => {
       draggable={true}
       eventHandlers={{
         dragend: (e) => {
-          setPosition(e.target.getLatLng());
+          const newPosition = e.target.getLatLng();
+          setPosition(newPosition);
+        },
+        click: (e) => {
+          // Optionnel: centrer la carte sur le marqueur quand on clique dessus
+          map.setView(e.target.getLatLng(), map.getZoom());
         },
       }}
     />
@@ -38,9 +43,11 @@ const LocationPicker = ({ onLocationSelect, initialPosition = null }) => {
   const { t } = useTranslation();
   const [position, setPosition] = useState(initialPosition);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!initialPosition) {
+      setIsLoading(true);
       // Get user's current location
       navigator.geolocation.getCurrentPosition(
         (location) => {
@@ -50,6 +57,7 @@ const LocationPicker = ({ onLocationSelect, initialPosition = null }) => {
           };
           setPosition(newPosition);
           onLocationSelect(newPosition);
+          setIsLoading(false);
         },
         (error) => {
           console.error('Error getting location:', error);
@@ -58,6 +66,7 @@ const LocationPicker = ({ onLocationSelect, initialPosition = null }) => {
           const defaultPosition = { lat: 14.7167, lng: -17.4677 };
           setPosition(defaultPosition);
           onLocationSelect(defaultPosition);
+          setIsLoading(false);
         },
         {
           enableHighAccuracy: true,
@@ -65,6 +74,8 @@ const LocationPicker = ({ onLocationSelect, initialPosition = null }) => {
           maximumAge: 0
         }
       );
+    } else {
+      setIsLoading(false);
     }
   }, [initialPosition, onLocationSelect, t]);
 
@@ -74,13 +85,54 @@ const LocationPicker = ({ onLocationSelect, initialPosition = null }) => {
     onLocationSelect(newPosition);
   };
 
+  const handleUseCurrentLocation = () => {
+    setIsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (location) => {
+        const newPosition = {
+          lat: location.coords.latitude,
+          lng: location.coords.longitude,
+        };
+        setPosition(newPosition);
+        onLocationSelect(newPosition);
+        setError(null);
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+        setError(t('checkout.location.error'));
+        setIsLoading(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      }
+    );
+  };
+
   return (
     <div className="relative h-full w-full">
+      {/* Instructions */}
+      <div className="absolute top-4 left-4 z-10 rounded-md bg-white p-3 shadow-md">
+        <p className="text-sm text-gray-700 mb-2">
+          {t('checkout.location.instructions')}
+        </p>
+        <button
+          onClick={handleUseCurrentLocation}
+          disabled={isLoading}
+          className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 disabled:opacity-50"
+        >
+          {isLoading ? 'Loading...' : t('checkout.location.currentLocation')}
+        </button>
+      </div>
+
       <MapContainer
         center={position || [14.7167, -17.4677]}
         zoom={13}
         className="h-full w-full"
         onClick={handleMapClick}
+        style={{ cursor: 'crosshair' }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -88,14 +140,17 @@ const LocationPicker = ({ onLocationSelect, initialPosition = null }) => {
         />
         <LocationMarker position={position} setPosition={setPosition} />
       </MapContainer>
+      
       {error && (
-        <div className="absolute bottom-4 left-4 rounded-md bg-red-100 p-2 text-sm text-red-700">
+        <div className="absolute bottom-4 left-4 rounded-md bg-red-100 border border-red-400 p-2 text-sm text-red-700">
           {error}
         </div>
       )}
-      <div className="absolute bottom-4 right-4 rounded-md bg-white p-2 text-sm text-gray-600 shadow-md">
+      
+      <div className="absolute bottom-4 right-4 rounded-md bg-white p-2 text-sm text-gray-700 shadow-md">
         {position && (
           <>
+            <div className="font-medium mb-1">Selected Location:</div>
             <div>{t('checkout.location.coordinates.latitude')}: {position.lat.toFixed(6)}</div>
             <div>{t('checkout.location.coordinates.longitude')}: {position.lng.toFixed(6)}</div>
           </>

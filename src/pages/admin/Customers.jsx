@@ -26,6 +26,7 @@ const Customers = () => {
             created_at
           )
         `)
+        .eq('is_admin', false)
         .order('created_at', { ascending: false });
       
       if (error) throw error;

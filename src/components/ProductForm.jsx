@@ -102,13 +102,13 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <div className="bg-accent-light border border-accent text-accent px-4 py-3 rounded">
           {error}
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-text-dark">
           {t('products.images')}
         </label>
         <div className="mt-2">
@@ -120,7 +120,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
       </div>
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="name" className="block text-sm font-medium text-text-dark">
           {t('products.name')}
         </label>
         <input
@@ -130,12 +130,12 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
           value={formData.name}
           onChange={handleChange}
           required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+          className="input mt-1 block w-full"
         />
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="description" className="block text-sm font-medium text-text-dark">
           {t('products.description')}
         </label>
         <textarea
@@ -144,13 +144,13 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
           value={formData.description}
           onChange={handleChange}
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+          className="input mt-1 block w-full"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="price" className="block text-sm font-medium text-text-dark">
             {t('products.price')}
           </label>
           <input
@@ -162,12 +162,12 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
             required
             min="0"
             step="0.01"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+            className="input mt-1 block w-full"
           />
         </div>
 
         <div>
-          <label htmlFor="stock" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="stock" className="block text-sm font-medium text-text-dark">
             {t('products.stock')}
           </label>
           <input
@@ -178,13 +178,13 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
             onChange={handleChange}
             required
             min="0"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+            className="input mt-1 block w-full"
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="category" className="block text-sm font-medium text-text-dark">
           {t('products.category')}
         </label>
         <input
@@ -193,12 +193,12 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
           name="category"
           value={formData.category}
           onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+          className="input mt-1 block w-full"
         />
       </div>
 
       <div>
-        <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="status" className="block text-sm font-medium text-text-dark">
           {t('products.status')}
         </label>
         <select
@@ -206,7 +206,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
           name="status"
           value={formData.status}
           onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+          className="input mt-1 block w-full"
         >
           <option value="active">{t('products.statuses.active')}</option>
           <option value="inactive">{t('products.statuses.inactive')}</option>
@@ -217,14 +217,14 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="px-4 py-2 border border-background-dark rounded-md text-sm font-medium text-text-dark hover:bg-background-light transition-colors"
         >
           {t('common.cancel')}
         </button>
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+          className="btn-primary"
         >
           {loading ? t('common.saving') : (product ? t('common.update') : t('common.create'))}
         </button>

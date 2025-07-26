@@ -52,6 +52,15 @@ export function AuthProvider({ children }) {
             setSession(session);
             setUser(session?.user ?? null);
             setIsLoading(false);
+            
+            // Check if user is admin and redirect if they're on a non-admin page
+            if (session?.user?.user_metadata?.is_admin) {
+              const currentPath = window.location.pathname;
+              if (!currentPath.startsWith('/admin') && currentPath !== '/auth/callback') {
+                // Only redirect if not already on admin page or auth callback
+                window.location.href = '/admin';
+              }
+            }
           } else if (event === 'SIGNED_OUT') {
             setSession(null);
             setUser(null);

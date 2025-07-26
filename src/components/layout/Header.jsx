@@ -16,7 +16,10 @@ import {
 } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useStoreSettings } from '../../hooks/useStoreSettings.jsx';
+import { supabase } from '../../lib/supabase';
 import LanguageSwitcher from '../LanguageSwitcher';
+import logoHorizontal from '../../assets/logo-transparent.png';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -24,8 +27,10 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
   const { itemCount } = useCart();
   const { user, signOut, isAdmin } = useAuth();
+  const { settings } = useStoreSettings();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -47,6 +52,25 @@ const Header = () => {
     
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Load categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('categories')
+          .select('*')
+          .order('name');
+        
+        if (error) throw error;
+        setCategories(data || []);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
   }, []);
 
   // Handle click outside dropdowns
@@ -84,78 +108,86 @@ const Header = () => {
     }
   };
 
+  // Utiliser le nom du store depuis les paramètres ou un nom par défaut
+  const storeName = settings?.store_name || 'Kapital Store';
+
   return (
     <header 
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md' : 'bg-transparent'
+      className={`sticky top-0 z-50 w-full transition-all duration-300 bg-background ${
+        isScrolled ? 'shadow-md' : ''
       }`}
     >
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between md:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center text-xl font-bold text-blue-800 md:text-2xl">
-            <ShoppingCart className="mr-2" />
-            <span>Kapital Stores</span>
+          <Link to="/" className="flex items-center">
+            <img 
+              src={settings?.logo_url || logoHorizontal} 
+              alt={`${storeName} Logo`} 
+              className="h-16 w-auto" 
+              style={{objectFit: 'contain', maxWidth: '220px'}} 
+            />
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:block">
             <ul className="flex space-x-8">
               <li>
-                <Link to="/" className="text-gray-700 hover:text-blue-700">{t('nav.home')}</Link>
+                <Link to="/" className="text-text-dark hover:text-primary font-medium transition-colors">{t('nav.home')}</Link>
               </li>
               <li className="relative" ref={dropdownRef}>
                 <button 
-                  className="flex items-center text-gray-700 hover:text-blue-700"
+                  className="flex items-center text-text-dark hover:text-primary font-medium transition-colors"
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
                   {t('nav.categories')} <ChevronDown className="ml-1 h-4 w-4" />
                 </button>
                 {dropdownOpen && (
-                  <div className="absolute left-0 mt-2 w-48 rounded-md bg-white p-2 shadow-lg">
-                    <Link 
-                      to="/category/electronics" 
-                      className="block rounded p-2 hover:bg-gray-100"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      {t('categories.electronics')}
-                    </Link>
-                    <Link 
-                      to="/category/clothing" 
-                      className="block rounded p-2 hover:bg-gray-100"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      {t('categories.clothing')}
-                    </Link>
-                    <Link 
-                      to="/category/home" 
-                      className="block rounded p-2 hover:bg-gray-100"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      {t('categories.home')}
-                    </Link>
-                    <Link 
-                      to="/category/beauty" 
-                      className="block rounded p-2 hover:bg-gray-100"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      {t('categories.beauty')}
-                    </Link>
+                  <div className="absolute left-0 mt-2 w-64 rounded-md bg-background p-2 shadow-lg">
+                    {categories.map((category) => (
+                      <Link 
+                        key={category.id}
+                        to={`/category/${category.slug}`} 
+                        className="flex items-center rounded p-2 text-text-dark hover:bg-accent-light hover:text-primary transition-colors"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        {category.cover_image_url ? (
+                          <img 
+                            src={category.cover_image_url} 
+                            alt={category.name}
+                            className="w-8 h-8 object-cover rounded mr-3"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-8 h-8 bg-gray-200 rounded mr-3 flex items-center justify-center">
+                            <span className="text-xs text-gray-500">{category.name.charAt(0)}</span>
+                          </div>
+                        )}
+                        <span>{category.name}</span>
+                      </Link>
+                    ))}
+                    {categories.length === 0 && (
+                      <div className="p-2 text-sm text-gray-500">
+                        {t('categories.no_categories')}
+                      </div>
+                    )}
                   </div>
                 )}
               </li>
               <li>
-                <Link to="/products" className="text-gray-700 hover:text-blue-700">{t('nav.allProducts')}</Link>
+                <Link to="/products" className="text-text-dark hover:text-primary font-medium transition-colors">{t('nav.allProducts')}</Link>
               </li>
               <li>
-                <Link to="/iptv" className="text-gray-700 hover:text-blue-700">IPTV</Link>
+                <Link to="/iptv" className="text-text-dark hover:text-primary font-medium transition-colors">IPTV</Link>
               </li>
-              <li>
-                <Link to="/about" className="text-gray-700 hover:text-blue-700">{t('nav.about')}</Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-gray-700 hover:text-blue-700">{t('nav.contact')}</Link>
-              </li>
+              {/* <li>
+                <Link to="/about" className="text-text-dark hover:text-primary font-medium transition-colors">{t('nav.about')}</Link>
+              </li> */}
+              {/* <li>
+                <Link to="/contact" className="text-text-dark hover:text-primary font-medium transition-colors">{t('nav.contact')}</Link>
+              </li> */}
             </ul>
           </nav>
 
@@ -173,16 +205,16 @@ const Header = () => {
                 placeholder={t('common.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-40 rounded-full border border-gray-300 pl-9 pr-4 py-1.5 text-sm lg:w-60 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="input w-40 lg:w-60"
               />
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-light" />
             </form>
 
             {/* Cart */}
             <Link to="/cart" className="relative">
-              <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-blue-700" />
+              <ShoppingCart className="h-6 w-6 text-text-dark hover:text-primary transition-colors" />
               {itemCount > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-medium text-white">
+                <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-bold text-white">
                   {itemCount}
                 </span>
               )}
@@ -193,18 +225,18 @@ const Header = () => {
               <div className="relative" ref={userDropdownRef}>
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center space-x-1 rounded-full bg-gray-100 p-2 hover:bg-gray-200"
+                  className="flex items-center space-x-1 rounded-full bg-background-light p-2 hover:bg-accent-light transition-colors"
                 >
-                  <User className="h-5 w-5 text-gray-700" />
+                  <User className="h-5 w-5 text-text-dark" />
                 </button>
                 {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 rounded-md bg-white p-2 shadow-lg">
-                    <div className="mb-2 border-b border-gray-100 px-2 pb-2">
-                      <p className="font-medium text-gray-900">{user.email}</p>
+                  <div className="absolute right-0 mt-2 w-48 rounded-md bg-background p-2 shadow-lg">
+                    <div className="mb-2 border-b border-background-dark px-2 pb-2">
+                      <p className="font-medium text-text-dark">{user.email}</p>
                     </div>
                     <Link
                       to="/orders"
-                      className="flex items-center rounded p-2 text-gray-700 hover:bg-gray-100"
+                      className="flex items-center rounded p-2 text-text-dark hover:bg-accent-light hover:text-primary transition-colors"
                       onClick={() => setUserDropdownOpen(false)}
                     >
                       <Package className="mr-2 h-4 w-4" />
@@ -212,7 +244,7 @@ const Header = () => {
                     </Link>
                     <Link
                       to="/favorites"
-                      className="flex items-center rounded p-2 text-gray-700 hover:bg-gray-100"
+                      className="flex items-center rounded p-2 text-text-dark hover:bg-accent-light hover:text-primary transition-colors"
                       onClick={() => setUserDropdownOpen(false)}
                     >
                       <Heart className="mr-2 h-4 w-4" />
@@ -221,7 +253,7 @@ const Header = () => {
                     {isAdmin && (
                       <Link
                         to="/admin"
-                        className="flex items-center rounded p-2 text-gray-700 hover:bg-gray-100"
+                        className="flex items-center rounded p-2 text-text-dark hover:bg-accent-light hover:text-primary transition-colors"
                         onClick={() => setUserDropdownOpen(false)}
                       >
                         <Tv className="mr-2 h-4 w-4" />
@@ -230,7 +262,7 @@ const Header = () => {
                     )}
                     <button
                       onClick={handleSignOut}
-                      className="flex w-full items-center rounded p-2 text-red-600 hover:bg-red-50"
+                      className="flex w-full items-center rounded p-2 text-accent hover:bg-accent-light transition-colors"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
                       {t('common.signOut')}
@@ -241,7 +273,7 @@ const Header = () => {
             ) : (
               <Link
                 to="/login"
-                className="hidden rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 md:block"
+                className="hidden btn-primary md:block"
               >
                 {t('common.signIn')}
               </Link>
@@ -250,9 +282,13 @@ const Header = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-700 md:hidden"
+              className="md:hidden"
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6 text-text-dark" />
+              ) : (
+                <Menu className="h-6 w-6 text-text-dark" />
+              )}
             </button>
           </div>
         </div>
@@ -265,100 +301,42 @@ const Header = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="border-t border-gray-200 bg-white md:hidden"
+            className="md:hidden"
           >
-            <div className="container mx-auto px-4 py-4">
-              {/* Mobile Search */}
+            <div className="border-t border-background-dark bg-background px-4 py-4">
               <form onSubmit={handleSearchSubmit} className="mb-4">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder={t('common.search')}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full rounded-full border border-gray-300 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  />
-                  <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                </div>
+                <input
+                  type="text"
+                  placeholder={t('common.search')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="input w-full"
+                />
               </form>
-              
-              {/* Mobile Navigation */}
               <nav>
-                <ul className="space-y-3">
+                <ul className="space-y-4">
                   <li>
-                    <Link to="/" className="block py-2 text-gray-700 hover:text-blue-700">{t('nav.home')}</Link>
+                    <Link to="/" className="block text-text-dark hover:text-primary transition-colors">{t('nav.home')}</Link>
                   </li>
                   <li>
-                    <div className="py-2">
-                      <div className="mb-2 font-medium">{t('nav.categories')}</div>
-                      <div className="ml-4 space-y-2">
-                        <Link to="/category/electronics" className="block text-gray-600 hover:text-blue-700">{t('categories.electronics')}</Link>
-                        <Link to="/category/clothing" className="block text-gray-600 hover:text-blue-700">{t('categories.clothing')}</Link>
-                        <Link to="/category/home" className="block text-gray-600 hover:text-blue-700">{t('categories.home')}</Link>
-                        <Link to="/category/beauty" className="block text-gray-600 hover:text-blue-700">{t('categories.beauty')}</Link>
-                      </div>
-                    </div>
+                    <Link to="/products" className="block text-text-dark hover:text-primary transition-colors">{t('nav.allProducts')}</Link>
                   </li>
                   <li>
-                    <Link to="/products" className="block py-2 text-gray-700 hover:text-blue-700">{t('nav.allProducts')}</Link>
+                    <Link to="/iptv" className="block text-text-dark hover:text-primary transition-colors">IPTV</Link>
                   </li>
                   <li>
-                    <Link to="/iptv" className="block py-2 text-gray-700 hover:text-blue-700">IPTV</Link>
+                    <Link to="/about" className="block text-text-dark hover:text-primary transition-colors">{t('nav.about')}</Link>
                   </li>
                   <li>
-                    <Link to="/about" className="block py-2 text-gray-700 hover:text-blue-700">{t('nav.about')}</Link>
+                    <Link to="/contact" className="block text-text-dark hover:text-primary transition-colors">{t('nav.contact')}</Link>
                   </li>
-                  <li>
-                    <Link to="/contact" className="block py-2 text-gray-700 hover:text-blue-700">{t('nav.contact')}</Link>
-                  </li>
-                  {user ? (
-                    <>
-                      <li>
-                        <Link to="/orders" className="flex items-center py-2 text-gray-700 hover:text-blue-700">
-                          <Package className="mr-2 h-4 w-4" />
-                          Orders
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/favorites" className="flex items-center py-2 text-gray-700 hover:text-blue-700">
-                          <Heart className="mr-2 h-4 w-4" />
-                          Favorites
-                        </Link>
-                      </li>
-                      {isAdmin && (
-                        <li>
-                          <Link to="/admin" className="flex items-center py-2 text-gray-700 hover:text-blue-700">
-                            <Tv className="mr-2 h-4 w-4" />
-                            {t('common.admin')}
-                          </Link>
-                        </li>
-                      )}
-                      <li>
-                        <button
-                          onClick={handleSignOut}
-                          className="flex w-full items-center py-2 text-red-600 hover:text-red-700"
-                        >
-                          <LogOut className="mr-2 h-4 w-4" />
-                          {t('common.signOut')}
-                        </button>
-                      </li>
-                    </>
-                  ) : (
+                  {!user && (
                     <li>
-                      <Link
-                        to="/login"
-                        className="block rounded-md bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
+                      <Link to="/login" className="btn-primary block text-center">
                         {t('common.signIn')}
                       </Link>
                     </li>
                   )}
-                  {/* Mobile Language Switcher */}
-                  <li className="pt-4">
-                    <LanguageSwitcher />
-                  </li>
                 </ul>
               </nav>
             </div>

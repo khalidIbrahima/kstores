@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
+import { useStoreSettings } from '../hooks/useStoreSettings';
 import { supabase } from '../lib/supabase';
 
 const LoginPage = () => {
@@ -12,7 +13,8 @@ const LoginPage = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signIn } = useAuth();
+  const { signIn, isAdmin } = useAuth();
+  const { settings } = useStoreSettings();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -31,7 +33,18 @@ const LoginPage = () => {
     try {
       setIsLoading(true);
       await signIn(email, password);
-      navigate(from, { replace: true });
+      
+      // Check if user is admin and redirect accordingly
+      const { data: { user } } = await supabase.auth.getUser();
+      const isUserAdmin = user?.user_metadata?.is_admin || false;
+      
+      if (isUserAdmin) {
+        // Redirect admin users to admin panel
+        navigate('/admin', { replace: true });
+      } else {
+        // Redirect regular users to their intended destination
+        navigate(from, { replace: true });
+      }
     } catch (error) {
       setError(error.message || t('auth.loginError'));
     } finally {
@@ -71,7 +84,21 @@ const LoginPage = () => {
         className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg"
       >
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">{t('auth.login')}</h2>
+          {settings?.logo_url ? (
+            <div className="flex justify-center mb-6">
+              <img 
+                src={settings.logo_url} 
+                alt="Store Logo" 
+                className="h-20 w-auto max-w-64 object-contain"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            </div>
+          ) : null}
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+            {t('auth.login')}
+          </h2>
           <p className="mt-2 text-sm text-gray-600">
             {t('auth.noAccount')}{' '}
             <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
@@ -91,23 +118,23 @@ const LoginPage = () => {
           </div>
         )}
 
-        <button
+        {/* <button
           onClick={handleGoogleSignIn}
           disabled={isLoading}
-          className="flex w-full items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="flex w-full items-center justify-center gap-3 rounded-full border border-accent bg-white px-6 py-3 text-base font-semibold text-primary shadow-sm hover:bg-accent-light hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition"
         >
           <img src="https://www.google.com/favicon.ico" alt="Google" className="h-5 w-5" />
           {t('auth.googleSignIn')}
-        </button>
+        </button> */}
 
-        <div className="relative">
+        {/* <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="bg-white px-2 text-gray-500">{t('auth.orContinueWith')}</span>
           </div>
-        </div>
+        </div> */}
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
@@ -180,7 +207,7 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70"
+              className="group relative flex w-full justify-center rounded-full bg-primary px-6 py-3 text-base font-semibold text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition"
             >
               {isLoading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>

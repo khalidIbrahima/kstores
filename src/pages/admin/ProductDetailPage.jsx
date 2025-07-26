@@ -5,6 +5,7 @@ import { ArrowLeft, Edit, Trash2, X } from 'lucide-react';
 import ProductImageCarousel from '../../components/ProductImageCarousel';
 import ProductForm from './ProductForm';
 import toast from 'react-hot-toast';
+import { formatDescriptionFull } from '../../utils/formatDescription.jsx';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -95,7 +96,7 @@ const ProductDetailPage = () => {
               {product.isActive ? 'Actif' : 'Inactif'}
             </span>
           </div>
-          <div className="mb-6 text-gray-700 text-base">{product.description}</div>
+          <div className="mb-6 text-gray-700 text-base">{formatDescriptionFull(product.description)}</div>
           <div className="mb-8">
             <span className="text-4xl font-bold text-blue-700">{product.price} FCFA</span>
           </div>
@@ -121,16 +122,20 @@ const ProductDetailPage = () => {
       {showEditModal && (
         <>
           <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className="relative w-full max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-12">
-              <button
-                className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
-                onClick={handleModalClose}
-              >
-                <X className="h-6 w-6" />
-              </button>
-              <h2 className="mb-6 text-2xl font-bold text-center">Modifier le produit</h2>
-              <ProductForm product={product} onClose={handleModalClose} />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="relative w-full max-w-4xl bg-white rounded-lg shadow-xl max-h-[90vh] overflow-hidden">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <h2 className="text-xl font-bold text-gray-900">Modifier le produit</h2>
+                <button
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  onClick={handleModalClose}
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+                <ProductForm product={product} onClose={handleModalClose} />
+              </div>
             </div>
           </div>
         </>

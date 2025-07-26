@@ -1,19 +1,35 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Eye, X } from 'lucide-react';
+import { Search, Eye, X, Trash2, Plus, Filter, X as XIcon, Calendar, SortAsc, SortDesc } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
 import OrderLocationMap from '../../components/OrderLocationMap';
 import QRCode from 'react-qr-code';
 import { useTranslation } from 'react-i18next';
+import OrderDetailsModal from '../../components/OrderDetailsModal';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Orders = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
+  const [sortOrder, setSortOrder] = useState('desc'); // 'asc' or 'desc'
+
+  // Get status filter from URL params
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const statusFromUrl = urlParams.get('status');
+    if (statusFromUrl) {
+      setStatusFilter(statusFromUrl);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     fetchOrders();
@@ -26,9 +42,6 @@ const Orders = () => {
         .from('orders')
         .select(`
           *,
-          profiles (
-            full_name
-          ),
           order_items (
             *,
             products (
@@ -69,10 +82,59 @@ const Orders = () => {
     }
   };
 
-  const filteredOrders = orders.filter(order =>
-    order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (order.profiles?.full_name || '').toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleDelete = async (orderId) => {
+    if (!window.confirm(t('orders.confirm_delete'))) return;
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .delete()
+        .eq('id', orderId);
+      if (error) throw error;
+      setOrders(orders.filter(order => order.id !== orderId));
+      toast.success(t('orders.delete_success'));
+    } catch (error) {
+      toast.error(t('orders.delete_error'));
+    }
+  };
+
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (order.shipping_address?.name || '').toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesStatus = !statusFilter || order.status?.toLowerCase() === statusFilter.toLowerCase();
+    
+    // Date filter
+    const matchesDate = !dateFilter || (() => {
+      const orderDate = new Date(order.created_at).toISOString().split('T')[0];
+      return orderDate === dateFilter;
+    })();
+    
+    return matchesSearch && matchesStatus && matchesDate;
+  }).sort((a, b) => {
+    const dateA = new Date(a.created_at);
+    const dateB = new Date(b.created_at);
+    return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+  });
+
+  const clearStatusFilter = () => {
+    setStatusFilter('');
+    navigate('/admin/orders');
+  };
+
+  const clearDateFilter = () => {
+    setDateFilter('');
+  };
+
+  const clearAllFilters = () => {
+    setStatusFilter('');
+    setDateFilter('');
+    setSearchQuery('');
+    navigate('/admin/orders');
+  };
+
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -81,18 +143,117 @@ const Orders = () => {
           <h1 className="text-3xl font-bold">{t('orders.title')}</h1>
           <p className="text-gray-600">{t('orders.manage_customer_orders')}</p>
         </div>
-        
+        <div className="flex gap-4 items-center">
+          <button
+            onClick={() => navigate('/admin/create-order')}
+            className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition-colors"
+          >
+            <Plus className="mr-2 h-5 w-5" />
+            {t('orders.create_order') || 'Créer une commande'}
+          </button>
+        </div>
+      </div>
+
+      {/* Filters Section */}
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* Search */}
         <div className="relative">
           <input
             type="text"
-            placeholder={t('search_orders')}
+            placeholder="Rechercher par ID ou client..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-64 rounded-md border border-gray-300 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-300 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           />
           <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
         </div>
+
+        {/* Date Filter */}
+        <div className="relative">
+          <input
+            type="date"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="w-full rounded-md border border-gray-300 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+          />
+          <Calendar className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+        </div>
+
+        {/* Status Filter */}
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+        >
+          <option value="">Tous les statuts</option>
+          <option value="pending">En attente</option>
+          <option value="processing">En traitement</option>
+          <option value="shipped">Expédiées</option>
+          <option value="delivered">Livrées</option>
+          <option value="cancelled">Annulées</option>
+        </select>
+
+        {/* Sort Order */}
+        <button
+          onClick={toggleSortOrder}
+          className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-50 transition-colors"
+        >
+          {sortOrder === 'asc' ? <SortAsc className="h-5 w-5" /> : <SortDesc className="h-5 w-5" />}
+          <span>Date {sortOrder === 'asc' ? '↑' : '↓'}</span>
+        </button>
       </div>
+
+      {/* Active Filters Display */}
+      {(statusFilter || dateFilter || searchQuery) && (
+        <div className="mb-6 flex flex-wrap items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <Filter className="h-5 w-5 text-blue-600" />
+          <span className="text-blue-800 font-medium">Filtres actifs :</span>
+          
+          {statusFilter && (
+            <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+              Statut: {statusFilter}
+              <button
+                onClick={clearStatusFilter}
+                className="ml-1 hover:text-blue-600"
+              >
+                <XIcon className="h-3 w-3" />
+              </button>
+            </span>
+          )}
+          
+          {dateFilter && (
+            <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+              Date: {new Date(dateFilter).toLocaleDateString()}
+              <button
+                onClick={clearDateFilter}
+                className="ml-1 hover:text-green-600"
+              >
+                <XIcon className="h-3 w-3" />
+              </button>
+            </span>
+          )}
+          
+          {searchQuery && (
+            <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+              Recherche: "{searchQuery}"
+              <button
+                onClick={() => setSearchQuery('')}
+                className="ml-1 hover:text-purple-600"
+              >
+                <XIcon className="h-3 w-3" />
+              </button>
+            </span>
+          )}
+          
+          <button
+            onClick={clearAllFilters}
+            className="ml-auto flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <XIcon className="h-4 w-4" />
+            <span className="text-sm">Effacer tous les filtres</span>
+          </button>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
@@ -123,6 +284,39 @@ const Orders = () => {
                 </th>
               </tr>
             </thead>
+            {filteredOrders.length === 0 && !isLoading && (
+              <tbody>
+                <tr>
+                  <td colSpan="6" className="px-6 py-12 text-center">
+                    <div className="text-gray-500">
+                      {(statusFilter || dateFilter || searchQuery) ? (
+                        <>
+                          <p className="text-lg font-medium mb-2">Aucune commande trouvée</p>
+                          <p className="text-sm mb-4">
+                            Aucune commande ne correspond aux critères de recherche.
+                            {statusFilter && ` Statut: ${statusFilter}`}
+                            {dateFilter && ` Date: ${new Date(dateFilter).toLocaleDateString()}`}
+                            {searchQuery && ` Recherche: "${searchQuery}"`}
+                          </p>
+                          <button
+                            onClick={clearAllFilters}
+                            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
+                          >
+                            <XIcon className="h-4 w-4" />
+                            <span>Voir toutes les commandes</span>
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-lg font-medium mb-2">Aucune commande trouvée</p>
+                          <p className="text-sm">Aucune commande ne correspond à votre recherche.</p>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            )}
             <tbody className="divide-y divide-gray-200 bg-white">
               {filteredOrders.map((order) => (
                 <motion.tr
@@ -138,9 +332,19 @@ const Orders = () => {
                     <div className="text-sm font-medium text-gray-900">
                       {order.shipping_address?.name || 'Unknown Customer'}
                     </div>
+                    {!order.user_id && (
+                      <div className="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-full inline-block mt-1">
+                        {t('orders.guest_order')}
+                      </div>
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                    {new Date(order.created_at).toLocaleDateString()}
+                    <div className="flex flex-col">
+                      <span>{new Date(order.created_at).toLocaleDateString()}</span>
+                      <span className="text-xs text-gray-400">
+                        {new Date(order.created_at).toLocaleTimeString()}
+                      </span>
+                    </div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
                     {order.total.toFixed(2) } FCFA
@@ -158,15 +362,23 @@ const Orders = () => {
                       <option value="cancelled">{t('cancelled')}</option>
                     </select>
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium flex gap-2 items-center">
                     <button
                       onClick={() => {
                         setSelectedOrder(order);
                         setShowModal(true);
                       }}
                       className="text-blue-600 hover:text-blue-900"
+                      title={t('orders.view_details')}
                     >
                       <Eye className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(order.id)}
+                      className="text-red-600 hover:text-red-900"
+                      title={t('orders.delete')}
+                    >
+                      <Trash2 className="h-5 w-5" />
                     </button>
                   </td>
                 </motion.tr>
@@ -176,125 +388,11 @@ const Orders = () => {
         </div>
       )}
 
-      {/* Order Details Modal */}
       {showModal && selectedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/40 overflow-y-auto p-4">
-          <div className="relative w-full max-w-4xl rounded-2xl bg-white p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
-            <button
-              onClick={() => {
-                setShowModal(false);
-                setSelectedOrder(null);
-              }}
-              className="absolute right-4 top-4 text-gray-400 hover:text-gray-700 text-2xl font-bold focus:outline-none"
-              aria-label="Close"
-            >
-              &times;
-            </button>
-            <h2 className="mb-6 text-2xl font-bold text-center text-gray-900">{t('order_details')}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Infos client & commande */}
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-semibold text-gray-800 mb-1">{t('customer_information')}</h3>
-                  <div className="rounded-lg bg-gray-50 p-4 space-y-1">
-                    <p><strong>{t('name')}:</strong> {selectedOrder.profiles?.full_name || 'Unknown Customer'}</p>
-                    {selectedOrder.shipping_address?.email && (
-                      <p><strong>{t('email')}:</strong> {selectedOrder.shipping_address.email}</p>
-                    )}
-                    {selectedOrder.shipping_address?.phone && (
-                      <p><strong>{t('phone')}:</strong> {selectedOrder.shipping_address.phone}</p>
-                    )}
-                    {selectedOrder.shipping_address?.address && (
-                      <p><strong>{t('address')}:</strong> {selectedOrder.shipping_address.address}</p>
-                    )}
-                    {selectedOrder.shipping_address?.city && (
-                      <p><strong>{t('city')}:</strong> {selectedOrder.shipping_address.city}</p>
-                    )}
-                    {selectedOrder.shipping_address?.state && (
-                      <p><strong>{t('state')}:</strong> {selectedOrder.shipping_address.state}</p>
-                    )}
-                    {selectedOrder.shipping_address?.zip_code && (
-                      <p><strong>{t('zip_code')}:</strong> {selectedOrder.shipping_address.zip_code}</p>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-800 mb-1">{t('order_information')}</h3>
-                  <div className="rounded-lg bg-gray-50 p-4 space-y-1">
-                    <p><strong>{t('order_id')}:</strong> {selectedOrder.id}</p>
-                    <p><strong>{t('date')}:</strong> {new Date(selectedOrder.created_at).toLocaleString()}</p>
-                    <p><strong>{t('status')}:</strong> {selectedOrder.status}</p>
-                    <p><strong>{t('total')}:</strong> {selectedOrder.total ? `${selectedOrder.total.toLocaleString()} FCFA` : ''}</p>
-                  </div>
-                </div>
-              </div>
-              {/* Carte de localisation */}
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-semibold text-gray-800 mb-2">{t('customer_location')}</h3>
-                  {(() => {
-                    let geo = selectedOrder.userGeolocation;
-                    if (typeof geo === 'string') {
-                      try {
-                        geo = JSON.parse(geo);
-                      } catch (e) {
-                        geo = null;
-                      }
-                    }
-                    if (geo && geo.latitude && geo.longitude) {
-                      return <>
-                        <OrderLocationMap
-                          userGeolocation={geo}
-                          userName={selectedOrder.profiles?.full_name || 'Unknown Customer'}
-                        />
-                        <div className="mt-2 text-xs text-gray-500">
-                          <span>{t('lat')}: {geo.latitude}, {t('lng')}: {geo.longitude}</span>
-                        </div>
-                        <div className="mt-4 flex flex-col items-center gap-2">
-                          <span className="text-xs text-gray-600">{t('scan_to_open_in_google_maps')}</span>
-                          <QRCode value={`https://www.google.com/maps/search/?api=1&query=${geo.latitude},${geo.longitude}`} size={96} />
-                        </div>
-                      </>;
-                    } else {
-                      return <div className="text-sm text-gray-400">{t('no_geolocation_data_available')}</div>;
-                    }
-                  })()}
-                </div>
-              </div>
-            </div>
-            {/* Items de la commande */}
-            <div className="mt-8">
-              <h3 className="mb-2 text-lg font-medium">{t('order_items')}</h3>
-              <div className="overflow-x-auto rounded-lg bg-gray-50 p-2">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">{t('product')}</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">{t('price')}</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">{t('quantity')}</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">{t('total')}</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {selectedOrder.order_items?.map((item) => (
-                      <tr key={item.id}>
-                        <td className="flex items-center gap-2 px-4 py-2">
-                          {item.products?.image_url && (
-                            <img src={item.products.image_url} alt={item.products.name} className="h-8 w-8 rounded object-cover" />
-                          )}
-                          <span>{item.products?.name}</span>
-                        </td>
-                        <td className="px-4 py-2">{item.price ? `${item.price.toLocaleString()} FCFA` : ''}</td>
-                        <td className="px-4 py-2">{item.quantity}</td>
-                        <td className="px-4 py-2 font-semibold">{item.price && item.quantity ? `${(item.price * item.quantity).toLocaleString()} FCFA` : ''}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
+        <OrderDetailsModal order={selectedOrder} onClose={() => {
+          setShowModal(false);
+          setSelectedOrder(null);
+        }} />
       )}
     </div>
   );

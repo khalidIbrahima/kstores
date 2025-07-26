@@ -45,7 +45,7 @@ const ProductImageInput = ({ value, onChange, index }) => {
           <button
             type="button"
             onClick={handleRemove}
-            className="text-red-600 hover:text-red-800"
+            className="text-red-500 hover:text-red-700 transition-colors p-1"
             aria-label={t('admin.products.removeImage')}
           >
             <X className="h-4 w-4" />
@@ -53,22 +53,22 @@ const ProductImageInput = ({ value, onChange, index }) => {
         )}
       </div>
       
-      <div className="flex gap-4">
+      <div className="flex gap-3">
         <div className="flex-1">
           <input
             type="url"
             value={value}
             onChange={handleChange}
             placeholder={t('admin.products.imageUrlPlaceholder')}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
           {error && (
-            <p className="mt-1 text-sm text-red-600">{error}</p>
+            <p className="mt-1 text-xs text-red-600">{error}</p>
           )}
         </div>
         
         {preview && (
-          <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200">
+          <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-50">
             <img
               src={preview}
               alt={`Preview ${index + 1}`}

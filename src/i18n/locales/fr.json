@@ -8,7 +8,7 @@
     "orders": "Commandes",
     "admin": "Administration",
     "loading": "Chargement...",
-    "currency": "F CFA",
+    "currency": "FCFA",
     "error": "Erreur",
     "success": "Succès",
     "submit": "Soumettre",
@@ -29,22 +29,22 @@
     "hero": {
       "title": "Votre destination unique pour",
       "subtitle": "Tout ce dont vous avez besoin",
-      "description": "Découvrez des milliers de produits avec une livraison rapide et un service client exceptionnel.",
+      "description": "Découvrez des milliers d'articles de qualité avec une livraison rapide et un service client exceptionnel.",
       "shopNow": "Acheter maintenant",
       "browseCategories": "Parcourir les catégories"
     },
     "categories": {
       "title": "Acheter par catégorie",
-      "description": "Parcourez notre large sélection de produits dans différentes catégories"
+      "description": "Parcourez notre large sélection d'articles dans différentes catégories"
     },
     "featured": {
-      "title": "Produits en vedette",
+      "title": "Articles en vedette",
       "description": "Découvrez nos nouveautés et nos articles les plus populaires"
     },
     "features": {
       "quality": {
-        "title": "Produits de qualité",
-        "description": "Nous nous assurons que tous les produits répondent à nos normes de qualité élevées"
+        "title": "Articles de qualité",
+        "description": "Nous nous assurons que tous les articles répondent à nos normes de qualité élevées"
       },
       "delivery": {
         "title": "Livraison rapide",
@@ -64,21 +64,21 @@
   },
   "about": {
     "title": "À propos de Kapital Stores",
-    "subtitle": "Votre destination de confiance pour des produits de qualité et une expérience d'achat exceptionnelle",
+    "subtitle": "Votre destination de confiance pour des articles de qualité et une expérience d'achat exceptionnelle",
     "story": {
       "title": "Notre Histoire",
-      "content1": "Fondé en 2022, Kapital Stores est passé d'une petite boutique locale à une place de marché en ligne leader. Notre mission est de fournir aux clients des produits de haute qualité à des prix compétitifs tout en offrant un service client exceptionnel.",
-      "content2": "Nous sélectionnons soigneusement nos produits pour nous assurer de n'offrir que les meilleurs articles dans diverses catégories. Notre équipe travaille sans relâche pour sourcer des produits auprès de fabricants et de marques fiables qui partagent notre engagement envers la qualité et la durabilité."
+      "content1": "Fondé en 2022, Kapital Stores est passé d'une petite boutique locale à une place de marché en ligne leader. Notre mission est de fournir aux clients des articles de haute qualité à des prix compétitifs tout en offrant un service client exceptionnel.",
+      "content2": "Nous sélectionnons soigneusement nos articles pour nous assurer de n'offrir que les meilleurs articles dans diverses catégories. Notre équipe travaille sans relâche pour sourcer des articles auprès de fabricants et de marques fiables qui partagent notre engagement envers la qualité et la durabilité."
     },
     "values": {
       "title": "Nos Valeurs",
       "quality": {
         "title": "La Qualité d'Abord",
-        "description": "Nous ne faisons jamais de compromis sur la qualité, nous nous assurons que chaque produit répond à nos normes élevées"
+        "description": "Nous ne faisons jamais de compromis sur la qualité, nous nous assurons que chaque article répond à nos normes élevées"
       },
       "delivery": {
         "title": "Livraison Rapide",
-        "description": "Nous assurons une livraison rapide et fiable pour vous faire parvenir vos produits à temps"
+        "description": "Nous assurons une livraison rapide et fiable pour vous faire parvenir vos articles à temps"
       },
       "security": {
         "title": "Achats Sécurisés",
@@ -143,7 +143,7 @@
   "nav": {
     "home": "Accueil",
     "categories": "Catégories",
-    "allProducts": "Tous les produits",
+    "allProducts": "Tous les articles",
     "about": "À propos",
     "contact": "Contact",
     "viewStore": "Voir la boutique",
@@ -153,6 +153,10 @@
     "title": "Catégories",
     "name": "Nom de la catégorie",
     "slug": "Slug",
+    "cover_image": "Image de couverture",
+    "cover_image_url": "URL de l'image de couverture",
+    "cover_image_placeholder": "https://exemple.com/image.jpg",
+    "cover_image_preview": "Aperçu de l'image de couverture",
     "created_at": "Créé le",
     "actions": "Actions",
     "add": "Ajouter une catégorie",
@@ -170,9 +174,11 @@
     "beauty": "Beauté",
     "all": "Toutes les catégories",
     "notFound": "Catégorie introuvable",
-    "notFoundDesc": "La catégorie que vous recherchez n'existe pas ou a été supprimée"
+    "notFoundDesc": "La catégorie que vous recherchez n'existe pas ou a été supprimée",
+    "browseProducts": "Parcourir les articles"
   },
   "product": {
+    "notFound":"Articles introuvables",
     "addToCart": "Ajouter au panier",
     "outOfStock": "Rupture de stock",
     "inStock": "En stock",
@@ -180,13 +186,13 @@
     "description": "Description",
     "quantity": "Quantité",
     "price": "Prix",
-    "reviews": "avis",
+    "reviews": "Avis",
     "freeShipping": "Livraison gratuite",
     "freeShippingDesc": "Livraison gratuite pour les commandes de plus de 25 000 F CFA",
     "securePayment": "Paiement sécurisé",
     "securePaymentDesc": "100% sécurisé",
-    "relatedProducts": "Produits similaires",
-    "noProducts": "Aucun produit trouvé",
+    "relatedProducts": "Articles similaires",
+    "noProducts": "Aucun article trouvé",
     "share": "Partager",
     "wishlist": "Ajouter aux favoris",
     "sortBy": {
@@ -196,13 +202,35 @@
       "priceHigh": "Prix décroissant",
       "name": "Nom"
     },
-    "images": "Images du produit",
+    "images": "Images de l'article",
     "addImage": "Ajouter une image",
     "noImage": "Aucune image",
-    "error": "Erreur lors de l'enregistrement du produit"
+    "error": "Erreur lors de l'enregistrement de l'article",
+    "allProducts": "Tous les articles",
+    "browseDescription": "Parcourez notre large sélection d'articles dans différentes catégories",
+    "browse": "",
+    "onlyLeft" : "",
+    "adjustFilters": "Ajuster les filtres",
+    "orders": "Commande(s)",
+    "views": "Vues",
+    "visits": "Visites",
+    "topViewedProducts": "Articles les plus vus",
+    "recentActivity": "Activité récente",
+    "productStats": "Statistiques des articles",
+    "totalProducts": "Total des articles",
+    "totalCustomers": "Total des clients",
+    "selectColor": "Sélectionner une couleur",
+    "colorRequired": "Veuillez sélectionner une couleur",
+    "selectedColor": "Couleur sélectionnée"
   },
   "cart": {
-    "empty": "Votre panier est vide",
+    "yourCartIsEmpty": "Votre panier est vide",
+    "looksLikeYouHaveNotAddedAnythingToYourCartYet": "Il semble que vous n'avez rien ajouté à votre panier.",
+    "yourCart": "Votre panier",
+    "clearYourCart": "Vider votre panier",
+    "areYouSureYouWantToRemoveAllItemsFromYourCart": "Êtes-vous sûr de vouloir supprimer tous les articles de votre panier ?",
+    "clearCart": "Vider le panier",
+    "calculatedAtCheckout": "Calculé à la caisse",
     "continueShopping": "Continuer vos achats",
     "subtotal": "Sous-total",
     "shipping": "Livraison",
@@ -216,7 +244,12 @@
     "orderSummary": "Résumé de la commande",
     "itemCount": "articles dans le panier",
     "remove": "Supprimer",
-    "update": "Mettre à jour"
+    "update": "Mettre à jour",
+    "proceedToCheckout": "Passer à la caisse",
+    "product": "Produit",
+    "price": "Prix",
+    "quantity": "Quantité",
+    "actions": "Actions"
   },
   "auth": {
     "login": "Connexion",
@@ -234,7 +267,9 @@
     "termsAgree": "J'accepte les conditions d'utilisation et la politique de confidentialité",
     "registrationSuccess": "Inscription réussie ! Veuillez vous connecter.",
     "registrationError": "Échec de la création du compte",
-    "googleSignUpError": "Échec de l'inscription avec Google"
+    "googleSignUpError": "Échec de l'inscription avec Google",
+    "noAccount": "Pas de compte ?",
+    "signUp": "Créer un compte"
   },
   "iptv": {
     "title": "Services IPTV",
@@ -277,7 +312,16 @@
       "duration": {
         "monthly": "mois",
         "yearly": "an"
-      }
+      },
+      "planDetails": {
+        "title": "Détails du forfait",
+        "duration": "Durée",
+        "price": "Prix",
+        "paymentMethod": "Méthode de paiement",
+        "total": "Total"
+      },
+      "choose": "Choisir ce plan",
+      "unavailable": "Indisponible"
     },
     "faq": {
       "title": "Questions fréquemment posées",
@@ -300,30 +344,41 @@
       }
     },
     "checkout": {
+      "complete_order": "Finalisez votre commande",
+      "contact_information": "Informations de contact",
+      "email": "E-mail",
+      "processing": "Traitement...",
+      "pay": "Payer",
       "title": "Finaliser votre commande IPTV",
       "planDetails": "Détails du forfait",
       "duration": "Durée",
       "price": "Prix",
       "paymentMethod": "Méthode de paiement",
       "confirmOrder": "Confirmer la commande",
-      "terms": "J'accepte les conditions d'utilisation du service IPTV"
+      "terms": "J'accepte les conditions d'utilisation du service IPTV",
+      "plan": "Forfait",
+      "subtotal": "Sous-total",
+      "tax": "Taxes",
+      "total": "Total",
+      "secure_payment_processing": "Paiement sécurisé",
+      "your_payment_information_is_encrypted_and_secure": "Vos informations de paiement sont chiffrées et sécurisées. Nous ne stockons jamais vos détails de carte bancaire."
     }
   },
   "orders": {
     "title": "Commandes",
-    "manage_customer_orders": "Gérer les commandes des clients",
+    "manage_customer_orders": "Gérer les commandes clients",
     "search_orders": "Rechercher des commandes...",
-    "order_id": "ID de commande",
     "customer": "Client",
     "date": "Date",
     "total": "Total",
     "status": "Statut",
     "actions": "Actions",
     "pending": "En attente",
-    "processing": "En traitement",
-    "shipped": "Expédiée",
-    "delivered": "Livrée",
-    "cancelled": "Annulée",
+    "processing": "En cours",
+    "shipped": "Expédié",
+    "delivered": "Livré",
+    "cancelled": "Annulé",
+    "guest_order": "Commande Invité",
     "order_details": "Détails de la commande",
     "customer_information": "Informations client",
     "name": "Nom",
@@ -345,7 +400,16 @@
     "quantity": "Quantité",
     "fetch_error": "Erreur lors du chargement des commandes",
     "update_success": "Statut de la commande mis à jour avec succès",
-    "update_error": "Erreur lors de la mise à jour du statut de la commande"
+    "update_error": "Erreur lors de la mise à jour du statut de la commande",
+    "order_summary": "Récapitulatif de la commande",
+    "no_orders_yet": "Aucune commande",
+    "start_shopping_to_see_your_order_history_here": "Commencez vos achats pour voir votre historique de commandes ici",
+    "order_placed": "Commande passée",
+    "order_id": "Ref commande",
+    "your_orders": "Vos commandes",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette commande ?",
+    "view_invoice": "Voir la facture",
+    "create_order": "Créer une commande"
   },
   "errors": {
     "general": "Une erreur est survenue",
@@ -367,6 +431,9 @@
   },
   "checkout": {
     "title": "Validation de commande",
+    "guest": {
+      "message": "Vous pouvez finaliser votre commande en tant qu'invité. Votre commande sera traitée normalement."
+    },
     "contact": {
       "title": "Informations de contact",
       "email": "Email",
@@ -389,7 +456,7 @@
     },
     "location": {
       "title": "Sélectionnez votre adresse",
-      "instructions": "Cliquez sur la carte pour sélectionner votre adresse de livraison",
+      "instructions": "Cliquez sur la carte pour sélectionner votre adresse de livraison ou utilisez votre position actuelle",
       "currentLocation": "Utiliser ma position actuelle",
       "error": "Impossible d'obtenir votre position",
       "required": "Veuillez sélectionner une adresse de livraison",
@@ -399,21 +466,41 @@
       }
     },
     "order": {
-      "title": "Récapitulatif de la commande",
+      "title": "Résumé de la commande",
       "subtotal": "Sous-total",
       "shipping": "Livraison",
       "total": "Total",
       "placeOrder": "Passer la commande",
       "processing": "Traitement en cours...",
-      "success": "Commande passée avec succès !",
+      "success": "Commande passée avec succès ! Nous vous contacterons très vite.",
       "error": "Échec du traitement du paiement. Veuillez réessayer."
+    },
+    "confirmation": {
+      "title": "Confirmation de commande",
+      "whatHappensNext": "Que se passe-t-il ensuite ?",
+      "weWillCallYou": "Nous vous appellerons bientôt",
+      "callDescription": "Pour confirmer votre commande et discuter des détails de livraison",
+      "emailConfirmation": "Confirmation par email",
+      "emailDescription": "Vous recevrez un email de confirmation détaillé",
+      "fastDelivery": "Livraison rapide",
+      "deliveryDescription": "Nous traiterons et expédierons votre commande rapidement",
+      "orderItems": "Articles commandés",
+      "customerInformation": "Informations client",
+      "contactDetails": "Détails de contact",
+      "deliveryAddress": "Adresse de livraison",
+      "orderSummary": "Résumé de la commande",
+      "total": "Total",
+      "status": "Statut",
+      "thankYouMessage": "Merci pour votre commande ! Nous vous contacterons très vite pour confirmer les détails.",
+      "continueShopping": "Continuer les achats",
+      "contactSupport": "Contacter le support"
     }
   },
   "admin": {
     "title": "Panneau d'administration",
     "nav": {
       "orders": "Commandes",
-      "products": "Produits",
+      "products": "Articles",
       "users": "Utilisateurs",
       "backToSite": "Retour au site"
     },
@@ -454,19 +541,89 @@
       }
     },
     "dashboard": {
-      "title": "Tableau de bord",
-      "totalOrders": "Total des commandes",
-      "totalRevenue": "Chiffre d'affaires",
-      "totalProducts": "Total des produits",
-      "totalUsers": "Total des utilisateurs",
-      "recentActivity": "Activité récente",
-      "completedOrders": "Commandes complétées",
-      "last30Days": "30 derniers jours",
-      "fetchError": "Erreur lors du chargement des statistiques"
+      "title": "Tableau de Bord",
+      "welcome": "Bienvenue dans votre espace d'administration",
+      "total_orders": "Total Commandes",
+      "total_revenue": "Revenus Totaux",
+      "total_views": "Total Vues",
+      "total_visits": "Total Visites",
+      "from_last_month": "vs mois dernier",
+      "analytics_overview": "Aperçu Analytics",
+      "views_trend": "Tendance des Vues",
+      "visits_trend": "Tendance des Visites",
+      "views": "Vues",
+      "visits": "Visites",
+      "sales_overview": "Aperçu des Ventes",
+      "last_7_days": "7 derniers jours",
+      "last_30_days": "30 derniers jours",
+      "last_90_days": "90 derniers jours",
+      "recent_orders": "Commandes Récentes",
+      "most_viewed_products": "Produits les Plus Vus",
+      "advanced_analytics": "Analytics Avancées"
+    },
+    "guest_customers": {
+      "title": "Clients Invités",
+      "description": "Gestion des clients qui ont passé des commandes sans compte",
+      "total_guests": "Total Clients Invités",
+      "completed_orders": "Commandes Complétées",
+      "abandoned_carts": "Paniers Abandonnés",
+      "conversion_rate": "Taux de Conversion",
+      "total_revenue": "Revenu Total",
+      "average_value": "Valeur Moyenne",
+      "pending_orders": "Commandes en Attente",
+      "filters": {
+        "all": "Tous les clients",
+        "completed": "Commandes complétées",
+        "abandoned": "Paniers abandonnés",
+        "mixed": "Mixte (complétées + abandonnées)",
+        "pending": "En attente"
+      },
+      "status": {
+        "completed": "Commandes Complétées",
+        "abandoned": "Paniers Abandonnés",
+        "mixed": "Mixte",
+        "pending": "En Attente",
+        "unknown": "Inconnu"
+      },
+      "customer_value": {
+        "valued": "Client Valorisé",
+        "recovery_potential": "Potentiel de Récupération",
+        "new": "Nouveau Client"
+      },
+      "insights": {
+        "title": "Insights de Conversion",
+        "conversion_rate": "Taux de Conversion",
+        "average_value": "Valeur Moyenne",
+        "recovery_potential": "Potentiel de Récupération"
+      }
+    },
+    "abandoned_carts": {
+      "title": "Paniers Abandonnés",
+      "description": "Suivi des clients invités qui ont abandonné leur panier",
+      "customers_with_abandoned": "Clients avec Panier Abandonné",
+      "abandoned_carts": "Paniers Abandonnés",
+      "lost_value": "Valeur Perdue",
+      "average_value": "Valeur Moyenne",
+      "filters": {
+        "all": "Tous les paniers abandonnés",
+        "recent": "Abandonnés récemment (7 jours)",
+        "old": "Anciens abandons (30+ jours)"
+      },
+      "recovery_potential": {
+        "high": "Élevé",
+        "medium": "Moyen",
+        "low": "Faible"
+      },
+      "suggestions": {
+        "title": "Suggestions de Récupération",
+        "email_reminder": "Email de relance",
+        "phone_call": "Appel téléphonique",
+        "discount_offer": "Offre de réduction"
+      }
     },
     "products": {
-      "title": "Gestion des produits",
-      "addProduct": "Ajouter un produit",
+      "title": "Gestion des articles",
+      "addProduct": "Ajouter un article",
       "name": "Nom",
       "price": "Prix",
       "stock": "Stock",
@@ -475,13 +632,13 @@
       "edit": "Modifier",
       "activate": "Activer",
       "deactivate": "Désactiver",
-      "fetchError": "Erreur lors du chargement des produits",
-      "updateError": "Erreur lors de la mise à jour du produit",
+      "fetchError": "Erreur lors du chargement des articles",
+      "updateError": "Erreur lors de la mise à jour de l'article",
       "statuses": {
         "active": "Actif",
         "inactive": "Inactif"
       },
-      "images": "Images du produit",
+      "images": "Images de l'article",
       "image": "Image",
       "imageUrlPlaceholder": "URL de l'image",
       "invalidImageUrl": "L'URL de l'image n'est pas valide",
@@ -494,7 +651,7 @@
       "analytics": "Statistiques",
       "storeManagement": "Gestion de la boutique",
       "storeOverview": "Vue d'ensemble",
-      "products": "Produits",
+      "products": "Articles",
       "categories": "Catégories",
       "orders": "Commandes",
       "inventory": "Inventaire",
@@ -525,14 +682,44 @@
         "admin": "Administrateur",
         "user": "Utilisateur"
       }
+    },
+    "payments": {
+      "title": "Paiements",
+      "manage_payments": "Gérer les paiements",
+      "search_payments": "Rechercher des paiements...",
+      "no_payments": "Aucun paiement",
+      "filters": {
+        "all": "Tous",
+        "pending": "En attente",
+        "completed": "Terminé",
+        "failed": "Échoué",
+        "cancelled": "Annulé"
+      },
+      "table": {
+        "id": "ID",
+        "order": "Commande",
+        "amount": "Montant",
+        "provider": "Fournisseur",
+        "status": "Statut",
+        "date": "Date",
+        "actions": "Actions",
+        "mode": "Mode",
+        "order_details": "Voir détails de la commande"
+      },
+      "status": {
+        "pending": "En attente",
+        "completed": "Terminé",
+        "failed": "Échoué",
+        "cancelled": "Annulé"
+      }
     }
   },
   "store": {
     "overview": {
       "title": "Vue d'ensemble de la boutique",
       "description": "Surveillez les performances et l'inventaire de votre boutique",
-      "totalProducts": { "label": "Total des produits" },
-      "lowStockProducts": { "label": "produits en stock faible", "title": "Produits en stock faible" },
+      "totalProducts": { "label": "Total des articles" },
+      "lowStockProducts": { "label": "articles en stock faible", "title": "Articles en stock faible" },
       "totalOrders": { "label": "Total des commandes" },
       "newOrdersToday": { "label": "nouvelles commandes aujourd'hui" },
       "totalRevenue": { "label": "Chiffre d'affaires total" },
@@ -557,10 +744,19 @@
     "total_orders": "Total des commandes",
     "total_revenue": "Revenu total",
     "total_customers": "Total des clients",
-    "total_products": "Total des produits",
+    "total_products": "Total des articles",
+    "total_views": "Total des vues",
+    "total_visits": "Total des visites",
     "from_last_month": "par rapport au mois dernier",
     "low_stock": "articles en stock faible",
     "sales_overview": "Aperçu des ventes",
+    "analytics_overview": "Aperçu des statistiques",
+    "views_trend": "Tendance des vues",
+    "visits_trend": "Tendance des visites",
+    "views": "Vues",
+    "visits": "Visites",
+    "most_viewed_products": "Articles les plus vus",
+    "advanced_analytics": "Statistiques avancées",
     "last_7_days": "7 derniers jours",
     "last_30_days": "30 derniers jours",
     "last_90_days": "90 derniers jours",
@@ -571,26 +767,26 @@
     "amount": "Montant",
     "status": "Statut",
     "date": "Date",
-    "top_products": "Meilleurs produits",
-    "product_name": "Nom du produit",
+    "top_products": "Meilleurs articles",
+    "product_name": "Nom de l'article",
     "inventory": "Inventaire",
     "price": "Prix",
     "fetch_error": "Erreur lors du chargement des données du tableau de bord",
-    "low_stock_products": "Produits en stock faible"
+    "low_stock_products": "Articles en stock faible"
   },
   "products": {
-    "title": "Produits",
-    "manage_inventory": "Gérer votre inventaire de produits",
-    "search_placeholder": "Rechercher des produits...",
-    "add_product": "Ajouter un produit",
-    "edit_product": "Modifier le produit",
-    "delete_confirm": "Êtes-vous sûr de vouloir supprimer ce produit ?",
-    "delete_success": "Produit supprimé avec succès",
-    "delete_error": "Erreur lors de la suppression du produit",
-    "create_success": "Produit créé avec succès",
-    "update_success": "Produit mis à jour avec succès",
-    "fetch_error": "Erreur lors du chargement des produits",
-    "name": "Nom du produit",
+    "title": "Articles",
+    "manage_inventory": "Gérer votre inventaire d'articles",
+    "search_placeholder": "Rechercher des articles...",
+    "add_product": "Ajouter un article",
+    "edit_product": "Modifier l'article",
+    "delete_confirm": "Êtes-vous sûr de vouloir supprimer cet article ?",
+    "delete_success": "Article supprimé avec succès",
+    "delete_error": "Erreur lors de la suppression de l'article",
+    "create_success": "Article créé avec succès",
+    "update_success": "Article mis à jour avec succès",
+    "fetch_error": "Erreur lors du chargement des articles",
+    "name": "Nom de l'article",
     "description": "Description",
     "price": "Prix",
     "inventory": "Inventaire",
@@ -599,7 +795,7 @@
     "actions": "Actions",
     "active": "Actif",
     "inactive": "Inactif",
-    "no_products": "Aucun produit trouvé",
+    "no_products": "Aucun article trouvé",
     "save": "Enregistrer",
     "cancel": "Annuler",
     "select_category": "Sélectionner une catégorie",
@@ -608,7 +804,8 @@
     "image_url1": "URL de l'image 1",
     "image_url2": "URL de l'image 2",
     "image_url3": "URL de l'image 3",
-    "image_url4": "URL de l'image 4"
+    "image_url4": "URL de l'image 4",
+    "views": "Vues"
   },
   "users": {
     "management": {
@@ -631,6 +828,7 @@
     "overview": {
       "title": "Statistiques avancées",
       "description": "Analysez les performances de votre boutique avec des graphiques détaillés",
+      "totalProducts": { "label": "Total des articles" },
       "totalOrders": { "label": "Total des commandes" },
       "totalRevenue": { "label": "Chiffre d'affaires total" },
       "growth": "Croissance",
@@ -666,6 +864,143 @@
     },
     "no_notifications": "Aucune notification",
     "all_caught_up": "Vous avez lu toutes les notifications ",
-    "clear_all": "Tout effacer"
+    "clear_all": "Tout effacer",
+    "marked_read": "Notification modifiée.",
+    "error_delete": "Erreur lors de l'opération",
+    "deleted": "Notification supprimée"
+  },
+  "whatsapp": {
+    "title": "Configuration WhatsApp",
+    "description": "Configurez les notifications WhatsApp pour recevoir des alertes en temps réel",
+    "settings": {
+      "saved": "Paramètres sauvegardés avec succès",
+      "save_error": "Erreur lors de la sauvegarde"
+    },
+    "test": {
+      "success": "Test de connexion réussi !",
+      "error": "Test de connexion échoué"
+    },
+    "notifications": {
+      "new_order": "Nouvelle commande reçue",
+      "status_update": "Mise à jour de statut",
+      "low_stock": "Alerte de stock bas",
+      "payment_failed": "Paiement échoué"
+    }
+  },
+  "payment": {
+    "choose_wallet": "Choisissez votre wallet mobile",
+    "phone": "Numéro de téléphone",
+    "phone_placeholder": "ex : 77 123 45 67"
+    
+  },
+  "reviews":{
+    "title": "Avis clients",
+    "count": "avis",
+    "no_reviews": "Aucun avis pour ce produit",
+    "anonymous": "Client anonyme",
+    "write_review": "Laisser un avis",
+    "your_rating": "Votre note",
+    "your_review": "Votre avis",
+    "submit": "Envoyer",
+    "success": "Merci pour votre avis !",
+    "error": "Une erreur est survenue lors de l'envoi de votre avis"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Gérez les paramètres et préférences de votre boutique",
+    "tabs": {
+      "general": "Général",
+      "payments": "Paiements",
+      "notifications": "Notifications",
+      "security": "Sécurité",
+      "team": "Équipe",
+      "appearance": "Apparence",
+      "email": "Email",
+      "email_config": "Configuration Email",
+      "emailDiagnostic": "Diagnostic Email"
+    },
+    "general": {
+      "title": "Informations de la boutique",
+      "subtitle": "Mettez à jour les détails et préférences de votre boutique",
+      "storeName": "Nom de la boutique",
+      "storeUrl": "URL de la boutique",
+      "contactEmail": "Email de contact",
+      "supportPhone": "Téléphone de support",
+      "storeDescription": "Description de la boutique",
+      "businessHours": "Heures d'ouverture",
+      "days": {
+        "monday": "Lundi",
+        "tuesday": "Mardi",
+        "wednesday": "Mercredi",
+        "thursday": "Jeudi",
+        "friday": "Vendredi",
+        "saturday": "Samedi",
+        "sunday": "Dimanche"
+      },
+      "closed": "Fermé"
+    },
+    "payments": {
+      "title": "Méthodes de paiement",
+      "subtitle": "Configurez les méthodes de paiement disponibles",
+      "methods": {
+        "wave": "Passerelle de paiement Wave Money",
+        "credit_card": "Paiements par carte de crédit et débit",
+        "paypal": "Paiements en ligne PayPal",
+        "bank_transfer": "Virement bancaire direct"
+      },
+      "shipping": {
+        "title": "Options de livraison",
+        "subtitle": "Configurez les coûts et options de livraison",
+        "freeShippingThreshold": "Seuil de livraison gratuite (FCFA)",
+        "standardShippingCost": "Coût de livraison standard (FCFA)",
+        "expressShippingCost": "Coût de livraison express (FCFA)",
+        "localPickup": "Activer le retrait en magasin",
+        "taxRate": "Taux de taxe (%)"
+      }
+    },
+    "appearance": {
+      "title": "Paramètres d'apparence",
+      "subtitle": "Personnalisez l'apparence de votre boutique",
+      "logoUrl": "URL du logo",
+      "faviconUrl": "URL du favicon",
+      "currency": "Devise",
+      "timezone": "Fuseau horaire",
+      "socialMedia": {
+        "title": "Liens des réseaux sociaux",
+        "subtitle": "Ajoutez vos profils de réseaux sociaux",
+        "facebook": "Facebook",
+        "twitter": "Twitter",
+        "instagram": "Instagram",
+        "linkedin": "LinkedIn",
+        "youtube": "YouTube"
+      },
+      "currencies": {
+        "USD": "USD - Dollar américain",
+        "EUR": "EUR - Euro",
+        "GBP": "GBP - Livre sterling",
+        "XOF": "XOF - Franc CFA d'Afrique de l'Ouest",
+        "XAF": "XAF - Franc CFA d'Afrique centrale"
+      },
+      "timezones": {
+        "UTC": "UTC",
+        "Africa/Dakar": "Afrique/Dakar",
+        "Africa/Lagos": "Afrique/Lagos",
+        "Europe/Paris": "Europe/Paris",
+        "America/New_York": "Amérique/New_York"
+      }
+    },
+    "security": {
+      "title": "Paramètres de sécurité",
+      "subtitle": "Configurez les options de sécurité et de maintenance",
+      "maintenanceMode": "Mode maintenance",
+      "maintenanceModeDesc": "Activez le mode maintenance pour désactiver temporairement la boutique pour les visiteurs"
+    },
+    "actions": {
+      "save": "Enregistrer les modifications",
+      "saving": "Enregistrement...",
+      "success": "Paramètres enregistrés avec succès !",
+      "error": "Erreur lors de l'enregistrement des paramètres",
+      "loadError": "Erreur lors du chargement des paramètres"
+    }
   }
 }

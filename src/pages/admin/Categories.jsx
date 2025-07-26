@@ -8,7 +8,7 @@ export default function Categories() {
   const { t } = useTranslation();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newCategory, setNewCategory] = useState({ name: '', slug: '' });
+  const [newCategory, setNewCategory] = useState({ name: '', slug: '', cover_image_url: '' });
   const [editingCategory, setEditingCategory] = useState(null);
 
   useEffect(() => {
@@ -42,7 +42,8 @@ export default function Categories() {
           .from('categories')
           .update({ 
             name: newCategory.name,
-            slug: newCategory.slug.toLowerCase()
+            slug: newCategory.slug.toLowerCase(),
+            cover_image_url: newCategory.cover_image_url || null
           })
           .eq('id', editingCategory.id);
 
@@ -53,14 +54,15 @@ export default function Categories() {
           .from('categories')
           .insert([{ 
             name: newCategory.name,
-            slug: newCategory.slug.toLowerCase()
+            slug: newCategory.slug.toLowerCase(),
+            cover_image_url: newCategory.cover_image_url || null
           }]);
 
         if (error) throw error;
         toast.success(t('categories.create_success'));
       }
 
-      setNewCategory({ name: '', slug: '' });
+      setNewCategory({ name: '', slug: '', cover_image_url: '' });
       setEditingCategory(null);
       await fetchCategories();
     } catch (error) {
@@ -93,7 +95,8 @@ export default function Categories() {
     setEditingCategory(category);
     setNewCategory({
       name: category.name,
-      slug: category.slug
+      slug: category.slug,
+      cover_image_url: category.cover_image_url || ''
     });
   }
 
@@ -143,6 +146,33 @@ export default function Categories() {
             />
           </div>
 
+          <div>
+            <label htmlFor="cover_image_url" className="block text-sm font-medium text-gray-700">
+              {t('categories.cover_image_url')}
+            </label>
+            <input
+              type="url"
+              id="cover_image_url"
+              value={newCategory.cover_image_url}
+              onChange={(e) => setNewCategory({ ...newCategory, cover_image_url: e.target.value })}
+              placeholder={t('categories.cover_image_placeholder')}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            />
+            {newCategory.cover_image_url && (
+              <div className="mt-2">
+                <p className="text-xs text-gray-500 mb-1">{t('categories.cover_image_preview')}:</p>
+                <img 
+                  src={newCategory.cover_image_url} 
+                  alt="Cover preview" 
+                  className="w-20 h-20 object-cover rounded border"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+          </div>
+
           <button
             type="submit"
             disabled={loading}
@@ -160,6 +190,9 @@ export default function Categories() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {t('categories.cover_image')}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {t('categories.name')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -176,6 +209,22 @@ export default function Categories() {
             <tbody className="bg-white divide-y divide-gray-200">
               {categories.map((category) => (
                 <tr key={category.id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {category.cover_image_url ? (
+                      <img 
+                        src={category.cover_image_url} 
+                        alt={`${category.name} cover`}
+                        className="w-12 h-12 object-cover rounded border"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-12 h-12 bg-gray-200 rounded border flex items-center justify-center">
+                        <span className="text-xs text-gray-500">No image</span>
+                      </div>
+                    )}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {category.name}
                   </td>
@@ -203,7 +252,7 @@ export default function Categories() {
               ))}
               {categories.length === 0 && (
                 <tr>
-                  <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                  <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">
                     <div className="flex items-center justify-center text-gray-400">
                       <AlertCircle className="h-5 w-5 mr-2" />
                       {t('categories.no_categories')}

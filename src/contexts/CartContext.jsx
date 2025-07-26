@@ -27,7 +27,7 @@ export function CartProvider({ children }) {
     }
   }, [items]);
 
-  const addItem = (product, quantity = 1) => {
+  const addItem = (product, quantity = 1, selectedColor = null) => {
     if (!product) return;
 
     const parsedQuantity = parseInt(quantity);
@@ -37,7 +37,11 @@ export function CartProvider({ children }) {
     }
 
     setItems(currentItems => {
-      const existingItem = currentItems.find(item => item.id === product.id);
+      const itemKey = selectedColor ? `${product.id}-${selectedColor.name}` : product.id;
+      const existingItem = currentItems.find(item => {
+        const existingKey = item.selectedColor ? `${item.id}-${item.selectedColor.name}` : item.id;
+        return existingKey === itemKey;
+      });
       
       if (existingItem) {
         const newQuantity = existingItem.quantity + parsedQuantity;
@@ -47,12 +51,13 @@ export function CartProvider({ children }) {
           return currentItems;
         }
 
-        const updatedItems = currentItems.map(item =>
-          item.id === product.id
+        const updatedItems = currentItems.map(item => {
+          const existingKey = item.selectedColor ? `${item.id}-${item.selectedColor.name}` : item.id;
+          return existingKey === itemKey
             ? { ...item, quantity: newQuantity }
-            : item
-        );
-        toast.success(`Updated ${product.name} quantity in cart`);
+            : item;
+        });
+        toast.success(`Updated ${product.name}${selectedColor ? ` (${selectedColor.name})` : ''} quantity in cart`);
         return updatedItems;
       } else {
         if (product.inventory && parsedQuantity > product.inventory) {
@@ -60,14 +65,15 @@ export function CartProvider({ children }) {
           return currentItems;
         }
 
-        toast.success(`Added ${product.name} to cart`);
+        toast.success(`Added ${product.name}${selectedColor ? ` (${selectedColor.name})` : ''} to cart`);
         return [...currentItems, { 
           id: product.id,
           name: product.name,
           price: product.price,
           image_url: product.image_url,
           inventory: product.inventory,
-          quantity: parsedQuantity
+          quantity: parsedQuantity,
+          selectedColor: selectedColor
         }];
       }
     });

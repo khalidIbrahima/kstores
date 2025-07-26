@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ProductForm from './ProductForm';
+import ProductPrice from '../../components/ProductPrice';
 
 // Toggle Switch Component
 function ToggleSwitch({ checked, onChange, id, label }) {
@@ -257,6 +258,9 @@ const Products = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Image
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Product
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
@@ -264,6 +268,9 @@ const Products = () => {
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Price
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Promotion
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Inventory
@@ -284,13 +291,46 @@ const Products = () => {
                   onClick={() => window.location.href = `/admin/products/${product.id}`}
                 >
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                    {product.image_url ? (
+                      <img 
+                        src={product.image_url} 
+                        alt={product.name}
+                        className="h-12 w-12 rounded-lg object-cover"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : (
+                      <div className="h-12 w-12 rounded-lg bg-gray-200 flex items-center justify-center">
+                        <span className="text-gray-400 text-xs">No img</span>
+                      </div>
+                    )}
+                  </td>
+                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
                     <span>{product.name}</span>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                     {product.categories?.name || '-'}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                    {formatPrice(product.price)}
+                    <ProductPrice product={product} size="base" showPercentage={false} showEndDate={false} />
+                  </td>
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                    {product.promotion_active && product.promotion_percentage ? (
+                      <div className="flex flex-col">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 w-fit">
+                          -{product.promotion_percentage}%
+                        </span>
+                        {product.promotion_end_date && (
+                          <span className="text-xs text-gray-500 mt-1">
+                            Jusqu'au {new Date(product.promotion_end_date).toLocaleDateString('fr-FR')}
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">-</span>
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                     {product.inventory}
@@ -329,18 +369,22 @@ const Products = () => {
       {showModal && (
         <>
           <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className="relative w-full max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-12">
-              <button
-                onClick={() => setShowModal(false)}
-                className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-6 w-6" />
-              </button>
-              <h2 className="mb-6 text-2xl font-bold text-center">
-                {selectedProduct ? 'Modifier le produit' : 'Ajouter un produit'}
-              </h2>
-              <ProductForm product={selectedProduct} onClose={() => setShowModal(false)} onSaved={fetchProducts} />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="relative w-full max-w-4xl bg-white rounded-lg shadow-xl max-h-[90vh] overflow-hidden">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <h2 className="text-xl font-bold text-gray-900">
+                  {selectedProduct ? 'Modifier le produit' : 'Ajouter un produit'}
+                </h2>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+                <ProductForm product={selectedProduct} onClose={() => setShowModal(false)} onSaved={fetchProducts} />
+              </div>
             </div>
           </div>
         </>

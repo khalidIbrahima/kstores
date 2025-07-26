@@ -5,6 +5,9 @@ import { CreditCard, Lock, Shield, Check } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
+import MobileWalletSelector from '../components/MobileWalletSelector';
+import { sendOrderWhatsappNotificationToAdmin, sendOrderWhatsappConfirmationToCustomer } from '../services/whatsappService';
 
 const IPTVCheckoutPage = () => {
   const [searchParams] = useSearchParams();
@@ -14,18 +17,15 @@ const IPTVCheckoutPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const [formData, setFormData] = useState({
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
     name: '',
     email: user?.email || '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: ''
+    phone: '',
   });
+
+  const [walletInfo, setWalletInfo] = useState({ wallet: '', phone: '' });
 
   useEffect(() => {
     const fetchPlan = async () => {
@@ -79,28 +79,42 @@ const IPTVCheckoutPage = () => {
       // For demo purposes, we'll simulate a successful payment
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Create order record
-      const { error: orderError } = await supabase
+      // Create order record with optional user_id
+      const orderData = {
+        user_id: user?.id || null, // Allow null for guest users
+        total: plan.price,
+        status: 'processing',
+        shipping_address: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+        }
+      };
+
+      const { data: order, error: orderError } = await supabase
         .from('orders')
-        .insert([
-          {
-            user_id: user.id,
-            total: plan.price,
-            status: 'processing',
-            shipping_address: {
-              name: formData.name,
-              address: formData.address,
-              city: formData.city,
-              state: formData.state,
-              zip_code: formData.zipCode
-            }
-          }
-        ]);
+        .insert([orderData])
+        .select()
+        .single();
 
       if (orderError) throw orderError;
 
+      // Envoyer les notifications WhatsApp
+      try {
+        // Notification à l'admin
+        await sendOrderWhatsappNotificationToAdmin(order);
+        
+        // Confirmation au client (si numéro de téléphone disponible)
+        if (formData.phone) {
+          await sendOrderWhatsappConfirmationToCustomer(order);
+        }
+      } catch (error) {
+        console.error('Error sending WhatsApp notifications:', error);
+        // Ne pas bloquer le processus de commande si les notifications échouent
+      }
+
       toast.success('Subscription activated successfully!');
-      navigate('/orders');
+      navigate(`/orders`);
     } catch (error) {
       console.error('Checkout error:', error);
       toast.error('Failed to process payment. Please try again.');
@@ -141,7 +155,7 @@ const IPTVCheckoutPage = () => {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
                       <label className="block text-sm font-medium text-gray-700">
-                        Full Name
+                        {t('orders.name')}
                       </label>
                       <input
                         type="text"
@@ -168,123 +182,8 @@ const IPTVCheckoutPage = () => {
                   </div>
                 </div>
 
-                {/* Billing Address */}
-                <div>
-                  <h3 className="mb-4 text-lg font-medium">Billing Address</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Street Address
-                      </label>
-                      <input
-                        type="text"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                        required
-                      />
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-3">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          City
-                        </label>
-                        <input
-                          type="text"
-                          name="city"
-                          value={formData.city}
-                          onChange={handleInputChange}
-                          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          State
-                        </label>
-                        <input
-                          type="text"
-                          name="state"
-                          value={formData.state}
-                          onChange={handleInputChange}
-                          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          ZIP Code
-                        </label>
-                        <input
-                          type="text"
-                          name="zipCode"
-                          value={formData.zipCode}
-                          onChange={handleInputChange}
-                          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Payment Information */}
-                <div>
-                  <h3 className="mb-4 text-lg font-medium">Payment Information</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Card Number
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          name="cardNumber"
-                          value={formData.cardNumber}
-                          onChange={handleInputChange}
-                          placeholder="1234 5678 9012 3456"
-                          className="mt-1 block w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                          required
-                        />
-                        <CreditCard className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                      </div>
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          Expiry Date
-                        </label>
-                        <input
-                          type="text"
-                          name="expiryDate"
-                          value={formData.expiryDate}
-                          onChange={handleInputChange}
-                          placeholder="MM/YY"
-                          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          CVV
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="text"
-                            name="cvv"
-                            value={formData.cvv}
-                            onChange={handleInputChange}
-                            placeholder="123"
-                            className="mt-1 block w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                            required
-                          />
-                          <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                {/* Mobile Wallet Selector */}
+                <MobileWalletSelector value={walletInfo} onChange={setWalletInfo} />
 
                 <button
                   type="submit"
@@ -297,7 +196,7 @@ const IPTVCheckoutPage = () => {
                       <span className="ml-2">Processing...</span>
                     </div>
                   ) : (
-                    `Pay $${plan.price.toFixed(2)}`
+                    `Pay  ${plan.price.toFixed(2)} ${t('common.currency')}`
                   )}
                 </button>
               </form>
@@ -311,12 +210,12 @@ const IPTVCheckoutPage = () => {
             transition={{ duration: 0.5 }}
           >
             <div className="rounded-lg bg-white p-6 shadow-md">
-              <h2 className="mb-6 text-xl font-bold">Order Summary</h2>
+              <h2 className="mb-6 text-xl font-bold">{t('orders.order_summary')}</h2>
               
               <div className="mb-6 rounded-lg bg-gray-50 p-4">
-                <h3 className="mb-2 text-lg font-medium">{plan.name} Plan</h3>
+                <h3 className="mb-2 text-lg font-medium">{plan.name} {t('iptv.checkout.plan')}</h3>
                 <div className="mb-4">
-                  <span className="text-2xl font-bold">${plan.price}</span>
+                  <span className="text-2xl font-bold">{plan.price} {t('common.currency')}</span>
                   <span className="text-gray-600">/{plan.duration}</span>
                 </div>
                 <div className="space-y-2">
@@ -331,17 +230,17 @@ const IPTVCheckoutPage = () => {
               
               <div className="space-y-4 border-t border-gray-200 pt-4">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">${plan.price.toFixed(2)}</span>
+                  <span className="text-gray-600">{t('iptv.checkout.subtotal')}</span>
+                  <span className="font-medium"> {plan.price.toFixed(2)} {t('common.currency')}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Tax</span>
-                  <span className="font-medium">${(plan.price * 0.1).toFixed(2)}</span>
-                </div>
+                {/* <div className="flex justify-between">
+                  <span className="text-gray-600">{t('iptv.checkout.tax')}</span>
+                  <span className="font-medium">{(plan.price * 0.18).toFixed(2)} {t('common.currency')}</span>
+                </div> */}
                 <div className="flex justify-between border-t border-gray-200 pt-4">
-                  <span className="text-lg font-bold">Total</span>
+                  <span className="text-lg font-bold">{t('orders.total')}</span>
                   <span className="text-lg font-bold">
-                    ${(plan.price + (plan.price * 0.1)).toFixed(2)}
+                    {(plan.price).toFixed(2)} {t('common.currency')}
                   </span>
                 </div>
               </div>
@@ -349,10 +248,10 @@ const IPTVCheckoutPage = () => {
               <div className="mt-6 space-y-4 rounded-lg bg-blue-50 p-4">
                 <div className="flex items-center text-sm text-blue-700">
                   <Shield className="mr-2 h-5 w-5" />
-                  Secure payment processing
+                  {t('iptv.checkout.secure_payment_processing')}
                 </div>
                 <div className="text-sm text-gray-600">
-                  Your payment information is encrypted and secure. We never store your full card details.
+                  {t('iptv.checkout.your_payment_information_is_encrypted_and_secure')}
                 </div>
               </div>
             </div>

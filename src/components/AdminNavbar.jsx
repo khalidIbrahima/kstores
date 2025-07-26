@@ -6,33 +6,39 @@ const AdminNavbar = () => {
   const { t } = useTranslation();
 
   return (
-    <nav className="bg-white shadow">
+    <nav className="bg-background border-b border-background-dark shadow">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 justify-between">
           <div className="flex">
             <div className="flex flex-shrink-0 items-center">
-              <Link to="/admin" className="text-xl font-bold text-gray-900">
+              <Link to="/admin" className="text-xl font-bold text-text-dark hover:text-primary transition-colors">
                 {t('admin.sidebar.dashboard')}
               </Link>
             </div>
             <div className="ml-6 flex items-center space-x-4">
               <Link
                 to="/admin/orders"
-                className="rounded-md px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100"
+                className="rounded-md px-3 py-2 text-sm font-medium text-text-dark hover:text-primary hover:bg-background-light transition-colors"
               >
                 {t('admin.sidebar.orders')}
               </Link>
               <Link
                 to="/admin/products"
-                className="rounded-md px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100"
+                className="rounded-md px-3 py-2 text-sm font-medium text-text-dark hover:text-primary hover:bg-background-light transition-colors"
               >
                 {t('admin.sidebar.products')}
               </Link>
               <Link
                 to="/admin/users"
-                className="rounded-md px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100"
+                className="rounded-md px-3 py-2 text-sm font-medium text-text-dark hover:text-primary hover:bg-background-light transition-colors"
               >
                 {t('admin.sidebar.customers')}
+              </Link>
+              <Link
+                to="/admin/supplier-orders"
+                className="rounded-md px-3 py-2 text-sm font-medium text-text-dark hover:text-primary hover:bg-background-light transition-colors"
+              >
+                Commandes Fournisseur
               </Link>
             </div>
           </div>
@@ -41,7 +47,7 @@ const AdminNavbar = () => {
               <LanguageSelector />
               <Link
                 to="/"
-                className="rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                className="btn-primary"
               >
                 {t('admin.sidebar.backToSite')}
               </Link>

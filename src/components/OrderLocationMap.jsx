@@ -11,7 +11,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Custom user marker icon
+// Custom user marker icon with primary color
 const userIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
@@ -26,8 +26,8 @@ const OrderLocationMap = ({ userGeolocation, userName }) => {
 
   if (!userGeolocation?.latitude || !userGeolocation?.longitude) {
     return (
-      <div className="flex h-[300px] items-center justify-center rounded-lg bg-gray-100">
-        <p className="text-gray-500">{t('admin.orders.noLocation')}</p>
+      <div className="flex h-[300px] items-center justify-center rounded-lg bg-background-light">
+        <p className="text-text-light">{t('admin.orders.noLocation')}</p>
       </div>
     );
   }
@@ -51,11 +51,11 @@ const OrderLocationMap = ({ userGeolocation, userName }) => {
         <Marker position={position} icon={userIcon}>
           <Popup>
             <div className="text-center">
-              <p className="font-medium">{userName}</p>
-              <p className="text-sm text-gray-600">
+              <p className="font-medium text-text-dark">{userName}</p>
+              <p className="text-sm text-text-light">
                 {t('checkout.location.coordinates.latitude')}: {position.lat.toFixed(6)}
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-text-light">
                 {t('checkout.location.coordinates.longitude')}: {position.lng.toFixed(6)}
               </p>
             </div>

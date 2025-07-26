@@ -37,7 +37,8 @@ export function useRealtimeNotifications(userId) {
     };
   }, [userId]);
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+  const unreadNotifications = notifications.filter(n => !n.is_read);
+  const unreadCount = unreadNotifications.length;
 
-  return { notifications, unreadCount, setNotifications, open, setOpen };
+  return { notifications, unreadNotifications, unreadCount, setNotifications, open, setOpen };
 } 

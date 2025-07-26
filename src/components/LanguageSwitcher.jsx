@@ -12,7 +12,7 @@ const LanguageSwitcher = () => {
   return (
     <button
       onClick={toggleLanguage}
-      className="flex items-center space-x-1 rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
+      className="flex items-center space-x-1 rounded-full bg-background-light px-3 py-1 text-sm text-text-dark hover:bg-background-dark transition-colors"
     >
       <Globe className="h-4 w-4" />
       <span>{i18n.language.toUpperCase()}</span>
