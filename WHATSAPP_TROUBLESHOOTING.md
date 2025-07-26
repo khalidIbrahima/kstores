@@ -13,8 +13,8 @@
 ### 1. Check Configuration
 Go to `/admin/whatsapp-settings` and verify:
 
-- ✅ **Account SID**: Should start with "AC..." (e.g., AC1234567890abcdef1234567890abcdef)
-- ✅ **Auth Token**: Should be a long string (e.g., 1234567890abcdef1234567890abcdef)
+- ✅ **Account SID**: Should start with "AC..." (e.g., ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx)
+- ✅ **Auth Token**: Should be a long string (e.g., xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx)
 - ✅ **WhatsApp Number**: Should be in format `whatsapp:+1234567890`
 - ✅ **Admin Number**: Your phone number (e.g., `+221771234567`)
 - ✅ **Order Notifications**: Should be enabled
