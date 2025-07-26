@@ -5,7 +5,11 @@ import { Star, Search, Filter } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
+<<<<<<< HEAD
 import DynamicSocialMetaTags from '../components/DynamicSocialMetaTags';
+=======
+import SocialMetaTags from '../components/SocialMetaTags';
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
 import SocialShareButtons from '../components/SocialShareButtons';
 import SocialMediaSection from '../components/SocialMediaSection';
 import { formatDescriptionForCard } from '../utils/formatDescription.jsx';
@@ -134,10 +138,53 @@ const ProductsPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-12">
+<<<<<<< HEAD
       <DynamicSocialMetaTags 
         pageType="products"
         title={`${t('product.allProducts')} - KStores`}
         description={t('product.browseDescription')}
+=======
+      <SocialMetaTags 
+        title={`${t('product.allProducts')} - KStores`}
+        description={t('product.browseDescription')}
+        keywords="produits, boutique en ligne, tech, électronique, livraison rapide, KStores"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": `${t('product.allProducts')} - KStores`,
+          "description": t('product.browseDescription'),
+          "url": window.location.href,
+          "publisher": {
+            "@type": "Organization",
+            "name": "KStores",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "/src/assets/logo-transparent.png"
+            }
+          },
+          "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": filteredProducts.length,
+            "itemListElement": filteredProducts.slice(0, 10).map((product, index) => ({
+              "@type": "ListItem",
+              "position": index + 1,
+              "item": {
+                "@type": "Product",
+                "name": product.name,
+                "description": product.description,
+                "image": product.image_url,
+                "url": `${window.location.origin}/product/${product.id}`,
+                "offers": {
+                  "@type": "Offer",
+                  "price": product.price,
+                  "priceCurrency": "XOF",
+                  "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+                }
+              }
+            }))
+          }
+        }}
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
       />
       
       {/* Header */}

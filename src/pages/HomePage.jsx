@@ -6,7 +6,11 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
 import { formatPrice } from '../utils/currency';
+<<<<<<< HEAD
 import DynamicSocialMetaTags from '../components/DynamicSocialMetaTags';
+=======
+import { Helmet } from 'react-helmet';
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
 import PromotedProducts from '../components/PromotedProducts';
 
 const HomePage = () => {
@@ -154,7 +158,52 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen">
+<<<<<<< HEAD
       <DynamicSocialMetaTags pageType="home" />
+=======
+      <Helmet>
+        <title>Kapital Stores - Boutique en ligne de produits technologiques | Smartphones, Ordinateurs, Accessoires</title>
+        <meta name="description" content="Découvrez notre sélection de produits technologiques : smartphones, ordinateurs, accessoires gaming, claviers mécaniques et plus. Livraison rapide, prix compétitifs et service client de qualité. Commandez en ligne sur KStores." />
+        <meta name="keywords" content="boutique en ligne, produits technologiques, smartphones, ordinateurs, accessoires gaming, claviers mécaniques, accessoires, livraison rapide, prix bas, Dakar, Sénégal" />
+        <meta name="keywords" content="boutique en ligne, produits technologiques, smartphones, ordinateurs, accessoires gaming, claviers mécaniques, accessoires, livraison rapide, prix bas, Dakar, Sénégal" />
+        <meta name="author" content="Kapital Store" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={window.location.href} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Kapital Stores - Boutique en ligne de produits technologiques" />
+        <meta property="og:description" content="Découvrez notre sélection de produits technologiques : smartphones, ordinateurs, accessoires et plus. Livraison rapide et prix compétitifs." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:image" content={`${window.location.origin}/logo192.png`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="KStores" />
+        <meta property="og:locale" content="fr_FR" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Kapital Store - Boutique en ligne de produits technologiques" />
+        <meta name="twitter:description" content="Découvrez notre sélection de produits technologiques : smartphones, ordinateurs, accessoires et plus." />
+        <meta name="twitter:image" content={`${window.location.origin}/logo192.png`} />
+        
+        {/* Additional SEO meta tags */}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#3B82F6" />
+        <meta name="msapplication-TileColor" content="#3B82F6" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="KStores" />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(organizationStructuredData)}
+        </script>
+      </Helmet>
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-primary via-primary/90 to-primary py-20 text-white md:py-32 h-[60vh] flex items-center justify-center overflow-hidden">

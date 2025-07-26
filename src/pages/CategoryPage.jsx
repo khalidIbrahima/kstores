@@ -138,10 +138,22 @@ const CategoryPage = () => {
 
   return (
     <div>
+<<<<<<< HEAD
       <DynamicSocialMetaTags 
         pageType="category"
         category={category}
       />
+=======
+      <Helmet>
+        <title>{category?.name ? `${category.name} - KStores` : 'Catégorie - KStores'}</title>
+        <meta name="description" content={category?.description || 'Catégorie de produits KStores'} />
+        <meta property="og:title" content={category?.name ? `${category.name} - KStores` : 'Catégorie - KStores'} />
+        <meta property="og:description" content={category?.description || 'Catégorie de produits KStores'} />
+        <meta property="og:image" content={category?.hero_image || '/logo192.png'} />
+        <meta property="og:url" content={window.location.href} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
       {/* Hero Section for Categories with Cover Images */}
       {heroImages.length > 0 && (
         <div className="relative overflow-hidden bg-gray-900 py-24 text-white">

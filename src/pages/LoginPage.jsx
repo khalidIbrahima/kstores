@@ -14,7 +14,11 @@ const LoginPage = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   
+<<<<<<< HEAD
   const { signIn, signInWithGoogle, isAdmin } = useAuth();
+=======
+  const { signIn, isAdmin } = useAuth();
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
   const { settings } = useStoreSettings();
   const navigate = useNavigate();
   const location = useLocation();
@@ -86,7 +90,11 @@ const LoginPage = () => {
               />
             </div>
           ) : null}
+<<<<<<< HEAD
           <h2 className="mt-6 text-2xl sm:text-3xl font-extrabold text-gray-900">
+=======
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
             {t('auth.login')}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
@@ -108,19 +116,30 @@ const LoginPage = () => {
           </div>
         )}
 
+<<<<<<< HEAD
         <GoogleAuthButton
           onClick={handleGoogleSignIn}
           disabled={isLoading}
         />
+=======
+        {/* <button
+          onClick={handleGoogleSignIn}
+          disabled={isLoading}
+          className="flex w-full items-center justify-center gap-3 rounded-full border border-accent bg-white px-6 py-3 text-base font-semibold text-primary shadow-sm hover:bg-accent-light hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition"
+        >
+          <img src="https://www.google.com/favicon.ico" alt="Google" className="h-5 w-5" />
+          {t('auth.googleSignIn')}
+        </button> */}
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
 
-        <div className="relative">
+        {/* <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="bg-white px-2 text-gray-500">{t('auth.orContinueWith')}</span>
           </div>
-        </div>
+        </div> */}
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">

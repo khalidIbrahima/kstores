@@ -53,7 +53,10 @@ import AdminSupport from './pages/admin/Support';
 import AdminIPTVPlans from './pages/admin/IPTVPlans';
 import ProductDetailPage from './pages/admin/ProductDetailPage';
 import AdminOrderPage from './pages/admin/OrdersPage';
+<<<<<<< HEAD
 import CreateOrderPage from './pages/admin/CreateOrderPage';
+=======
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
 import PaymentsPage from './pages/admin/PaymentsPage';
 import TestData from './pages/admin/TestData';
 import GuestCustomers from './pages/admin/GuestCustomers';
@@ -146,7 +149,10 @@ function App() {
                   <Route path="products/:id" element={<ProductDetailPage />} />
                   <Route path="categories" element={<AdminCategories />} />
                   <Route path="orders" element={<AdminOrders />} />
+<<<<<<< HEAD
                   <Route path="create-order" element={<CreateOrderPage />} />
+=======
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   <Route path="inventory" element={<AdminInventory />} />
                   <Route path="customers" element={<AdminCustomers />} />
                   <Route path="customer-groups" element={<AdminCustomerGroups />} />

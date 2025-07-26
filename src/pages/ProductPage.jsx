@@ -2,7 +2,10 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, Truck, ShieldCheck, Heart, Share2, Minus, Plus, Eye } from 'lucide-react';
+<<<<<<< HEAD
 import EnhancedShareButtons from '../components/EnhancedShareButtons';
+=======
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
@@ -12,7 +15,11 @@ import ProductImageCarousel from '../components/ProductImageCarousel';
 import { formatPrice } from '../utils/currency';
 import LocationPicker from '../components/LocationPicker';
 import OrderLocationMap from '../components/OrderLocationMap';
+<<<<<<< HEAD
 import DynamicSocialMetaTags from '../components/DynamicSocialMetaTags';
+=======
+import { Helmet } from 'react-helmet';
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
 import ProductReviewList from '../components/ProductReviewList';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDescriptionFull } from '../utils/formatDescription.jsx';
@@ -211,11 +218,23 @@ const ProductPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-12">
+<<<<<<< HEAD
       <DynamicSocialMetaTags 
         pageType="product"
         product={product}
         category={category}
       />
+=======
+      <Helmet>
+        <title>{product.name} - KStores</title>
+        <meta name="description" content={product.description} />
+        <meta property="og:title" content={product.name} />
+        <meta property="og:description" content={product.description} />
+        <meta property="og:image" content={product.image_url} />
+        <meta property="og:url" content={window.location.href} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
       {/* Breadcrumbs */}
       <nav className="mb-8 flex text-sm">
         <Link to="/" className="text-text-light hover:text-primary">{t('nav.home')}</Link>
@@ -397,6 +416,7 @@ const ProductPage = () => {
           <div className="mt-12">
             <h2 className="mb-6 text-2xl font-bold text-text-dark">{t('product.reviews')}</h2>
             
+<<<<<<< HEAD
             {/* Review List */}
             <ProductReviewList productId={product.id} />
           </div>
@@ -410,6 +430,12 @@ const ProductPage = () => {
               url={window.location.href}
               variant="default"
             />
+=======
+            
+
+            {/* Review List */}
+            <ProductReviewList productId={product.id} />
+>>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
           </div>
         </motion.div>
       </div>
