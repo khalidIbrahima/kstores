@@ -5,6 +5,7 @@ import { User, Mail, Lock, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import GoogleAuthButton from '../components/auth/GoogleAuthButton';
 
 const RegisterPage = () => {
   const [fullName, setFullName] = useState('');
@@ -14,7 +15,7 @@ const RegisterPage = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signUp } = useAuth();
+  const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -52,14 +53,7 @@ const RegisterPage = () => {
   const handleGoogleSignUp = async () => {
     try {
       setIsLoading(true);
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`
-        }
-      });
-      
-      if (error) throw error;
+      await signInWithGoogle();
     } catch (error) {
       setError(error.message || t('auth.googleSignUpError'));
     } finally {
@@ -68,15 +62,15 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gray-50 py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg"
+        className="w-full max-w-md space-y-6 sm:space-y-8 rounded-lg bg-white p-6 sm:p-8 shadow-lg"
       >
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">{t('auth.createAccount')}</h2>
+          <h2 className="mt-6 text-2xl sm:text-3xl font-extrabold text-gray-900">{t('auth.createAccount')}</h2>
           <p className="mt-2 text-sm text-gray-600">
             {t('auth.alreadyHaveAccount')}{' '}
             <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
@@ -96,23 +90,19 @@ const RegisterPage = () => {
           </div>
         )}
 
-        {/* <button
+        <GoogleAuthButton
           onClick={handleGoogleSignUp}
           disabled={isLoading}
-          className="flex w-full items-center justify-center gap-3 rounded-full border border-accent bg-white px-6 py-3 text-base font-semibold text-primary shadow-sm hover:bg-accent-light hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition"
-        >
-          <img src="https://www.google.com/favicon.ico" alt="Google" className="h-5 w-5" />
-          {t('auth.googleSignIn')}
-        </button> */}
+        />
 
-        {/* <div className="relative">
+        <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="bg-white px-2 text-gray-500">{t('auth.orContinueWith')}</span>
           </div>
-        </div> */}
+        </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">

@@ -120,6 +120,26 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function signInWithGoogle() {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+      
+      if (error) throw error;
+    } catch (error) {
+      toast.error(error.message || 'An error occurred during Google sign in');
+      throw error;
+    }
+  }
+
   async function signOut() {
     try {
       setIsLoading(true);
@@ -156,6 +176,7 @@ export function AuthProvider({ children }) {
     isLoading,
     signUp,
     signIn,
+    signInWithGoogle,
     signOut
   };
 

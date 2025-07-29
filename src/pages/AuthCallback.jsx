@@ -38,6 +38,27 @@ const AuthCallback = () => {
         // Check if user is admin
         const isUserAdmin = session.user?.user_metadata?.is_admin || false;
         
+        // Create or update user profile
+        try {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .upsert({
+              id: session.user.id,
+              full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || 'User',
+              avatar_url: session.user.user_metadata?.avatar_url,
+              is_admin: isUserAdmin,
+              updated_at: new Date().toISOString()
+            }, {
+              onConflict: 'id'
+            });
+
+          if (profileError) {
+            console.error('Profile creation error:', profileError);
+          }
+        } catch (profileError) {
+          console.error('Profile creation error:', profileError);
+        }
+        
         // Redirect based on user role
         if (isUserAdmin) {
           // Redirect admin users to admin panel

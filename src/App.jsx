@@ -53,6 +53,7 @@ import AdminSupport from './pages/admin/Support';
 import AdminIPTVPlans from './pages/admin/IPTVPlans';
 import ProductDetailPage from './pages/admin/ProductDetailPage';
 import AdminOrderPage from './pages/admin/OrdersPage';
+import CreateOrderPage from './pages/admin/CreateOrderPage';
 import PaymentsPage from './pages/admin/PaymentsPage';
 import TestData from './pages/admin/TestData';
 import GuestCustomers from './pages/admin/GuestCustomers';
@@ -145,6 +146,7 @@ function App() {
                   <Route path="products/:id" element={<ProductDetailPage />} />
                   <Route path="categories" element={<AdminCategories />} />
                   <Route path="orders" element={<AdminOrders />} />
+                  <Route path="create-order" element={<CreateOrderPage />} />
                   <Route path="inventory" element={<AdminInventory />} />
                   <Route path="customers" element={<AdminCustomers />} />
                   <Route path="customer-groups" element={<AdminCustomerGroups />} />
