@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, Truck, ShieldCheck, Heart, Share2, Minus, Plus, Eye } from 'lucide-react';
+import EnhancedShareButtons from '../components/EnhancedShareButtons';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
@@ -11,7 +12,7 @@ import ProductImageCarousel from '../components/ProductImageCarousel';
 import { formatPrice } from '../utils/currency';
 import LocationPicker from '../components/LocationPicker';
 import OrderLocationMap from '../components/OrderLocationMap';
-import { Helmet } from 'react-helmet';
+import DynamicSocialMetaTags from '../components/DynamicSocialMetaTags';
 import ProductReviewList from '../components/ProductReviewList';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDescriptionFull } from '../utils/formatDescription.jsx';
@@ -210,15 +211,11 @@ const ProductPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <Helmet>
-        <title>{product.name} - KStores</title>
-        <meta name="description" content={product.description} />
-        <meta property="og:title" content={product.name} />
-        <meta property="og:description" content={product.description} />
-        <meta property="og:image" content={product.image_url} />
-        <meta property="og:url" content={window.location.href} />
-        <meta name="twitter:card" content="summary_large_image" />
-      </Helmet>
+      <DynamicSocialMetaTags 
+        pageType="product"
+        product={product}
+        category={category}
+      />
       {/* Breadcrumbs */}
       <nav className="mb-8 flex text-sm">
         <Link to="/" className="text-text-light hover:text-primary">{t('nav.home')}</Link>
@@ -400,10 +397,19 @@ const ProductPage = () => {
           <div className="mt-12">
             <h2 className="mb-6 text-2xl font-bold text-text-dark">{t('product.reviews')}</h2>
             
-            
-
             {/* Review List */}
             <ProductReviewList productId={product.id} />
+          </div>
+
+          {/* Share Section */}
+          <div className="mt-12">
+            <EnhancedShareButtons 
+              title={product.name}
+              description={product.description}
+              image={product.image_url}
+              url={window.location.href}
+              variant="default"
+            />
           </div>
         </motion.div>
       </div>
@@ -482,6 +488,15 @@ const ProductPage = () => {
           </div>
         </section>
       )}
+
+      {/* Floating Share Button */}
+      <EnhancedShareButtons 
+        title={product?.name}
+        description={product?.description}
+        image={product?.image_url}
+        url={window.location.href}
+        variant="floating"
+      />
     </div>
   );
 };
