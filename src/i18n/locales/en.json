@@ -272,7 +272,9 @@
     "registrationError": "Failed to create account",
     "googleSignUpError": "Failed to sign up with Google",
     "noAccount": "No account ?",
-    "signUp": "Create an account"
+    "signUp": "Create an account",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters long"
   },
   "iptv": {
     "title": "IPTV Services",

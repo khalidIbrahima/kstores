@@ -5,7 +5,6 @@ import { Mail, Lock, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useStoreSettings } from '../hooks/useStoreSettings';
-import { supabase } from '../lib/supabase';
 import GoogleLoginButton from '../components/GoogleLoginButton';
 
 const LoginPage = () => {
@@ -14,7 +13,7 @@ const LoginPage = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signIn, signInWithGoogle, isAdmin, user, isLoading: authLoading } = useAuth();
+  const { signIn, signInWithGoogle, user, isLoading: authLoading } = useAuth();
   const { settings } = useStoreSettings();
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,13 +25,13 @@ const LoginPage = () => {
   useEffect(() => {
     if (!authLoading && user) {
       // Si l'utilisateur est connecté, le rediriger
-      if (isAdmin) {
+      if (user.user_metadata?.is_admin || user.is_admin) {
         navigate('/admin', { replace: true });
       } else {
         navigate(from, { replace: true });
       }
     }
-  }, [user, authLoading, isAdmin, navigate, from]);
+  }, [user, authLoading, navigate, from]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,18 +44,10 @@ const LoginPage = () => {
     
     try {
       setIsLoading(true);
-      await signIn(email, password);
+      const result = await signIn(email, password);
       
-      // Check if user is admin and redirect accordingly
-      const { data: { user } } = await supabase.auth.getUser();
-      const isUserAdmin = user?.user_metadata?.is_admin || false;
-      
-      if (isUserAdmin) {
-        // Redirect admin users to admin panel
-        navigate('/admin', { replace: true });
-      } else {
-        // Redirect regular users to their intended destination
-        navigate(from, { replace: true });
+      if (!result.success) {
+        setError(result.message);
       }
     } catch (error) {
       setError(error.message || t('auth.loginError'));
@@ -64,6 +55,8 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
+
+
 
   // Afficher un loader pendant la vérification de l'authentification
   if (authLoading) {

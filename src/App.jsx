@@ -26,7 +26,7 @@ import ContactPage from './pages/ContactPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsPage from './pages/TermsPage';
 import NotFoundPage from './pages/NotFoundPage';
-import AuthCallback from './pages/AuthCallback';
+
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
 import CategoriesPage from './pages/CategoriesPage';
@@ -77,8 +77,8 @@ function App() {
   return (
     <AuthProvider>
       <StoreSettingsProvider>
-        <CartProvider>
-          <FavoritesProvider>
+        <FavoritesProvider>
+          <CartProvider>
             <DynamicFavicon />
             <Router {...router}>
               <AnalyticsTracker />
@@ -90,7 +90,7 @@ function App() {
                 <Route path="checkout/success" element={<SuccessPage />} />
                 
                 {/* Auth Callback Route - Outside Layout */}
-                <Route path="auth/callback" element={<AuthCallback />} />
+        
                 
                 {/* Maintenance Route - Direct Access */}
                 <Route path="/maintenance" element={<MaintenancePage />} />
@@ -177,8 +177,8 @@ function App() {
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Router>
-          </FavoritesProvider>
-        </CartProvider>
+          </CartProvider>
+        </FavoritesProvider>
       </StoreSettingsProvider>
     </AuthProvider>
   );

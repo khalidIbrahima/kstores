@@ -1,21 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Mail, Lock, User, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
-import GoogleAuthButton from '../components/auth/GoogleAuthButton';
+import GoogleLoginButton from '../components/GoogleLoginButton';
 
 const RegisterPage = () => {
-  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signUp, signInWithGoogle, user, isLoading: authLoading, isAdmin } = useAuth();
+  const { signUp, signInWithGoogle, user, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -23,38 +22,40 @@ const RegisterPage = () => {
   useEffect(() => {
     if (!authLoading && user) {
       // Si l'utilisateur est connecté, le rediriger
-      if (isAdmin) {
+      if (user.user_metadata?.is_admin || user.is_admin) {
         navigate('/admin', { replace: true });
       } else {
         navigate('/', { replace: true });
       }
     }
-  }, [user, authLoading, isAdmin, navigate]);
+  }, [user, authLoading, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     
-    // Validation
-    if (!fullName || !email || !password || !confirmPassword) {
+    if (!email || !password || !confirmPassword || !fullName) {
       setError(t('auth.errorEmptyFields'));
       return;
     }
     
     if (password !== confirmPassword) {
-      setError(t('auth.errorPasswordMatch'));
+      setError(t('auth.passwordsDoNotMatch'));
       return;
     }
     
     if (password.length < 6) {
-      setError(t('auth.errorPasswordLength'));
+      setError(t('auth.passwordTooShort'));
       return;
     }
     
     try {
       setIsLoading(true);
-      await signUp(email, password, fullName);
-      navigate('/login', { state: { message: t('auth.registrationSuccess') } });
+      const result = await signUp(email, password, fullName);
+      
+      if (!result.success) {
+        setError(result.message);
+      }
     } catch (error) {
       setError(error.message || t('auth.registrationError'));
     } finally {
@@ -62,16 +63,7 @@ const RegisterPage = () => {
     }
   };
 
-  const handleGoogleSignUp = async () => {
-    try {
-      setIsLoading(true);
-      await signInWithGoogle();
-    } catch (error) {
-      setError(error.message || t('auth.googleSignUpError'));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
 
   // Afficher un loader pendant la vérification de l'authentification
   if (authLoading) {
@@ -108,6 +100,8 @@ const RegisterPage = () => {
           </p>
         </div>
         
+
+
         {error && (
           <div className="rounded-md bg-red-50 p-4">
             <div className="flex">
@@ -119,10 +113,7 @@ const RegisterPage = () => {
           </div>
         )}
 
-       {/*  <GoogleAuthButton
-          onClick={handleGoogleSignUp}
-          disabled={isLoading}
-        /> */}
+        <GoogleLoginButton />
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
@@ -151,7 +142,7 @@ const RegisterPage = () => {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-base"
                   placeholder={t('auth.fullName')}
                 />
               </div>
@@ -173,7 +164,7 @@ const RegisterPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-base"
                   placeholder={t('auth.email')}
                 />
               </div>
@@ -195,7 +186,7 @@ const RegisterPage = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-base"
                   placeholder={t('auth.password')}
                 />
               </div>
@@ -217,27 +208,10 @@ const RegisterPage = () => {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-base"
                   placeholder={t('auth.confirmPassword')}
                 />
               </div>
-            </div>
-          </div>
-
-          <div className="flex items-start">
-            <div className="flex h-5 items-center">
-              <input
-                id="terms"
-                name="terms"
-                type="checkbox"
-                required
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-            </div>
-            <div className="ml-3 text-sm">
-              <label htmlFor="terms" className="font-medium text-gray-700">
-                {t('auth.termsAgree')}
-              </label>
             </div>
           </div>
 
