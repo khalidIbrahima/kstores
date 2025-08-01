@@ -201,7 +201,6 @@ Merci pour votre confiance ! 🛍️
       console.error('❌ Error sending WhatsApp confirmation:', whatsappError);
     }
 
-    console.log('✅ All customer confirmations completed');
     return results;
 
   } catch (error) {
@@ -211,7 +210,7 @@ Merci pour votre confiance ! 🛍️
 };
 
 // Fonction pour envoyer une notification de statut de commande
-export const sendOrderWhatsappStatusUpdateToCustomer = async (order, newStatus) => {
+export const sendOrderWhatsappStatusUpdateToCustomer = async (order, newStatus, isGuestCustomer = false) => {
   try {
     const customerPhone = order.shipping_address?.phone;
     if (!customerPhone) {
@@ -246,13 +245,21 @@ export const sendOrderWhatsappStatusUpdateToCustomer = async (order, newStatus) 
         emoji = '📋';
     }
 
+    // Adapter le message selon le type de client
+    let trackingInfo = '';
+    if (!isGuestCustomer) {
+      trackingInfo = `🔗 Suivre votre commande: ${window.location.origin}/orders/${orderId}`;
+    } else {
+      trackingInfo = `💬 Pour toute question, contactez-nous`;
+    }
+
     const message = `${emoji} *MISE À JOUR DE COMMANDE*
 
 Bonjour ${customerName},
 
 Votre commande #${orderId} est maintenant *${statusMessage}*.
 
-🔗 Suivre votre commande: ${window.location.origin}/orders/${orderId}
+${trackingInfo}
 
 📞 *Information:* +221 77 240 50 63
 

@@ -137,7 +137,7 @@ export const sendOrderEmailNotificationToAdmin = async (order) => {
     </div>
   `;
   const text = `
-    Nouvelle Commande Reçue - Kapital Stores\n\nCommande #${orderId}\nDate: ${orderDate}\nTotal: ${orderTotal} FCFA\nClient: ${customerName}\nAdresse: ${orderAddress}\n\nArticles commandés :\n${renderOrderItemsText(orderItems)}\n\nVoir la commande: https://kapitalstores.shop/admin/orders-page/${orderId}\n\nMerci de traiter cette commande rapidement !\nKapital Stores
+    Nouvelle Commande Reçue - Kapital Stores\n\nCommande #${orderId}\nDate: ${orderDate}\nTotal: ${orderTotal} FCFA\nClient: ${customerName}\nAdresse: ${orderAddress}\n\nArticles commandés :\n${renderOrderItemsText(orderItems)}\n\nVoir la commande: https://kapital-stores.shop/admin/orders-page/${orderId}\n\nMerci de traiter cette commande rapidement !\nKapital Stores
   `;
 
   return sendEmail({ to: ADMIN_EMAIL, subject, html, text });
@@ -218,14 +218,14 @@ export const sendOrderEmailConfirmationToCustomer = async (order) => {
     </div>
   `;
   const text = `
-    Confirmation de commande - Kapital Stores\n\nCommande #${orderId}\nDate: ${orderDate}\nTotal: ${orderTotal} FCFA\nClient: ${customerName}\n\nArticles commandés :\n${renderOrderItemsText(orderItems)}\n\nSuivre ma commande: https://kapitalstores.shop/orders/${orderId}\n\nMerci pour votre confiance !\nKapital Stores
+    Confirmation de commande - Kapital Stores\n\nCommande #${orderId}\nDate: ${orderDate}\nTotal: ${orderTotal} FCFA\nClient: ${customerName}\n\nArticles commandés :\n${renderOrderItemsText(orderItems)}\n\nSuivre ma commande: https://kapital-stores.shop/orders/${orderId}\n\nMerci pour votre confiance !\nKapital Stores
   `;
 
   return sendEmail({ to: customerEmail, subject, html, text });
 };
 
 // Send order status update to customer
-export const sendOrderStatusUpdateEmailToCustomer = async (order, newStatus) => {
+export const sendOrderStatusUpdateEmailToCustomer = async (order, newStatus, isGuestCustomer = false) => {
   const customerEmail = order.shipping_address?.email;
   if (!customerEmail) return;
 
@@ -248,14 +248,37 @@ export const sendOrderStatusUpdateEmailToCustomer = async (order, newStatus) => 
   }
 
   const subject = `${emoji} Mise à jour de commande #${orderId} - Kapital Stores`;
+  
+  // Adapter le message selon le type de client
+  let trackingInfo = '';
+  if (!isGuestCustomer) {
+    trackingInfo = `
+      <p>Vous pouvez suivre votre commande sur notre site web : <a href="${window.location.origin}/orders/${orderId}">Suivre ma commande</a></p>
+    `;
+  } else {
+    trackingInfo = `
+      <p>Pour toute question concernant votre commande, n'hésitez pas à nous contacter.</p>
+    `;
+  }
+
   const html = `
     <h1>${emoji} Mise à jour de commande</h1>
     <p>Bonjour ${customerName},</p>
     <p>Votre commande #${orderId} est maintenant <b>${statusMessage}</b>.</p>
-    <p>Vous pouvez suivre votre commande sur notre site web.</p>
+    ${trackingInfo}
+    <p>Merci de votre confiance,<br>L'équipe Kapital Stores</p>
   `;
+
   const text = `
-    ${emoji} MISE À JOUR DE COMMANDE\nBonjour ${customerName},\nVotre commande #${orderId} est maintenant ${statusMessage}.\nVous pouvez suivre votre commande sur notre site web.
+    ${emoji} MISE À JOUR DE COMMANDE
+Bonjour ${customerName},
+
+Votre commande #${orderId} est maintenant ${statusMessage}.
+
+${!isGuestCustomer ? `Suivre votre commande: ${window.location.origin}/orders/${orderId}` : 'Pour toute question concernant votre commande, n\'hésitez pas à nous contacter.'}
+
+Merci de votre confiance,
+L'équipe Kapital Stores
   `;
 
   return sendEmail({ to: customerEmail, subject, html, text });
