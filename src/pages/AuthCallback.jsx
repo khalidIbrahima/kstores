@@ -38,7 +38,6 @@ const AuthCallback = () => {
         // Check if user is admin
         const isUserAdmin = session.user?.user_metadata?.is_admin || false;
         
-<<<<<<< HEAD
         // Create or update user profile
         try {
           const { error: profileError } = await supabase
@@ -60,8 +59,6 @@ const AuthCallback = () => {
           console.error('Profile creation error:', profileError);
         }
         
-=======
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
         // Redirect based on user role
         if (isUserAdmin) {
           // Redirect admin users to admin panel

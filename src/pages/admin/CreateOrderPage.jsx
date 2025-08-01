@@ -1,20 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-<<<<<<< HEAD
 import { Plus, Trash2, Save, ArrowLeft, Search, User, Mail, Phone, MapPin } from 'lucide-react';
-=======
-import { Plus, Trash2, Save, ArrowLeft } from 'lucide-react';
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
 import { supabase } from '../../lib/supabase';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { Helmet } from 'react-helmet';
-<<<<<<< HEAD
 import { sendOrderWhatsappNotificationToAdmin, sendOrderWhatsappConfirmationToCustomer } from '../../services/whatsappService';
-=======
-import { sendOrderNotificationToAdmin, sendOrderConfirmationToCustomer } from '../../services/whatsappService';
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
 
 const CreateOrderPage = () => {
   const { t } = useTranslation();
@@ -33,17 +25,13 @@ const CreateOrderPage = () => {
     status: 'pending',
     notes: ''
   });
-<<<<<<< HEAD
   const [productSearch, setProductSearch] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
-=======
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-<<<<<<< HEAD
   useEffect(() => {
     if (productSearch.trim() === '') {
       setFilteredProducts(products);
@@ -56,8 +44,6 @@ const CreateOrderPage = () => {
     }
   }, [productSearch, products]);
 
-=======
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
   const fetchProducts = async () => {
     try {
       const { data, error } = await supabase
@@ -67,10 +53,7 @@ const CreateOrderPage = () => {
 
       if (error) throw error;
       setProducts(data || []);
-<<<<<<< HEAD
       setFilteredProducts(data || []);
-=======
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
     } catch (error) {
       console.error('Error fetching products:', error);
       toast.error('Failed to fetch products');
@@ -166,20 +149,12 @@ const CreateOrderPage = () => {
       return;
     }
 
-<<<<<<< HEAD
     if (!orderData.customerName.trim()) {
       toast.error('Please enter customer name');
       return;
     }
 
 
-=======
-    if (!orderData.customerName || !orderData.customerEmail) {
-      toast.error('Please fill in customer name and email');
-      return;
-    }
-
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
     setIsLoading(true);
 
     try {
@@ -194,14 +169,7 @@ const CreateOrderPage = () => {
           phone: orderData.customerPhone,
           address: orderData.customerAddress,
           city: orderData.customerCity,
-<<<<<<< HEAD
           state: orderData.customerState        },
-=======
-          state: orderData.customerState,
-          zip_code: orderData.customerZipCode
-        },
-        notes: orderData.notes
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
       };
 
       const { data: order, error: orderError } = await supabase
@@ -215,19 +183,11 @@ const CreateOrderPage = () => {
       // Envoyer les notifications WhatsApp
       try {
         // Notification à l'admin
-<<<<<<< HEAD
         await sendOrderWhatsappNotificationToAdmin(order);
         
         // Confirmation au client (si numéro de téléphone disponible)
         if (orderData.customerPhone) {
           await sendOrderWhatsappConfirmationToCustomer(order);
-=======
-        await sendOrderNotificationToAdmin(order);
-        
-        // Confirmation au client (si numéro de téléphone disponible)
-        if (orderData.customerPhone) {
-          await sendOrderConfirmationToCustomer(order);
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
         }
       } catch (error) {
         console.error('Error sending WhatsApp notifications:', error);
@@ -261,7 +221,6 @@ const CreateOrderPage = () => {
       }
 
       toast.success('Order created successfully!');
-<<<<<<< HEAD
       
       // Clear form
       setOrderData({
@@ -276,8 +235,6 @@ const CreateOrderPage = () => {
       setSelectedProducts([]);
       setProductSearch('');
       
-=======
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
       navigate('/admin/orders');
     } catch (error) {
       console.error('Error creating order:', error);
@@ -293,7 +250,6 @@ const CreateOrderPage = () => {
         <title>Create Order - Admin</title>
       </Helmet>
 
-<<<<<<< HEAD
       <div className="container mx-auto px-4 py-4 sm:py-8 pb-24 sm:pb-8">
         <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center space-x-2 sm:space-x-4">
@@ -309,44 +265,18 @@ const CreateOrderPage = () => {
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-8">
-=======
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => navigate('/admin/orders')}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800"
-            >
-              <ArrowLeft className="h-5 w-5" />
-              <span>Back to Orders</span>
-            </button>
-            <h1 className="text-3xl font-bold">Create New Order</h1>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
           {/* Customer Information */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-<<<<<<< HEAD
             className="bg-white rounded-lg shadow-md p-4 sm:p-6"
           >
             <h2 className="text-lg sm:text-xl font-semibold mb-4">Customer Information</h2>
-=======
-            className="bg-white rounded-lg shadow-md p-6"
-          >
-            <h2 className="text-xl font-semibold mb-4">Customer Information</h2>
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-<<<<<<< HEAD
                   <User className="inline h-4 w-4 mr-1" />
-=======
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   Customer Name *
                 </label>
                 <input
@@ -354,44 +284,28 @@ const CreateOrderPage = () => {
                   name="customerName"
                   value={orderData.customerName}
                   onChange={handleInputChange}
-<<<<<<< HEAD
                   className="w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 focus:border-blue-500 focus:outline-none text-base"
-=======
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   required
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-<<<<<<< HEAD
                   <Mail className="inline h-4 w-4 mr-1" />
                   Email
-=======
-                  Email *
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                 </label>
                 <input
                   type="email"
                   name="customerEmail"
                   value={orderData.customerEmail}
                   onChange={handleInputChange}
-<<<<<<< HEAD
                   className="w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 focus:border-blue-500 focus:outline-none text-base"
-=======
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
-                  required
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-<<<<<<< HEAD
                   <Phone className="inline h-4 w-4 mr-1" />
-=======
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   Phone
                 </label>
                 <input
@@ -399,20 +313,13 @@ const CreateOrderPage = () => {
                   name="customerPhone"
                   value={orderData.customerPhone}
                   onChange={handleInputChange}
-<<<<<<< HEAD
                   className="w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 focus:border-blue-500 focus:outline-none text-base"
-=======
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-<<<<<<< HEAD
                   <MapPin className="inline h-4 w-4 mr-1" />
-=======
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   Address
                 </label>
                 <input
@@ -420,19 +327,11 @@ const CreateOrderPage = () => {
                   name="customerAddress"
                   value={orderData.customerAddress}
                   onChange={handleInputChange}
-<<<<<<< HEAD
                   className="w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 focus:border-blue-500 focus:outline-none text-base"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-=======
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-3 gap-4">
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     City
@@ -442,11 +341,7 @@ const CreateOrderPage = () => {
                     name="customerCity"
                     value={orderData.customerCity}
                     onChange={handleInputChange}
-<<<<<<< HEAD
                     className="w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 focus:border-blue-500 focus:outline-none text-base"
-=======
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   />
                 </div>
                 <div>
@@ -458,23 +353,7 @@ const CreateOrderPage = () => {
                     name="customerState"
                     value={orderData.customerState}
                     onChange={handleInputChange}
-<<<<<<< HEAD
                     className="w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 focus:border-blue-500 focus:outline-none text-base"
-=======
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    ZIP Code
-                  </label>
-                  <input
-                    type="text"
-                    name="customerZipCode"
-                    value={orderData.customerZipCode}
-                    onChange={handleInputChange}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   />
                 </div>
               </div>
@@ -487,11 +366,7 @@ const CreateOrderPage = () => {
                   name="status"
                   value={orderData.status}
                   onChange={handleInputChange}
-<<<<<<< HEAD
                   className="w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 focus:border-blue-500 focus:outline-none text-base"
-=======
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                 >
                   <option value="pending">Pending</option>
                   <option value="processing">Processing</option>
@@ -501,23 +376,7 @@ const CreateOrderPage = () => {
                 </select>
               </div>
 
-<<<<<<< HEAD
               
-=======
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Notes
-                </label>
-                <textarea
-                  name="notes"
-                  value={orderData.notes}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
-                  placeholder="Any additional notes about this order..."
-                />
-              </div>
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
             </form>
           </motion.div>
 
@@ -525,7 +384,6 @@ const CreateOrderPage = () => {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-<<<<<<< HEAD
             className="space-y-4 sm:space-y-6"
           >
             {/* Add Product */}
@@ -548,45 +406,23 @@ const CreateOrderPage = () => {
 
               {/* Product Selection */}
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-4">
-=======
-            className="space-y-6"
-          >
-            {/* Add Product */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4">Add Products</h2>
-              
-              <div className="flex space-x-4 mb-4">
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Product
                   </label>
                   <select
                     id="product-select"
-<<<<<<< HEAD
                     className="w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 focus:border-blue-500 focus:outline-none text-base"
                   >
                     <option value="">Select a product</option>
                     {filteredProducts.map(product => (
                       <option key={product.id} value={product.id}>
                         {product.name} - {product.price.toLocaleString()} FCFA (Stock: {product.inventory})
-=======
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
-                  >
-                    <option value="">Select a product</option>
-                    {products.map(product => (
-                      <option key={product.id} value={product.id}>
-                        {product.name} - ${product.price} (Stock: {product.inventory})
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                       </option>
                     ))}
                   </select>
                 </div>
-<<<<<<< HEAD
                 <div className="w-full sm:w-24">
-=======
-                <div className="w-24">
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Qty
                   </label>
@@ -594,47 +430,31 @@ const CreateOrderPage = () => {
                     type="number"
                     id="quantity-input"
                     min="1"
-<<<<<<< HEAD
                     className="w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 focus:border-blue-500 focus:outline-none text-base"
-=======
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   />
                 </div>
                 <div className="flex items-end">
                   <button
                     type="button"
                     onClick={addProductToOrder}
-<<<<<<< HEAD
                     className="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-center"
                   >
                     <Plus className="h-4 w-4 mr-2 sm:mr-0" />
                     <span className="sm:hidden">Add Product</span>
-=======
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <Plus className="h-4 w-4" />
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   </button>
                 </div>
               </div>
             </div>
 
             {/* Selected Products */}
-<<<<<<< HEAD
             <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
               <h2 className="text-lg sm:text-xl font-semibold mb-4">Order Items</h2>
-=======
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4">Order Items</h2>
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
               
               {selectedProducts.length === 0 ? (
                 <p className="text-gray-500 text-center py-8">No products added yet</p>
               ) : (
                 <div className="space-y-4">
                   {selectedProducts.map((item) => (
-<<<<<<< HEAD
                     <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 p-4 border rounded-lg">
                       <img
                         src={item.image_url}
@@ -647,37 +467,16 @@ const CreateOrderPage = () => {
                       </div>
                       <div className="flex items-center space-x-2 w-full sm:w-auto">
                         <label className="text-sm font-medium text-gray-700 sm:hidden">Qty:</label>
-=======
-                    <div key={item.id} className="flex items-center space-x-4 p-4 border rounded-lg">
-                      <img
-                        src={item.image_url}
-                        alt={item.name}
-                        className="w-16 h-16 object-cover rounded-md"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-medium">{item.name}</h3>
-                        <p className="text-sm text-gray-600">${item.price}</p>
-                      </div>
-                      <div className="flex items-center space-x-2">
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                         <input
                           type="number"
                           min="1"
                           value={item.quantity}
                           onChange={(e) => updateProductQuantity(item.id, parseInt(e.target.value))}
-<<<<<<< HEAD
                           className="w-20 sm:w-16 rounded-md border border-gray-300 px-2 py-1 text-center"
                         />
                         <button
                           onClick={() => removeProductFromOrder(item.id)}
                           className="text-red-500 hover:text-red-700 p-1"
-=======
-                          className="w-16 rounded-md border border-gray-300 px-2 py-1 text-center"
-                        />
-                        <button
-                          onClick={() => removeProductFromOrder(item.id)}
-                          className="text-red-500 hover:text-red-700"
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -690,7 +489,6 @@ const CreateOrderPage = () => {
               {/* Order Summary */}
               {selectedProducts.length > 0 && (
                 <div className="mt-6 pt-4 border-t">
-<<<<<<< HEAD
                   <div className="space-y-2 mb-4">
                     {selectedProducts.map((item) => (
                       <div key={item.id} className="flex justify-between text-sm">
@@ -702,22 +500,13 @@ const CreateOrderPage = () => {
                   <div className="flex justify-between items-center border-t pt-2">
                     <span className="text-base sm:text-lg font-semibold">Total:</span>
                     <span className="text-base sm:text-lg font-semibold text-green-600">{calculateTotal().toLocaleString()} FCFA</span>
-=======
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold">Total:</span>
-                    <span className="text-lg font-semibold">${calculateTotal().toFixed(2)}</span>
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   </div>
                   
                   <button
                     type="submit"
                     onClick={handleSubmit}
                     disabled={isLoading}
-<<<<<<< HEAD
                     className="w-full mt-4 bg-green-500 text-white py-3 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 text-sm sm:text-base sm:hidden"
-=======
-                    className="w-full mt-4 bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   >
                     {isLoading ? (
                       <>
@@ -737,7 +526,6 @@ const CreateOrderPage = () => {
           </motion.div>
         </div>
       </div>
-<<<<<<< HEAD
 
       {/* Mobile Sticky Bottom Bar */}
       {selectedProducts.length > 0 && (
@@ -766,8 +554,6 @@ const CreateOrderPage = () => {
           </button>
         </div>
       )}
-=======
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
     </>
   );
 };
