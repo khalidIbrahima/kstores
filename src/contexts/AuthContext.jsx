@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
+import { useUnifiedAuth } from '../hooks/useUnifiedAuth';
 
 const AuthContext = createContext();
 
@@ -8,6 +9,32 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Utiliser le nouveau système unifié
+  const unifiedAuth = useUnifiedAuth();
+
+  // Synchroniser l'état avec useUnifiedAuth
+  useEffect(() => {
+    if (unifiedAuth.user) {
+      setUser({
+        id: unifiedAuth.user.id,
+        email: unifiedAuth.user.email,
+        user_metadata: {
+          full_name: unifiedAuth.user.name,
+          avatar_url: unifiedAuth.user.picture,
+          is_admin: unifiedAuth.user.is_admin
+        }
+      });
+      setIsAdmin(unifiedAuth.user.is_admin);
+      setSession({ user: unifiedAuth.user }); // Créer une session compatible
+    } else {
+      setUser(null);
+      setSession(null);
+      setIsAdmin(false);
+    }
+    setIsLoading(unifiedAuth.isLoading);
+  }, [unifiedAuth.user, unifiedAuth.isLoading]);
 
   useEffect(() => {
     let mounted = true;
@@ -98,94 +125,134 @@ export function AuthProvider({ children }) {
       });
 
       if (authError) throw authError;
-      toast.success('Account created successfully!');
+
+      if (authData.user) {
+        // Create profile in profiles table
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert({
+            id: authData.user.id,
+            full_name: fullName,
+            email: email,
+            is_admin: false,
+            updated_at: new Date().toISOString()
+          });
+
+        if (profileError) {
+          console.error('Error creating profile:', profileError);
+        }
+      }
+
+      return { success: true, message: 'Check your email for the confirmation link!' };
     } catch (error) {
-      toast.error(error.message || 'An error occurred during sign up');
-      throw error;
+      console.error('Sign up error:', error);
+      return { success: false, message: error.message };
     }
   }
 
   async function signIn(email, password) {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
-      toast.success('Signed in successfully!');
+
+      return { success: true };
     } catch (error) {
-      toast.error(error.message || 'An error occurred during sign in');
-      throw error;
+      console.error('Sign in error:', error);
+      return { success: false, message: error.message };
     }
   }
 
   async function signInWithGoogle() {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-          redirectTo: `${window.location.origin}/auth/callback`
-        }
-      });
-      
-      if (error) throw error;
+      // Utiliser le nouveau système Google
+      await unifiedAuth.loginWithGoogle();
+      return { success: true };
     } catch (error) {
-      toast.error(error.message || 'An error occurred during Google sign in');
-      throw error;
+      console.error('Google sign in error:', error);
+      return { success: false, message: error.message };
     }
   }
 
   async function signOut() {
     try {
-      setIsLoading(true);
-      const { error } = await supabase.auth.signOut();
-      
-      // If we get a session_not_found error, just clear the local state
-      if (error?.message?.includes('session_not_found') || 
-          error?.message?.includes('refresh_token_not_found')) {
-        setSession(null);
-        setUser(null);
-        toast.success('Signed out successfully');
-        return;
-      }
-      
-      if (error) throw error;
-      
-      setSession(null);
-      setUser(null);
-      toast.success('Signed out successfully');
+      // Utiliser le nouveau système de déconnexion
+      await unifiedAuth.logout();
+      return { success: true };
     } catch (error) {
-      // Clear local state even if there's an error
-      setSession(null);
-      setUser(null);
-      toast.error(error.message || 'An error occurred during sign out');
-    } finally {
-      setIsLoading(false);
+      console.error('Sign out error:', error);
+      return { success: false, message: error.message };
+    }
+  }
+
+  async function updateProfile(updates) {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      // Update local user state
+      setUser(prev => ({
+        ...prev,
+        user_metadata: {
+          ...prev.user_metadata,
+          ...updates
+        }
+      }));
+
+      return { success: true };
+    } catch (error) {
+      console.error('Update profile error:', error);
+      return { success: false, message: error.message };
+    }
+  }
+
+  async function getProfile() {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (error) throw error;
+
+      return { success: true, profile: data };
+    } catch (error) {
+      console.error('Get profile error:', error);
+      return { success: false, message: error.message };
     }
   }
 
   const value = {
     session,
     user,
-    isAdmin: user?.user_metadata?.is_admin || false,
     isLoading,
+    isAdmin,
     signUp,
     signIn,
     signInWithGoogle,
-    signOut
+    signOut,
+    updateProfile,
+    getProfile
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;

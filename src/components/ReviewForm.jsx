@@ -17,7 +17,7 @@ export default function ReviewForm({ productId, userId, onReviewAdded }) {
         .select('*')
         .eq('userId', userId)
         .eq('productId', productId)
-        .single();
+        .maybeSingle();
       if (data) setExistingReview(data);
     };
     fetchReview();
@@ -44,7 +44,7 @@ export default function ReviewForm({ productId, userId, onReviewAdded }) {
       .select('*')
       .eq('userId', userId)
       .eq('productId', productId)
-      .single();
+      .maybeSingle();
     if (data) setExistingReview(data);
   };
 

@@ -41,15 +41,15 @@ const Footer = () => {
               <li>
                 <Link to="/products" className="text-text-light hover:text-primary transition-colors">Boutique</Link>
               </li>
-              <li>
+             {/*  <li>
                 <Link to="/about" className="text-text-light hover:text-primary transition-colors">À Propos</Link>
-              </li>
+              </li> */}
               <li>
                 <Link to="/contact" className="text-text-light hover:text-primary transition-colors">Contact</Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/blog" className="text-text-light hover:text-primary transition-colors">Blog</Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -57,9 +57,9 @@ const Footer = () => {
           <div>
             <h3 className="mb-4 text-lg font-semibold text-text-dark">Service Client</h3>
             <ul className="space-y-2 text-sm">
-              <li>
+              {/* <li>
                 <Link to="/faq" className="text-text-light hover:text-primary transition-colors">FAQ</Link>
-              </li>
+              </li> */}
               <li>
                 <Link to="/shipping" className="text-text-light hover:text-primary transition-colors">Politique de Livraison</Link>
               </li>

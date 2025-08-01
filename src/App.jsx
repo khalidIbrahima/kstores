@@ -21,8 +21,10 @@ import OrdersPage from './pages/OrdersPage';
 import FavoritesPage from './pages/FavoritesPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import AboutPage from './pages/AboutPage';
+//import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsPage from './pages/TermsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AuthCallback from './pages/AuthCallback';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -53,10 +55,8 @@ import AdminSupport from './pages/admin/Support';
 import AdminIPTVPlans from './pages/admin/IPTVPlans';
 import ProductDetailPage from './pages/admin/ProductDetailPage';
 import AdminOrderPage from './pages/admin/OrdersPage';
-<<<<<<< HEAD
+import OrderDetailPage from './pages/admin/OrderDetailPage';
 import CreateOrderPage from './pages/admin/CreateOrderPage';
-=======
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
 import PaymentsPage from './pages/admin/PaymentsPage';
 import TestData from './pages/admin/TestData';
 import GuestCustomers from './pages/admin/GuestCustomers';
@@ -107,8 +107,10 @@ function App() {
                   <Route path="category/:slug" element={<CategoryPage />} />
                   <Route path="categories" element={<CategoriesPage />} />
                   <Route path="cart" element={<CartPage />} />
-                  <Route path="about" element={<AboutPage />} />
+                  {/* <Route path="about" element={<AboutPage />} /> */}
                   <Route path="contact" element={<ContactPage />} />
+                  <Route path="privacy" element={<PrivacyPolicyPage />} />
+                  <Route path="terms" element={<TermsPage />} />
                   <Route path="iptv" element={<IPTVPage />} />
                   <Route path="login" element={<LoginPage />} />
                   <Route path="register" element={<RegisterPage />} />
@@ -149,10 +151,8 @@ function App() {
                   <Route path="products/:id" element={<ProductDetailPage />} />
                   <Route path="categories" element={<AdminCategories />} />
                   <Route path="orders" element={<AdminOrders />} />
-<<<<<<< HEAD
+                  <Route path="orders/:id" element={<OrderDetailPage />} />
                   <Route path="create-order" element={<CreateOrderPage />} />
-=======
->>>>>>> 5450a43 (Merge branch 'main' of https://github.com/khalidIbrahima/kstores)
                   <Route path="inventory" element={<AdminInventory />} />
                   <Route path="customers" element={<AdminCustomers />} />
                   <Route path="customer-groups" element={<AdminCustomerGroups />} />

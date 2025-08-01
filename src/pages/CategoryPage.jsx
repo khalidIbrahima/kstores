@@ -80,10 +80,12 @@ const CategoryPage = () => {
     };
     
     fetchCategory();
+  }, [slug]);
 
-    // Start hero image rotation for gaming category
+  // Separate useEffect for hero image rotation
+  useEffect(() => {
     let interval;
-    if (isGamingCategory) {
+    if (isGamingCategory && heroImages.length > 1) {
       interval = setInterval(() => {
         setCurrentHeroImage(current => 
           current === heroImages.length - 1 ? 0 : current + 1
@@ -94,7 +96,7 @@ const CategoryPage = () => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [slug, isGamingCategory, heroImages.length]);
+  }, [isGamingCategory, heroImages.length]);
 
   const nextHeroImage = () => {
     setCurrentHeroImage(current => 
@@ -224,16 +226,7 @@ const CategoryPage = () => {
         </div>
       )}
 
-      <div className="container mx-auto px-4 py-12">
-        <Helmet>
-          <title>{category?.name ? `${category.name} - KStores` : 'Catégorie - KStores'}</title>
-          <meta name="description" content={category?.description || 'Catégorie de produits KStores'} />
-          <meta property="og:title" content={category?.name ? `${category.name} - KStores` : 'Catégorie - KStores'} />
-          <meta property="og:description" content={category?.description || 'Catégorie de produits KStores'} />
-          <meta property="og:image" content={category?.hero_image || '/logo192.png'} />
-          <meta property="og:url" content={window.location.href} />
-          <meta name="twitter:card" content="summary_large_image" />
-        </Helmet>
+             <div className="container mx-auto px-4 py-12">
         {/* Breadcrumbs */}
         <nav className="mb-8 flex text-sm">
           <Link to="/" className="text-gray-500 hover:text-blue-600">{t('nav.home')}</Link>

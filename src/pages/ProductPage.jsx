@@ -84,7 +84,7 @@ const ProductPage = () => {
             .select('*')
             .eq('productId', id)
             .eq('userId', user.id)
-            .single();
+            .maybeSingle();
           
           setHasUserReviewed(!!userReview);
         }

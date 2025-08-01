@@ -79,8 +79,6 @@ const CheckoutPage = () => {
         .single();
 
       //log error
-      console.log('Order created:', order);
-      console.log('Order error:', orderError);
       if (orderError) throw orderError;
 
       // Create order items
@@ -95,8 +93,6 @@ const CheckoutPage = () => {
       const { error: itemsError } = await supabase
         .from('order_items')
         .insert(orderItems);
-
-      console.log('Order items created, error:', itemsError);
       if (itemsError) throw itemsError;
 
       // Fetch order items with product info for email
@@ -119,7 +115,6 @@ const CheckoutPage = () => {
 
       // Send notifications (only with enriched order)
       try {
-        console.log('🔄 Starting notifications for order:', order.id);
         // Admin email
         await sendOrderEmailToAdmin(orderWithItems);
         await sendOrderWhatsappNotificationToAdmin(order);

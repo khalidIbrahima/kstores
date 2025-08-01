@@ -286,7 +286,7 @@ const AdminLayout = () => {
                     className={`p-4 border-b border-background-dark cursor-pointer hover:bg-background-light transition-colors font-bold text-text-dark`}
                     onClick={() => {
                       if (n.type === 'order_received' && n.data?.orderId) {
-                        navigate(`/admin/orders-page/${n.data.orderId}`);
+                        navigate(`/admin/orders/${n.data.orderId}`);
                       }
                       // Ajoute d'autres types ici si besoin
                     }}

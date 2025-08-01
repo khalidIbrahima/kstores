@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import OrderLocationMap from '../../components/OrderLocationMap';
 import { useParams, useNavigate } from 'react-router-dom';
-import OrderDetailsModal from '../../components/OrderDetailsModal';
-import { sendOrderWhatsappStatusUpdateToCustomer } from '../../services/whatsappService';
+
+import { notifyCustomerOrderStatusChange, ORDER_STATUS_CONFIG } from '../../services/notificationService';
+import toast from 'react-hot-toast';
+import OrderNotificationHistory from '../../components/OrderNotificationHistory';
 
 const OrdersPage = () => {
   const { t, i18n } = useTranslation();
@@ -46,6 +48,8 @@ const OrdersPage = () => {
 
   const handleStatusChange = async (newStatus) => {
     try {
+      const previousStatus = order?.status;
+      
       const { error } = await supabase
         .from('orders')
         .update({ status: newStatus })
@@ -53,12 +57,33 @@ const OrdersPage = () => {
       if (error) throw error;
       setOrder((prev) => ({ ...prev, status: newStatus }));
 
-      // Envoyer notification WhatsApp au client
-      try {
-        await sendOrderWhatsappStatusUpdateToCustomer(order, newStatus);
-      } catch (whatsappError) {
-        console.error('Error sending WhatsApp status update:', whatsappError);
-        // Ne pas bloquer la mise à jour du statut si WhatsApp échoue
+      // Notifier le client du changement de statut
+      if (order && previousStatus !== newStatus) {
+        try {
+          const notificationResults = await notifyCustomerOrderStatusChange(order, newStatus, previousStatus);
+          
+          // Afficher un message de succès avec les détails des notifications
+          const successMessages = [];
+          if (notificationResults.email) successMessages.push('Email envoyé');
+          if (notificationResults.whatsapp) successMessages.push('WhatsApp envoyé');
+          if (notificationResults.internal) successMessages.push('Notification interne créée');
+          
+          if (successMessages.length > 0) {
+            toast.success(`Statut mis à jour et ${successMessages.join(', ')}`);
+          } else {
+            toast.success('Statut mis à jour');
+          }
+
+          // Afficher les erreurs s'il y en a
+          if (notificationResults.errors.length > 0) {
+            notificationResults.errors.forEach(error => {
+              toast.error(`Erreur ${error.type}: ${error.error}`);
+            });
+          }
+        } catch (notificationError) {
+          console.error('Error sending notifications:', notificationError);
+          toast.error('Statut mis à jour mais erreur lors de l\'envoi des notifications');
+        }
       }
     } catch (err) {
       setError(t('admin.orders.updateError'));
@@ -110,16 +135,23 @@ const OrdersPage = () => {
           </div>
           <div>
             <div className="text-gray-700 font-semibold mb-1">{t('admin.orders.details.status')}</div>
-            <select
-              value={order.status}
-              onChange={e => handleStatusChange(e.target.value)}
-              className="rounded-md border border-gray-300 px-2 py-1 text-sm"
-            >
-              <option value="pending">{t('admin.orders.status.pending')}</option>
-              <option value="processing">{t('admin.orders.status.processing')}</option>
-              <option value="completed">{t('admin.orders.status.completed')}</option>
-              <option value="cancelled">{t('admin.orders.status.cancelled')}</option>
-            </select>
+            <div className="flex items-center space-x-2">
+              <div className={`flex items-center space-x-1 ${ORDER_STATUS_CONFIG[order.status]?.color || 'text-gray-600'}`}>
+                <span className="text-lg">{ORDER_STATUS_CONFIG[order.status]?.emoji || '📋'}</span>
+                <span className="text-sm font-medium">{ORDER_STATUS_CONFIG[order.status]?.label || order.status}</span>
+              </div>
+              <select
+                value={order.status}
+                onChange={e => handleStatusChange(e.target.value)}
+                className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+              >
+                <option value="pending">{t('admin.orders.status.pending')}</option>
+                <option value="processing">{t('admin.orders.status.processing')}</option>
+                <option value="shipped">Expédiée</option>
+                <option value="delivered">Livrée</option>
+                <option value="cancelled">{t('admin.orders.status.cancelled')}</option>
+              </select>
+            </div>
           </div>
           <div>
             <div className="text-gray-700 font-semibold mb-1">{t('admin.orders.details.date')}</div>
@@ -176,10 +208,13 @@ const OrdersPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Historique des notifications */}
+        <div className="mt-8 bg-white rounded-2xl shadow-lg p-8">
+          <OrderNotificationHistory orderId={orderId} />
+        </div>
       </div>
-      {order && (
-        <OrderDetailsModal order={order} onClose={() => navigate(-1)} />
-      )}
+
     </div>
   );
 };

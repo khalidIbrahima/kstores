@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Eye, X, Trash2, Plus, Filter, X as XIcon, Calendar, SortAsc, SortDesc } from 'lucide-react';
+import { Search, Eye, X, Trash2, Plus, Filter, X as XIcon, Calendar, SortAsc, SortDesc, Bell, Mail, MessageSquare } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
 import OrderLocationMap from '../../components/OrderLocationMap';
 import QRCode from 'react-qr-code';
 import { useTranslation } from 'react-i18next';
-import OrderDetailsModal from '../../components/OrderDetailsModal';
+
 import { useNavigate, useLocation } from 'react-router-dom';
+import { notifyCustomerOrderStatusChange, ORDER_STATUS_CONFIG } from '../../services/notificationService';
 
 const Orders = () => {
   const { t, i18n } = useTranslation();
@@ -16,8 +17,7 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
+
   const [statusFilter, setStatusFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [sortOrder, setSortOrder] = useState('desc'); // 'asc' or 'desc'
@@ -64,6 +64,11 @@ const Orders = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
+      // Récupérer la commande complète pour les notifications
+      const order = orders.find(o => o.id === orderId);
+      const previousStatus = order?.status;
+
+      // Mettre à jour le statut dans la base de données
       const { error } = await supabase
         .from('orders')
         .update({ status: newStatus })
@@ -71,11 +76,41 @@ const Orders = () => {
       
       if (error) throw error;
 
+      // Mettre à jour l'état local
       setOrders(orders.map(order =>
         order.id === orderId ? { ...order, status: newStatus } : order
       ));
 
-      toast.success('Order status updated successfully');
+      // Notifier le client du changement de statut
+      if (order && previousStatus !== newStatus) {
+        try {
+          const notificationResults = await notifyCustomerOrderStatusChange(order, newStatus, previousStatus);
+          
+          // Afficher un message de succès avec les détails des notifications
+          const successMessages = [];
+          if (notificationResults.email) successMessages.push('Email envoyé');
+          if (notificationResults.whatsapp) successMessages.push('WhatsApp envoyé');
+          if (notificationResults.internal) successMessages.push('Notification interne créée');
+          
+          if (successMessages.length > 0) {
+            toast.success(`Statut mis à jour et ${successMessages.join(', ')}`);
+          } else {
+            toast.success('Statut mis à jour');
+          }
+
+          // Afficher les erreurs s'il y en a
+          if (notificationResults.errors.length > 0) {
+            notificationResults.errors.forEach(error => {
+              toast.error(`Erreur ${error.type}: ${error.error}`);
+            });
+          }
+        } catch (notificationError) {
+          console.error('Error sending notifications:', notificationError);
+          toast.error('Statut mis à jour mais erreur lors de l\'envoi des notifications');
+        }
+      } else {
+        toast.success('Order status updated successfully');
+      }
     } catch (error) {
       console.error('Error updating order status:', error);
       toast.error('Failed to update order status');
@@ -350,24 +385,27 @@ const Orders = () => {
                     {order.total.toFixed(2) } FCFA
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
-                    <select
-                      value={order.status}
-                      onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                      className="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                    >
-                      <option value="pending">{t('pending')}</option>
-                      <option value="processing">{t('processing')}</option>
-                      <option value="shipped">{t('shipped')}</option>
-                      <option value="delivered">{t('delivered')}</option>
-                      <option value="cancelled">{t('cancelled')}</option>
-                    </select>
+                    <div className="flex items-center space-x-2">
+                      <div className={`flex items-center space-x-1 ${ORDER_STATUS_CONFIG[order.status]?.color || 'text-gray-600'}`}>
+                        <span className="text-lg">{ORDER_STATUS_CONFIG[order.status]?.emoji || '📋'}</span>
+                        <span className="text-sm font-medium">{ORDER_STATUS_CONFIG[order.status]?.label || order.status}</span>
+                      </div>
+                      <select
+                        value={order.status}
+                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                        className="rounded-md border border-gray-300 bg-white px-2 py-1 text-xs shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                      >
+                        <option value="pending">{t('pending')}</option>
+                        <option value="processing">{t('processing')}</option>
+                        <option value="shipped">{t('shipped')}</option>
+                        <option value="delivered">{t('delivered')}</option>
+                        <option value="cancelled">{t('cancelled')}</option>
+                      </select>
+                    </div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium flex gap-2 items-center">
                     <button
-                      onClick={() => {
-                        setSelectedOrder(order);
-                        setShowModal(true);
-                      }}
+                      onClick={() => navigate(`/admin/orders/${order.id}`)}
                       className="text-blue-600 hover:text-blue-900"
                       title={t('orders.view_details')}
                     >
@@ -388,12 +426,6 @@ const Orders = () => {
         </div>
       )}
 
-      {showModal && selectedOrder && (
-        <OrderDetailsModal order={selectedOrder} onClose={() => {
-          setShowModal(false);
-          setSelectedOrder(null);
-        }} />
-      )}
     </div>
   );
 };

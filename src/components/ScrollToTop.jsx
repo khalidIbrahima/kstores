@@ -34,7 +34,6 @@ const ScrollToTop = () => {
 
   // Set the scroll event listener
   useEffect(() => {
-    console.log('ScrollToTop component mounted');
     toggleVisibility();
     
     // Add scroll listener to the correct element
@@ -57,23 +56,15 @@ const ScrollToTop = () => {
     const scrollableElement = getScrollableElement();
     const currentScroll = getCurrentScrollPosition();
     
-    console.log('Scrollable element:', scrollableElement);
-    console.log('Current scroll position:', currentScroll);
-    console.log('Element scroll height:', scrollableElement.scrollHeight);
-    console.log('Element client height:', scrollableElement.clientHeight);
-    
     if (currentScroll === 0) {
       console.log('Already at top, no need to scroll');
       return;
     }
     
-    // Test multiple scroll methods on the correct element
-    console.log('Testing scroll methods...');
     
     // Method 1: Scroll the specific element
     try {
       scrollableElement.scrollTop = 0;
-      console.log('Method 1: scrollableElement.scrollTop = 0 executed');
     } catch (error) {
       console.error('Method 1 failed:', error);
     }
@@ -81,7 +72,6 @@ const ScrollToTop = () => {
     // Method 2: Use scrollTo on the element
     try {
       scrollableElement.scrollTo(0, 0);
-      console.log('Method 2: scrollableElement.scrollTo(0, 0) executed');
     } catch (error) {
       console.error('Method 2 failed:', error);
     }
@@ -89,7 +79,6 @@ const ScrollToTop = () => {
     // Method 3: Use scrollIntoView
     try {
       scrollableElement.scrollIntoView({ top: 0, behavior: 'smooth' });
-      console.log('Method 3: scrollIntoView executed');
     } catch (error) {
       console.error('Method 3 failed:', error);
     }
@@ -97,7 +86,6 @@ const ScrollToTop = () => {
     // Method 4: Fallback to window scroll
     try {
       window.scrollTo(0, 0);
-      console.log('Method 4: window.scrollTo(0, 0) executed');
     } catch (error) {
       console.error('Method 4 failed:', error);
     }
@@ -105,16 +93,14 @@ const ScrollToTop = () => {
     // Check if scroll worked after a delay
     setTimeout(() => {
       const newScroll = getCurrentScrollPosition();
-      console.log('Scroll position after 200ms:', newScroll);
       
       if (newScroll === 0) {
-        console.log('✅ Scroll successful!');
+        console.log('Scroll successful!');
       } else {
-        console.log('❌ Scroll failed - still at position:', newScroll);
+        console.log('Scroll failed - still at position:', newScroll);
       }
     }, 200);
     
-    console.log('Scroll command executed');
   };
 
   // Only show when visible

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, AlertCircle } from 'lucide-react';
@@ -15,9 +15,21 @@ const RegisterPage = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp, signInWithGoogle, user, isLoading: authLoading, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  // Rediriger les utilisateurs connectés
+  useEffect(() => {
+    if (!authLoading && user) {
+      // Si l'utilisateur est connecté, le rediriger
+      if (isAdmin) {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
+    }
+  }, [user, authLoading, isAdmin, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,6 +73,23 @@ const RegisterPage = () => {
     }
   };
 
+  // Afficher un loader pendant la vérification de l'authentification
+  if (authLoading) {
+    return (
+      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">{t('common.loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Si l'utilisateur est connecté, ne pas afficher la page
+  if (user) {
+    return null;
+  }
+
   return (
     <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gray-50 py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
       <motion.div 
@@ -90,10 +119,10 @@ const RegisterPage = () => {
           </div>
         )}
 
-        <GoogleAuthButton
+       {/*  <GoogleAuthButton
           onClick={handleGoogleSignUp}
           disabled={isLoading}
-        />
+        /> */}
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">

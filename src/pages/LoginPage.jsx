@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { supabase } from '../lib/supabase';
-import GoogleAuthButton from '../components/auth/GoogleAuthButton';
+import GoogleLoginButton from '../components/GoogleLoginButton';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -14,13 +14,25 @@ const LoginPage = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signIn, signInWithGoogle, isAdmin } = useAuth();
+  const { signIn, signInWithGoogle, isAdmin, user, isLoading: authLoading } = useAuth();
   const { settings } = useStoreSettings();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
   
   const from = location.state?.from?.pathname || '/';
+
+  // Rediriger les utilisateurs connectés
+  useEffect(() => {
+    if (!authLoading && user) {
+      // Si l'utilisateur est connecté, le rediriger
+      if (isAdmin) {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
+    }
+  }, [user, authLoading, isAdmin, navigate, from]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,17 +65,22 @@ const LoginPage = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      setIsLoading(true);
-      await signInWithGoogle();
-    } catch (error) {
-      console.error('Google sign in error:', error);
-      setError(t('auth.googleSignInError'));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Afficher un loader pendant la vérification de l'authentification
+  if (authLoading) {
+    return (
+      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">{t('common.loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Si l'utilisateur est connecté, ne pas afficher la page
+  if (user) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gray-50 py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
@@ -108,10 +125,7 @@ const LoginPage = () => {
           </div>
         )}
 
-        <GoogleAuthButton
-          onClick={handleGoogleSignIn}
-          disabled={isLoading}
-        />
+        <GoogleLoginButton />
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { useTranslation } from 'react-i18next';
 import L from 'leaflet';
@@ -23,40 +24,81 @@ const userIcon = new L.Icon({
 
 const OrderLocationMap = ({ userGeolocation, userName }) => {
   const { t } = useTranslation();
+  const [mapError, setMapError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (!userGeolocation?.latitude || !userGeolocation?.longitude) {
+
+  useEffect(() => {
+    // Simuler un délai de chargement pour la carte
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500); // Augmenté à 1.5 secondes
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // État de chargement
+  if (isLoading) {
     return (
-      <div className="flex h-[300px] items-center justify-center rounded-lg bg-background-light">
-        <p className="text-text-light">{t('admin.orders.noLocation')}</p>
+      <div className="flex h-[300px] items-center justify-center rounded-lg bg-gray-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+          <p className="text-gray-600">Chargement de la carte...</p>
+        </div>
       </div>
     );
   }
 
-  const position = {
-    lat: userGeolocation.latitude,
-    lng: userGeolocation.longitude
-  };
+  // Gestion d'erreur de la carte
+  if (mapError) {
+    return (
+      <div className="flex h-[300px] items-center justify-center rounded-lg bg-gray-100">
+        <div className="text-center">
+          <p className="text-gray-500 mb-2">🗺️</p>
+          <p className="text-gray-600">Erreur de chargement de la carte</p>
+          <p className="text-sm text-gray-400">Impossible d'afficher la localisation</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Vérifier si les coordonnées sont valides
+  const parsedUserGeolocation = JSON.parse(userGeolocation);
+  if (!parsedUserGeolocation?.latitude || !parsedUserGeolocation?.longitude) {
+    return (
+      <div className="flex h-[300px] items-center justify-center rounded-lg bg-gray-100">
+        <div className="text-center">
+          <p className="text-gray-500 mb-2">📍</p>
+          <p className="text-gray-600">Aucune localisation disponible</p>
+          <p className="text-sm text-gray-400">Le client n'a pas partagé sa position</p>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
-    <div className="h-[300px] w-full rounded-lg overflow-hidden">
+    <div className="h-[300px] w-full rounded-lg overflow-hidden border border-gray-200">
       <MapContainer
-        center={[position.lat, position.lng]}
+        center={[parsedUserGeolocation.latitude, parsedUserGeolocation.longitude]}
         zoom={15}
         className="h-full w-full"
+        style={{ minHeight: '300px' }}
+        onError={() => setMapError(true)}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={position} icon={userIcon}>
+        <Marker position={[parsedUserGeolocation.latitude, parsedUserGeolocation.longitude]} icon={userIcon}>
           <Popup>
             <div className="text-center">
-              <p className="font-medium text-text-dark">{userName}</p>
-              <p className="text-sm text-text-light">
-                {t('checkout.location.coordinates.latitude')}: {position.lat.toFixed(6)}
+              <p className="font-medium text-gray-900">{userName || 'Client'}</p>
+              <p className="text-sm text-gray-600">
+                Latitude: {parsedUserGeolocation.latitude.toFixed(6)}
               </p>
-              <p className="text-sm text-text-light">
-                {t('checkout.location.coordinates.longitude')}: {position.lng.toFixed(6)}
+              <p className="text-sm text-gray-600">
+                Longitude: {parsedUserGeolocation.longitude.toFixed(6)}
               </p>
             </div>
           </Popup>

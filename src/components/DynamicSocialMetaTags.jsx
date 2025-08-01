@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import { socialConfig } from '../config/socialConfig';
 
@@ -114,6 +114,46 @@ const DynamicSocialMetaTags = ({
             "name": "Tous nos produits",
             "description": "Catalogue complet de produits technologiques",
             "url": currentUrl
+          }
+        };
+        
+      case 'privacy':
+        return {
+          title: title || `Règles de Confidentialité - ${socialConfig.siteName}`,
+          description: description || "Découvrez comment Kapital Stores protège vos données personnelles et respecte votre vie privée. Politique de confidentialité complète et transparente.",
+          image: `${baseUrl}/src/assets/logo-transparent.png`,
+          keywords: "confidentialité, protection des données, RGPD, vie privée, politique de confidentialité",
+          structuredData: {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Règles de Confidentialité",
+            "description": "Politique de confidentialité de Kapital Stores",
+            "url": currentUrl,
+            "mainEntity": {
+              "@type": "Article",
+              "name": "Règles de Confidentialité",
+              "description": "Politique de confidentialité et protection des données personnelles"
+            }
+          }
+        };
+        
+      case 'terms':
+        return {
+          title: title || `Conditions Générales d'Utilisation - ${socialConfig.siteName}`,
+          description: description || "Consultez les conditions générales d'utilisation de Kapital Stores pour comprendre vos droits et obligations. CGU complètes et transparentes.",
+          image: `${baseUrl}/src/assets/logo-transparent.png`,
+          keywords: "conditions générales, CGU, termes d'utilisation, droits, obligations, contrat",
+          structuredData: {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Conditions Générales d'Utilisation",
+            "description": "CGU de Kapital Stores",
+            "url": currentUrl,
+            "mainEntity": {
+              "@type": "Article",
+              "name": "Conditions Générales d'Utilisation",
+              "description": "Conditions générales d'utilisation et termes de service"
+            }
           }
         };
         
