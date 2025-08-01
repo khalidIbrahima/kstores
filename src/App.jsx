@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import { StoreSettingsProvider } from './hooks/useStoreSettings.jsx';
+import GoogleAuthPopup from './components/GoogleAuthPopup';
 import Layout from './components/layout/Layout';
 import AdminLayout from './components/layout/AdminLayout';
 import AnalyticsTracker from './components/AnalyticsTracker';
@@ -83,6 +84,7 @@ function App() {
             <Router {...router}>
               <AnalyticsTracker />
               <Toaster position="top-center" />
+              <GoogleAuthPopup />
               <Routes>
                 {/* Checkout Routes - Outside Layout */}
                 <Route path="checkout/confirmation/:orderId" element={<OrderConfirmationPage />} />

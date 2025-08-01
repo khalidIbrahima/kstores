@@ -1,6 +1,6 @@
 import { useUnifiedAuth } from '../hooks/useUnifiedAuth';
 
-const GoogleLoginButton = ({ className = '', children, variant = 'default' }) => {
+const GoogleLoginButton = ({ className = '', children, variant = 'default', onSuccess }) => {
   const { loginWithGoogle, isLoading } = useUnifiedAuth();
   
   // Vérifier si le Client ID Google est configuré
@@ -22,6 +22,10 @@ const GoogleLoginButton = ({ className = '', children, variant = 'default' }) =>
       return `${baseClasses} px-2 py-1.5 text-xs font-medium text-gray-700 w-auto`;
     }
     
+    if (variant === 'full') {
+      return `${baseClasses} px-4 py-3 text-sm font-medium text-gray-700 w-full`;
+    }
+    
     // default variant
     return `${baseClasses} px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl`;
   };
@@ -29,6 +33,9 @@ const GoogleLoginButton = ({ className = '', children, variant = 'default' }) =>
   const getIconClasses = () => {
     if (variant === 'small') {
       return "h-3 w-3";
+    }
+    if (variant === 'full') {
+      return "h-5 w-5";
     }
     return "h-4 w-4 sm:h-5 sm:w-5";
   };
@@ -39,6 +46,9 @@ const GoogleLoginButton = ({ className = '', children, variant = 'default' }) =>
     }
     if (variant === 'compact') {
       return "text-xs sm:text-sm";
+    }
+    if (variant === 'full') {
+      return "text-sm";
     }
     return "text-xs sm:text-sm md:text-base";
   };
@@ -78,8 +88,15 @@ const GoogleLoginButton = ({ className = '', children, variant = 'default' }) =>
   return (
     <div className="flex justify-center w-full">
       <button
-        onClick={() => {
-          loginWithGoogle();
+        onClick={async () => {
+          try {
+            await loginWithGoogle();
+            if (onSuccess) {
+              onSuccess();
+            }
+          } catch (error) {
+            console.error('Google login error:', error);
+          }
         }}
         disabled={isLoading}
         className={`${getButtonClasses()} ${className}`}

@@ -273,6 +273,14 @@
     "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
     "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères"
   },
+  "popup": {
+    "welcome": "Bienvenue sur KStores !",
+    "description": "Connectez-vous rapidement avec votre compte Google pour une expérience personnalisée",
+    "benefit1": "Accès rapide et sécurisé",
+    "benefit2": "Synchronisation de vos favoris et commandes",
+    "benefit3": "Notifications personnalisées",
+    "skip": "Continuer sans connexion"
+  },
   "iptv": {
     "title": "Services IPTV",
     "subtitle": "Profitez de vos chaînes préférées en streaming",
