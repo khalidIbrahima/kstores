@@ -314,9 +314,22 @@ const OrderDetailPage = () => {
                           <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
                             {item.products?.name || 'Produit inconnu'}
                           </p>
-                          <p className="text-xs sm:text-sm text-gray-500">
-                            Quantité: {item.quantity}
-                          </p>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <p className="text-xs sm:text-sm text-gray-500">
+                              Quantité: {item.quantity}
+                            </p>
+                            {item.selected_color && (
+                              <div className="flex items-center space-x-1">
+                                <div
+                                  className="w-3 h-3 rounded-full border border-gray-300"
+                                  style={{ backgroundColor: JSON.parse(item.selected_color).hex }}
+                                />
+                                <span className="text-xs text-gray-500">
+                                  {JSON.parse(item.selected_color).name}
+                                </span>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="text-left sm:text-right">
