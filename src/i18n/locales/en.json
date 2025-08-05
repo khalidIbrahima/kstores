@@ -66,51 +66,6 @@
       "subscribe": "Subscribe"
     }
   },
-  "about": {
-    "title": "About Kapital Stores",
-    "subtitle": "Your trusted destination for quality products and exceptional shopping experience",
-    "story": {
-      "title": "Our Story",
-      "content1": "Founded in 2022, Kapital Stores has grown from a small local shop to a leading online marketplace. Our mission is to provide customers with high-quality products at competitive prices while delivering exceptional customer service.",
-      "content2": "We carefully curate our product selection to ensure that we offer only the best items across various categories. Our team works tirelessly to source products from reliable manufacturers and brands that share our commitment to quality and sustainability."
-    },
-    "values": {
-      "title": "Our Values",
-      "quality": {
-        "title": "Quality First",
-        "description": "We never compromise on quality, ensuring every product meets our high standards"
-      },
-      "delivery": {
-        "title": "Fast Delivery",
-        "description": "We ensure quick and reliable delivery to get your products to you on time"
-      },
-      "security": {
-        "title": "Secure Shopping",
-        "description": "Your security is our priority with safe payment and data protection"
-      },
-      "customer": {
-        "title": "Customer Focus",
-        "description": "We put our customers first with dedicated support and service"
-      }
-    },
-    "team": {
-      "title": "Our Team",
-      "members": {
-        "ceo": {
-          "name": "Khalidou Sow BA",
-          "role": "PDG & Fondateur"
-        },
-        "operations": {
-          "name": "Khalidou Sow BA",
-          "role": "Directeur des Opérations"
-        },
-        "service": {
-          "name": "Mariama Ndiaye",
-          "role": "Responsable Service Client"
-        }
-      }
-    }
-  },
   "contact": {
     "title": "Contact Us",
     "subtitle": "We're here to help! Send us a message and we'll get back to you as soon as possible.",
@@ -148,7 +103,6 @@
     "home": "Home",
     "categories": "Categories",
     "allProducts": "All Products",
-    "about": "About",
     "contact": "Contact",
     "viewStore": "View Store",
     "dashboard": "Dashboard"

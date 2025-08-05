@@ -62,51 +62,6 @@
       "subscribe": "S'abonner"
     }
   },
-  "about": {
-    "title": "À propos de Kapital Stores",
-    "subtitle": "Votre destination de confiance pour des articles de qualité et une expérience d'achat exceptionnelle",
-    "story": {
-      "title": "Notre Histoire",
-      "content1": "Fondé en 2022, Kapital Stores est passé d'une petite boutique locale à une place de marché en ligne leader. Notre mission est de fournir aux clients des articles de haute qualité à des prix compétitifs tout en offrant un service client exceptionnel.",
-      "content2": "Nous sélectionnons soigneusement nos articles pour nous assurer de n'offrir que les meilleurs articles dans diverses catégories. Notre équipe travaille sans relâche pour sourcer des articles auprès de fabricants et de marques fiables qui partagent notre engagement envers la qualité et la durabilité."
-    },
-    "values": {
-      "title": "Nos Valeurs",
-      "quality": {
-        "title": "La Qualité d'Abord",
-        "description": "Nous ne faisons jamais de compromis sur la qualité, nous nous assurons que chaque article répond à nos normes élevées"
-      },
-      "delivery": {
-        "title": "Livraison Rapide",
-        "description": "Nous assurons une livraison rapide et fiable pour vous faire parvenir vos articles à temps"
-      },
-      "security": {
-        "title": "Achats Sécurisés",
-        "description": "Votre sécurité est notre priorité avec un paiement sécurisé et la protection des données"
-      },
-      "customer": {
-        "title": "Focus Client",
-        "description": "Nous mettons nos clients en premier avec un support et un service dédiés"
-      }
-    },
-    "team": {
-      "title": "Notre Équipe",
-      "members": {
-        "ceo": {
-          "name": "Khalidou Sow BA",
-          "role": "PDG & Fondateur"
-        },
-        "operations": {
-          "name": "Khalidou Sow BA",
-          "role": "Directeur des Opérations"
-        },
-        "service": {
-          "name": "Mariama Ndiaye",
-          "role": "Responsable Service Client"
-        }
-      }
-    }
-  },
   "contact": {
     "title": "Contactez-nous",
     "subtitle": "Nous sommes là pour vous aider ! Envoyez-nous un message et nous vous répondrons dès que possible.",
@@ -144,7 +99,6 @@
     "home": "Accueil",
     "categories": "Catégories",
     "allProducts": "Tous les articles",
-    "about": "À propos",
     "contact": "Contact",
     "viewStore": "Voir la boutique",
     "dashboard": "Tableau de bord"
