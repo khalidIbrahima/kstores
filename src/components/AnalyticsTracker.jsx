@@ -1,11 +1,18 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { trackPageVisit } from '../services/analyticsService';
+import { isProduction, devLog } from '../utils/environment';
 
 const AnalyticsTracker = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // Ne tracker que si en production
+    if (!isProduction()) {
+      devLog(`[ANALYTICS] Analytics tracker disabled (dev mode): ${location.pathname}`);
+      return;
+    }
+
     // Tracker la visite de page quand l'URL change
     // Exclure les pages admin pour éviter le bruit dans les analytics
     if (!location.pathname.startsWith('/admin')) {

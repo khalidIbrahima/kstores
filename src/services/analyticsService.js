@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { isProduction, devLog } from '../utils/environment';
 
 // Générer un ID de session unique pour les utilisateurs anonymes
 const getSessionId = () => {
@@ -36,6 +37,12 @@ const getLocation = async (ipAddress) => {
 
 // Service pour tracker les vues de produits
 export const trackProductView = async (productId) => {
+  // Ne tracker que si en production
+  if (!isProduction()) {
+    devLog(`[ANALYTICS] Product view tracking skipped (dev mode): ${productId}`);
+    return;
+  }
+
   try {
     const { data: { user } } = await supabase.auth.getUser();
     // Exclure les admins du tracking
@@ -67,6 +74,12 @@ export const trackProductView = async (productId) => {
 
 // Service pour tracker les visites de pages
 export const trackPageVisit = async (pagePath, referrer = null) => {
+  // Ne tracker que si en production
+  if (!isProduction()) {
+    devLog(`[ANALYTICS] Page visit tracking skipped (dev mode): ${pagePath}`);
+    return;
+  }
+
   try {
     const { data: { user } } = await supabase.auth.getUser();
     // Exclure les admins du tracking
