@@ -66,6 +66,7 @@ import WhatsAppSettings from './pages/admin/WhatsAppSettings';
 import WhatsAppDebug from './pages/admin/WhatsAppDebug';
 import SupplierOrders from './pages/admin/SupplierOrders';
 import SupplierOrderDetail from './pages/admin/SupplierOrderDetail';
+import ShippingAgencies from './pages/admin/ShippingAgencies';
 
 const router = {
   future: {
@@ -174,6 +175,7 @@ function App() {
                   <Route path="whatsapp-debug" element={<WhatsAppDebug />} />
                   <Route path="supplier-orders" element={<SupplierOrders />} />
                   <Route path="supplier-orders/:id" element={<SupplierOrderDetail />} />
+                  <Route path="shipping-agencies" element={<ShippingAgencies />} />
                 </Route>
 
                 <Route path="*" element={<NotFoundPage />} />

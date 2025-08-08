@@ -6,6 +6,9 @@ import App from './App';
 import './i18n';
 import './index.css';
 
+// Test des utilitaires d'environnement (développement seulement)
+import './utils/environmentTest';
+
 // Vérifier que le Client ID Google est configuré
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 

@@ -413,8 +413,8 @@ export default function SupplierOrderDetail() {
 
       {/* Modals */}
       {showEditForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-4">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
+        <div className="modal-overlay">
+          <div className="modal-content-large">
             <button 
               onClick={() => setShowEditForm(false)} 
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl"
@@ -430,27 +430,17 @@ export default function SupplierOrderDetail() {
       )}
 
       {showDeliveryModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-4">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-lg relative">
-            <button 
-              onClick={() => { setShowDeliveryModal(false); setEditDelivery(null); }} 
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl"
-            >
-              &times;
-            </button>
-            <DeliveryForm 
-              supplierOrderId={id} 
-              delivery={editDelivery} 
-              onSaved={handleDeliverySaved} 
-              onClose={() => { setShowDeliveryModal(false); setEditDelivery(null); }} 
-            />
-          </div>
-        </div>
+        <DeliveryForm 
+          supplierOrderId={id} 
+          delivery={editDelivery} 
+          onSaved={handleDeliverySaved} 
+          onClose={() => { setShowDeliveryModal(false); setEditDelivery(null); }} 
+        />
       )}
 
       {showAgencyModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-4">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-lg relative">
+        <div className="modal-overlay">
+          <div className="modal-content">
             <button 
               onClick={() => setShowAgencyModal(false)} 
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl"
