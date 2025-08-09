@@ -59,6 +59,7 @@ export default function SupplierOrders() {
               <tr>
                 <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                 <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant (USD)</th>
+                <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Frais transition (USD)</th>
                 <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
                 <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
@@ -82,6 +83,9 @@ export default function SupplierOrders() {
                     </td>
                     <td className="px-3 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       ${parseFloat(order.total_amount_usd).toFixed(2)}
+                    </td>
+                    <td className="px-3 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      ${parseFloat(order.bank_fees_usd?.toFixed(2)) || '0.00'}
                     </td>
                     <td className="px-3 lg:px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
                       {order.notes || '-'}

@@ -10,6 +10,7 @@ export default function SupplierOrderForm({ order, onClose }) {
   const [form, setForm] = useState({
     order_date: '',
     total_amount_usd: '',
+    bank_fees_usd: '',
     image_url: '',
     notes: '',
     items: [ { ...emptyItem } ]
@@ -26,6 +27,7 @@ export default function SupplierOrderForm({ order, onClose }) {
       setForm({
         order_date: order.order_date || '',
         total_amount_usd: order.total_amount_usd || '',
+        bank_fees_usd: order.bank_fees_usd || '',
         image_url: order.image_url || '',
         notes: order.notes || '',
         items: []
@@ -178,6 +180,10 @@ export default function SupplierOrderForm({ order, onClose }) {
             <div>
               <label className="block font-medium mb-1">Montant total (USD) <span className="text-red-500">*</span></label>
               <input type="number" name="total_amount_usd" value={form.total_amount_usd} onChange={handleChange} className="input input-bordered rounded-lg shadow-sm focus:ring-2 focus:ring-primary w-full" min="0" required />
+            </div>
+            <div>
+              <label className="block font-medium mb-1">Frais de transaction (USD)</label>
+              <input type="number" name="bank_fees_usd" value={form.bank_fees_usd} onChange={handleChange} className="input input-bordered rounded-lg shadow-sm focus:ring-2 focus:ring-primary w-full" min="0" step="0.01" />
             </div>
             <div className="col-span-2">
               <label className="block font-medium mb-1">Image (URL)</label>

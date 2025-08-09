@@ -105,7 +105,7 @@ export default function SupplierOrderDetail() {
     return items.reduce((total, item) => {
       const quantity = parseInt(item.quantity) || 0;
       const price = parseFloat(item.unit_price_usd) || 0;
-      return total + (quantity * price);
+      return total + (quantity * price)  + (order.bank_fees_usd || 0);
     }, 0);
   };
 
@@ -189,6 +189,10 @@ export default function SupplierOrderDetail() {
             <div>
               <span className="text-sm text-gray-500">Montant total:</span>
               <p className="font-medium text-lg lg:text-xl text-green-600">${parseFloat(order.total_amount_usd).toFixed(2)} USD</p>
+            </div>
+            <div>
+              <span className="text-sm text-gray-500">Frais de transaction:</span>
+              <p className="font-medium text-lg lg:text-xl text-blue-600">${parseFloat(order.bank_fees_usd || 0).toFixed(2)} USD</p>
             </div>
             {order.notes && (
               <div>
