@@ -84,6 +84,7 @@ const CartPage = () => {
                               <Link to={`/product/${item.id}`} className="text-sm font-medium text-text-dark hover:text-primary">
                                 {item.name}
                               </Link>
+                              {/* Color Display */}
                               {item.selectedColor && (
                                 <div className="flex items-center mt-1">
                                   <div
@@ -93,6 +94,39 @@ const CartPage = () => {
                                   <span className="text-xs text-text-light">
                                     {item.selectedColor.name}
                                   </span>
+                                </div>
+                              )}
+                              
+                              {/* Properties Display */}
+                              {item.selectedProperties && Object.keys(item.selectedProperties).length > 0 && (
+                                <div className="mt-1 space-y-1">
+                                  {Object.entries(item.selectedProperties).map(([key, value]) => {
+                                    // Skip URL properties (they are handled with their corresponding image properties)
+                                    if (key.endsWith('_url')) return null;
+                                    
+                                    const imageUrl = item.selectedProperties[`${key}_url`];
+                                    
+                                    return (
+                                      <div key={key} className="flex items-center text-xs text-text-light">
+                                        <span className="font-medium">{key}:</span>
+                                        {imageUrl ? (
+                                          <div className="ml-1 flex items-center gap-1">
+                                            <img
+                                              src={imageUrl}
+                                              alt={value}
+                                              className="w-4 h-4 rounded border border-gray-300 object-cover"
+                                              onError={(e) => {
+                                                e.target.style.display = 'none';
+                                              }}
+                                            />
+                                            <span className="px-2 py-0.5 bg-blue-100 text-blue-800 rounded">{value}</span>
+                                          </div>
+                                        ) : (
+                                          <span className="ml-1 px-2 py-0.5 bg-blue-100 text-blue-800 rounded">{value}</span>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
                                 </div>
                               )}
                             </div>

@@ -29,6 +29,7 @@ const ProductPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedProperties, setSelectedProperties] = useState({});
   const { addItem } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const { t } = useTranslation();
@@ -129,9 +130,22 @@ const ProductPage = () => {
         return;
       }
       
-      addItem(product, quantity, selectedColor);
+      // Vérifier si des propriétés requises ne sont pas sélectionnées
+      if (product.properties && product.properties.length > 0) {
+        const missingRequiredProperties = product.properties.filter(
+          prop => prop.required && !selectedProperties[prop.name]
+        );
+        
+        if (missingRequiredProperties.length > 0) {
+          toast.error(`Veuillez sélectionner: ${missingRequiredProperties.map(p => p.name).join(', ')}`);
+          return;
+        }
+      }
+      
+      addItem(product, quantity, selectedColor, selectedProperties);
       setQuantity(1);
       setSelectedColor(null);
+      setSelectedProperties({});
     }
   };
 
@@ -280,6 +294,159 @@ const ProductPage = () => {
                   {t('product.selectedColor')} : {selectedColor.name}
                 </p>
               )}
+            </div>
+          )}
+
+          {/* Properties Display */}
+          {product.properties && product.properties.length > 0 && (
+            <div className="mb-6 space-y-4">
+              {product.properties.map((property, index) => (
+                <div key={index} className="space-y-2">
+                  <label className="block text-sm font-medium text-text-dark">
+                    {property.name}
+                    {property.required && <span className="text-red-500 ml-1">*</span>}
+                  </label>
+                  
+                  {property.type === 'select' && (
+                    <div className="flex flex-wrap gap-2">
+                      {property.values.map((value, valueIndex) => (
+                        <button
+                          key={valueIndex}
+                          onClick={() => setSelectedProperties(prev => ({
+                            ...prev,
+                            [property.name]: value
+                          }))}
+                          className={`px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                            selectedProperties[property.name] === value
+                              ? 'border-primary bg-primary text-white'
+                              : 'border-gray-300 bg-white text-text-dark hover:border-primary hover:bg-primary hover:text-white'
+                          }`}
+                        >
+                          {value}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {property.type === 'image' && (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                      {(property.imageOptions || []).map((option, optionIndex) => (
+                        <button
+                          key={optionIndex}
+                          onClick={() => setSelectedProperties(prev => ({
+                            ...prev,
+                            [property.name]: option.name,
+                            [`${property.name}_url`]: option.url
+                          }))}
+                          className={`relative group rounded-lg border-2 overflow-hidden transition-all ${
+                            selectedProperties[property.name] === option.name
+                              ? 'border-primary ring-2 ring-primary ring-opacity-50'
+                              : 'border-gray-300 hover:border-primary'
+                          }`}
+                        >
+                          <div className="aspect-square">
+                            <img
+                              src={option.url}
+                              alt={option.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                            <div 
+                              className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs"
+                              style={{ display: 'none' }}
+                            >
+                              <div className="text-center">
+                                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center mb-1">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                  </svg>
+                                </div>
+                                <span>Image non disponible</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white text-xs p-2 text-center">
+                            {option.name}
+                          </div>
+                          {selectedProperties[property.name] === option.name && (
+                            <div className="absolute top-2 right-2 bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                            </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {property.type === 'text' && (
+                    <input
+                      type="text"
+                      placeholder={`Entrez ${property.name.toLowerCase()}`}
+                      value={selectedProperties[property.name] || ''}
+                      onChange={(e) => setSelectedProperties(prev => ({
+                        ...prev,
+                        [property.name]: e.target.value
+                      }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                    />
+                  )}
+                  
+                  {property.type === 'number' && (
+                    <input
+                      type="number"
+                      placeholder={`Entrez ${property.name.toLowerCase()}`}
+                      value={selectedProperties[property.name] || ''}
+                      onChange={(e) => setSelectedProperties(prev => ({
+                        ...prev,
+                        [property.name]: e.target.value
+                      }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                    />
+                  )}
+                  
+                  {property.type === 'boolean' && (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setSelectedProperties(prev => ({
+                          ...prev,
+                          [property.name]: 'Oui'
+                        }))}
+                        className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                          selectedProperties[property.name] === 'Oui'
+                            ? 'border-primary bg-primary text-white'
+                            : 'border-gray-300 bg-white text-text-dark hover:border-primary'
+                        }`}
+                      >
+                        Oui
+                      </button>
+                      <button
+                        onClick={() => setSelectedProperties(prev => ({
+                          ...prev,
+                          [property.name]: 'Non'
+                        }))}
+                        className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                          selectedProperties[property.name] === 'Non'
+                            ? 'border-primary bg-primary text-white'
+                            : 'border-gray-300 bg-white text-text-dark hover:border-primary'
+                        }`}
+                      >
+                        Non
+                      </button>
+                    </div>
+                  )}
+                  
+                  {selectedProperties[property.name] && (
+                    <p className="text-sm text-primary font-medium">
+                      {property.name} sélectionné(e) : {selectedProperties[property.name]}
+                    </p>
+                  )}
+                </div>
+              ))}
             </div>
           )}
           

@@ -301,7 +301,8 @@ const HomePage = () => {
                         "seller": {
                           "@type": "Organization",
                           "name": "KStores"
-                        }
+                        },
+                        "priceValidUntil": "2025-12-31"
                       },
                       "aggregateRating": product.reviews?.count > 0 ? {
                         "@type": "AggregateRating",

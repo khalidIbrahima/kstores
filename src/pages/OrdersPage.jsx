@@ -213,7 +213,7 @@ const OrdersPage = () => {
               </div>
               <div class="info-block">
                 <div class="info-title">Contact</div>
-                <div>support@kapitalstores.shop<br>+221 77 240 50 63</div>
+                <div>support@kapital-stores.shop<br>+221 77 240 50 63</div>
               </div>
             </div>
             <div class="client-box">
