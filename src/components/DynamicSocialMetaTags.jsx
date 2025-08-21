@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import { socialConfig } from '../config/socialConfig';
+import { getBestProductImage, normalizeImageUrl, generateImageMetadata } from '../utils/imageUtils';
 
 const DynamicSocialMetaTags = ({ 
   title, 
@@ -17,6 +18,8 @@ const DynamicSocialMetaTags = ({
   const { t } = useTranslation();
   
   // Génération automatique des métadonnées selon le type de page
+  // Utilisation des utilitaires d'image pour une meilleure gestion
+
   const generateMetaData = () => {
     const baseUrl = window.location.origin;
     const currentUrl = url || window.location.href;
@@ -24,17 +27,21 @@ const DynamicSocialMetaTags = ({
     switch (pageType) {
       case 'product':
         if (product) {
+          // Utiliser les utilitaires pour obtenir la meilleure image
+          const imageMetadata = generateImageMetadata(product, category);
+          const publicImageUrl = imageMetadata.url;
+          
           return {
             title: `${product.name} - ${socialConfig.siteName}`,
             description: product.description?.substring(0, 160) || `Découvrez ${product.name} sur ${socialConfig.siteName}`,
-            image: product.image_url || socialConfig.defaultImage,
+            image: publicImageUrl,
             keywords: `${product.name}, ${product.category?.name || ''}, boutique en ligne, ${socialConfig.defaultMeta.keywords}`,
             structuredData: {
               "@context": "https://schema.org",
               "@type": "Product",
               "name": product.name,
               "description": product.description,
-              "image": product.image_url,
+              "image": publicImageUrl,
               "url": currentUrl,
               "brand": {
                 "@type": "Brand",
@@ -62,11 +69,11 @@ const DynamicSocialMetaTags = ({
         
       case 'category':
         if (category) {
-          return {
-            title: `${category.name} - ${socialConfig.siteName}`,
-            description: category.description?.substring(0, 160) || `Découvrez notre sélection de ${category.name} sur ${socialConfig.siteName}`,
-            image: category.image_url || socialConfig.defaultImage,
-            keywords: `${category.name}, produits, ${socialConfig.defaultMeta.keywords}`,
+                  return {
+          title: `${category.name} - ${socialConfig.siteName}`,
+          description: category.description?.substring(0, 160) || `Découvrez notre sélection de ${category.name} sur ${socialConfig.siteName}`,
+          image: normalizeImageUrl(category.image_url),
+          keywords: `${category.name}, produits, ${socialConfig.defaultMeta.keywords}`,
             structuredData: {
               "@context": "https://schema.org",
               "@type": "CollectionPage",
@@ -86,7 +93,7 @@ const DynamicSocialMetaTags = ({
         return {
           title: `${socialConfig.siteName} - Boutique en ligne de produits technologiques`,
           description: "Découvrez notre sélection de produits technologiques : smartphones, ordinateurs, accessoires gaming et plus. Livraison rapide, prix compétitifs.",
-          image: `${baseUrl}/src/assets/logo-transparent.png`,
+          image: normalizeImageUrl(`${baseUrl}/src/assets/logo-transparent.png`),
           keywords: "boutique en ligne, produits technologiques, smartphones, ordinateurs, accessoires, livraison rapide",
           structuredData: {
             "@context": "https://schema.org",
@@ -171,6 +178,16 @@ const DynamicSocialMetaTags = ({
   const metaData = generateMetaData();
   const currentUrl = url || window.location.href;
   const imageUrl = metaData.image.startsWith('http') ? metaData.image : `${window.location.origin}${metaData.image}`;
+  
+  // Métadonnées d'image pour les réseaux sociaux
+  const imageMetadata = pageType === 'product' && product 
+    ? generateImageMetadata(product, category)
+    : {
+        url: imageUrl,
+        alt: metaData.title,
+        width: socialConfig.defaultImageWidth,
+        height: socialConfig.defaultImageHeight
+      };
 
   return (
     <Helmet>
@@ -185,10 +202,10 @@ const DynamicSocialMetaTags = ({
       <meta property="og:type" content={type} />
       <meta property="og:title" content={metaData.title} />
       <meta property="og:description" content={metaData.description} />
-      <meta property="og:image" content={imageUrl} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
-      <meta property="og:image:alt" content={metaData.title} />
+      <meta property="og:image" content={imageMetadata.url} />
+      <meta property="og:image:width" content={imageMetadata.width} />
+      <meta property="og:image:height" content={imageMetadata.height} />
+      <meta property="og:image:alt" content={imageMetadata.alt} />
       <meta property="og:url" content={currentUrl} />
       <meta property="og:site_name" content={socialConfig.siteName} />
       <meta property="og:locale" content={socialConfig.defaultMeta.locale} />
@@ -197,13 +214,14 @@ const DynamicSocialMetaTags = ({
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={metaData.title} />
       <meta name="twitter:description" content={metaData.description} />
-      <meta name="twitter:image" content={imageUrl} />
-      <meta name="twitter:image:alt" content={metaData.title} />
+      <meta name="twitter:image" content={imageMetadata.url} />
+      <meta name="twitter:image:alt" content={imageMetadata.alt} />
       <meta name="twitter:site" content={socialConfig.socialMedia.twitter.username} />
       <meta name="twitter:creator" content={socialConfig.socialMedia.twitter.username} />
       
-      {/* LinkedIn */}
-      <meta property="og:image:secure_url" content={imageUrl} />
+      {/* LinkedIn et autres plateformes */}
+      <meta property="og:image:secure_url" content={imageMetadata.url} />
+      <meta property="og:image:type" content="image/png" />
       
       {/* URL canonique */}
       <link rel="canonical" href={currentUrl} />

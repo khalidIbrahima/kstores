@@ -36,6 +36,7 @@ import OrderConfirmationPage from './pages/checkout/OrderConfirmationPage';
 import ErrorPage from './pages/checkout/ErrorPage';
 import SuccessPage from './pages/checkout/SuccessPage';
 import DynamicFavicon from './components/DynamicFavicon';
+import SocialMetaManager from './components/SocialMetaManager';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
@@ -85,6 +86,7 @@ function App() {
             <DynamicFavicon />
             <Router {...router}>
               <AnalyticsTracker />
+              <SocialMetaManager />
               <Toaster position="top-center" />
               <GoogleAuthPopup />
               <Routes>
