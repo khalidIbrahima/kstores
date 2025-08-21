@@ -20,10 +20,12 @@ import { useProductAnalytics, useProductStats } from '../hooks/useAnalytics';
 import ProductStats from '../components/analytics/ProductStats';
 import ProductPrice from '../components/ProductPrice';
 import PromotionBadge from '../components/PromotionBadge';
+import { urlUtils } from '../utils/slugUtils';
 
 const ProductPage = () => {
-  const { id } = useParams();
+  const { id: idOrSlug } = useParams();
   const [product, setProduct] = useState(null);
+  const [productId, setProductId] = useState(null);
   const [category, setCategory] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,28 +41,70 @@ const ProductPage = () => {
   const [hasUserReviewed, setHasUserReviewed] = useState(false);
   const { user } = useAuth();
   
-  // Tracking des vues de produits
-  useProductAnalytics(id);
-  const { viewsCount, isLoading: viewsLoading } = useProductStats(id);
+  // Tracking des vues de produits (utilise l'ID résolu)
+  useProductAnalytics(productId);
+  const { viewsCount, isLoading: viewsLoading } = useProductStats(productId);
 
   useEffect(() => {
     const fetchProduct = async () => {
-      if (!id) return;
+      if (!idOrSlug) return;
       
       try {
         setIsLoading(true);
         
-        // Fetch product
-        const { data: productData, error: productError } = await supabase
-          .from('products')
-          .select(`
-            *,
-            reviews (
-              rate
-            )
-          `)
-          .eq('id', id)
-          .single();
+        // Déterminer si c'est un ID UUID ou un slug
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+        let productQuery;
+        
+        if (isUUID) {
+          // C'est un UUID, recherche directe par ID
+          productQuery = supabase
+            .from('products')
+            .select(`
+              *,
+              reviews (
+                rate
+              )
+            `)
+            .eq('id', idOrSlug);
+        } else {
+          // C'est potentiellement un slug
+          // D'abord essayer de trouver par slug exact
+          productQuery = supabase
+            .from('products')
+            .select(`
+              *,
+              reviews (
+                rate
+              )
+            `)
+            .eq('slug', idOrSlug);
+        }
+        
+        let { data: productData, error: productError } = await productQuery.single();
+        
+        // Si pas trouvé et c'est un slug, essayer d'extraire l'ID court
+        if (productError && !isUUID) {
+          const shortId = urlUtils.extractIdFromProductSlug(idOrSlug);
+          
+          if (shortId) {
+            // Chercher par correspondance partielle d'ID
+            const { data: products, error: searchError } = await supabase
+              .from('products')
+              .select(`
+                *,
+                reviews (
+                  rate
+                )
+              `)
+              .ilike('id', `%${shortId}`);
+            
+            if (!searchError && products && products.length > 0) {
+              productData = products[0];
+              productError = null;
+            }
+          }
+        }
         
         if (productError) throw productError;
         if (!productData) throw new Error('Product not found');
@@ -72,18 +116,21 @@ const ProductPage = () => {
           : 0;
         const reviewCount = reviews.length;
 
-        setProduct({
+        const productWithRating = {
           ...productData,
           avgRating,
           reviewCount
-        });
+        };
+        
+        setProduct(productWithRating);
+        setProductId(productData.id);
         
         // Vérifier si l'utilisateur a déjà laissé un avis
         if (user) {
           const { data: userReview } = await supabase
             .from('reviews')
             .select('*')
-            .eq('productId', id)
+            .eq('productId', productData.id)
             .eq('userId', user.id)
             .maybeSingle();
           
@@ -106,7 +153,7 @@ const ProductPage = () => {
             .select('*')
             .eq('category_id', productData.category_id)
             .eq('isActive', true)
-            .neq('id', id)
+            .neq('id', productData.id)
             .limit(4);
           
           setRelatedProducts(relatedData || []);
@@ -120,7 +167,7 @@ const ProductPage = () => {
     };
     
     fetchProduct();
-  }, [id, user]);
+  }, [idOrSlug, user]);
 
   const handleAddToCart = () => {
     if (product && product.inventory > 0) {

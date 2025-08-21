@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { socialConfig } from '../config/socialConfig';
 import { getBestProductImage, normalizeImageUrl } from '../utils/imageUtils';
 import { metaPreloadService } from '../services/metaPreloadService';
+import { urlUtils } from '../utils/slugUtils';
 
 /**
  * Hook pour gérer les métadonnées sociales dynamiques
@@ -72,7 +73,19 @@ export const useSocialMeta = () => {
       try {
         // Page produit
         if (path.startsWith('/product/')) {
-          const productId = path.split('/')[2];
+          const idOrSlug = path.split('/')[2];
+          
+          // Déterminer si c'est un UUID ou un slug
+          const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+          let productId = idOrSlug;
+          
+          // Si c'est un slug, essayer d'extraire l'ID
+          if (!isUUID) {
+            const extractedId = urlUtils.extractIdFromProductSlug(idOrSlug);
+            if (extractedId) {
+              productId = extractedId;
+            }
+          }
           
           // Essayer d'abord le cache
           let cachedMeta = metaPreloadService.getCachedProductMeta(productId);
@@ -94,14 +107,45 @@ export const useSocialMeta = () => {
           }
           
           // Si pas en cache, charger depuis la base de données
-          const { data: product, error } = await supabase
-            .from('products')
-            .select(`
-              *,
-              categories(name, slug)
-            `)
-            .eq('id', productId)
-            .single();
+          let productQuery;
+          
+          if (isUUID) {
+            // Recherche directe par ID
+            productQuery = supabase
+              .from('products')
+              .select(`
+                *,
+                categories(name, slug)
+              `)
+              .eq('id', idOrSlug);
+          } else {
+            // Recherche par slug
+            productQuery = supabase
+              .from('products')
+              .select(`
+                *,
+                categories(name, slug)
+              `)
+              .eq('slug', idOrSlug);
+          }
+          
+          let { data: product, error } = await productQuery.single();
+          
+          // Si pas trouvé et c'est un slug, essayer la recherche par ID partiel
+          if (error && !isUUID && productId !== idOrSlug) {
+            const { data: products, error: searchError } = await supabase
+              .from('products')
+              .select(`
+                *,
+                categories(name, slug)
+              `)
+              .ilike('id', `%${productId}`);
+            
+            if (!searchError && products && products.length > 0) {
+              product = products[0];
+              error = null;
+            }
+          }
 
           if (!error && product) {
             const productImage = getBestProductImage(product);

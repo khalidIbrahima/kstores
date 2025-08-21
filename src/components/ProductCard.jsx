@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { formatPrice } from '../utils/currency';
 import ProductImageCarousel from './ProductImageCarousel';
 import { formatDescriptionForCard } from '../utils/formatDescription.jsx';
+import { urlUtils } from '../utils/slugUtils';
 
 const ProductCard = ({ product }) => {
   const { t } = useTranslation();
@@ -15,9 +16,12 @@ const ProductCard = ({ product }) => {
     product.image_url4
   ];
 
+  // Générer l'URL avec slug ou fallback vers l'ID
+  const productUrl = urlUtils.generateProductUrl(product);
+
   return (
     <div className="card group bg-background hover:bg-background-light transition-colors">
-      <Link to={`/product/${product.id}`} className="block">
+      <Link to={productUrl} className="block">
         <div className="aspect-w-1 aspect-h-1 h-40">
           <ProductImageCarousel images={images} />
         </div>
