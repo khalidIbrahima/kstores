@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
 import { formatPrice } from '../utils/currency';
 import DynamicSocialMetaTags from '../components/DynamicSocialMetaTags';
+import { urlUtils } from '../utils/slugUtils';
 
 const CategoryPage = () => {
   const { slug } = useParams();
@@ -259,7 +260,7 @@ const CategoryPage = () => {
                   isGamingCategory ? 'hover:shadow-purple-200' : ''
                 }`}
               >
-                <Link to={`/product/${product.id}`} className="block overflow-hidden">
+                <Link to={urlUtils.generateProductUrl(product)} className="block overflow-hidden">
                   <div className="h-64 overflow-hidden relative">
                     <img
                       src={product.image_url}

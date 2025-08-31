@@ -6,6 +6,7 @@ import { useCart } from '../contexts/CartContext';
 import { formatPrice } from '../utils/currency';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
+import { urlUtils } from '../utils/slugUtils';
 
 
 const CartPage = () => {
@@ -81,7 +82,7 @@ const CartPage = () => {
                               />
                             </div>
                             <div className="ml-4">
-                              <Link to={`/product/${item.id}`} className="text-sm font-medium text-text-dark hover:text-primary">
+                              <Link to={urlUtils.generateProductUrl(item)} className="text-sm font-medium text-text-dark hover:text-primary">
                                 {item.name}
                               </Link>
                               {/* Color Display */}
