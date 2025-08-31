@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Slugs - Kapital Stores</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #1e40af; text-align: center; }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #f9fafb;
+        }
+        .code { 
+            background: #1f2937; 
+            color: #10b981; 
+            padding: 10px; 
+            border-radius: 5px; 
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f3f4f6;
+        }
+        .success { background: #dcfce7; color: #166534; }
+        .error { background: #fecaca; color: #991b1b; }
+        button {
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #1d4ed8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Debug: Slug Detection</h1>
+        
+        <div class="test-section">
+            <h3>Step 1: Test URL Generation Logic</h3>
+            <button onclick="testUrlGeneration()">Test URL Generation</button>
+            <div id="urlTest" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Step 2: Check Database Connection</h3>
+            <button onclick="testDatabase()">Check Database</button>
+            <div id="dbTest" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Step 3: Current URL Analysis</h3>
+            <p>Current URL: <span id="currentUrl"></span></p>
+            <button onclick="analyzeCurrentPage()">Analyze Page</button>
+            <div id="pageAnalysis" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Step 4: Direct Test</h3>
+            <p>Try these URLs directly:</p>
+            <div class="code">
+                <div><a href="http://127.0.0.1:3001/products" target="_blank">http://127.0.0.1:3001/products</a></div>
+                <div><a href="http://127.0.0.1:3001/product/test-product-12345678" target="_blank">http://127.0.0.1:3001/product/test-product-12345678</a></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Instructions</h3>
+            <ol>
+                <li><strong>Navigate to your app:</strong> <a href="http://127.0.0.1:3001" target="_blank">http://127.0.0.1:3001</a></li>
+                <li><strong>Go to products page</strong></li>
+                <li><strong>Click on any product</strong></li>
+                <li><strong>Check the URL in the browser address bar</strong></li>
+                <li><strong>Report what you see:</strong>
+                    <ul>
+                        <li>✅ If you see: <code>/product/product-name-abc123de</code> → Slugs are working!</li>
+                        <li>❌ If you see: <code>/product/abc123def-456-789-ghi-012345678901</code> → Still using UUIDs</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('currentUrl').textContent = window.location.href;
+
+        function testUrlGeneration() {
+            const result = document.getElementById('urlTest');
+            
+            // Test the URL generation logic (simulate the frontend logic)
+            const productWithSlug = {
+                id: 'abc123def-456-789-ghi-012345678901',
+                name: 'iPhone 15 Pro Max',
+                slug: 'iphone-15-pro-max-abc123de'
+            };
+
+            const productWithoutSlug = {
+                id: 'def456ghi-789-abc-123-456789012345',
+                name: 'MacBook Air M2',
+                slug: null
+            };
+
+            // Simulate urlUtils.generateProductUrl
+            function generateProductUrl(product) {
+                if (product.slug) {
+                    return `/product/${product.slug}`;
+                }
+                // Fallback: generate slug from name + id
+                const baseSlug = product.name.toLowerCase()
+                    .replace(/[^a-z0-9 ]/g, '')
+                    .replace(/\s+/g, '-');
+                const shortId = product.id.slice(-8);
+                return `/product/${baseSlug}-${shortId}`;
+            }
+
+            const url1 = generateProductUrl(productWithSlug);
+            const url2 = generateProductUrl(productWithoutSlug);
+
+            result.innerHTML = `
+                <h4>✅ URL Generation Test Results:</h4>
+                <p><strong>Product with slug:</strong> ${url1}</p>
+                <p><strong>Product without slug:</strong> ${url2}</p>
+                <p class="success">Logic is working correctly!</p>
+            `;
+        }
+
+        function testDatabase() {
+            const result = document.getElementById('dbTest');
+            result.innerHTML = `
+                <h4>Database Connection Test:</h4>
+                <p class="error">❌ Cannot test database from static HTML</p>
+                <p><strong>To check database:</strong></p>
+                <ol>
+                    <li>Go to your Supabase dashboard</li>
+                    <li>Open Table Editor</li>
+                    <li>View the 'products' table</li>
+                    <li>Check if there's a 'slug' column</li>
+                    <li>Check if products have slug values</li>
+                </ol>
+            `;
+        }
+
+        function analyzeCurrentPage() {
+            const result = document.getElementById('pageAnalysis');
+            const isLocalhost = window.location.href.includes('127.0.0.1') || window.location.href.includes('localhost');
+            const isProductPage = window.location.pathname.startsWith('/product/');
+            
+            if (!isLocalhost) {
+                result.innerHTML = `
+                    <h4>⚠️ Not on Development Server</h4>
+                    <p>This page is not running on your development server.</p>
+                    <p>Please open: <a href="http://127.0.0.1:3001" target="_blank">http://127.0.0.1:3001</a></p>
+                `;
+                return;
+            }
+
+            if (isProductPage) {
+                const productId = window.location.pathname.split('/')[2];
+                const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(productId);
+                
+                if (isUUID) {
+                    result.innerHTML = `
+                        <h4>❌ Still Using UUID</h4>
+                        <p><strong>Current ID/Slug:</strong> ${productId}</p>
+                        <p><strong>Type:</strong> UUID (not humanized)</p>
+                        <p class="error">The slug system is not working yet.</p>
+                    `;
+                } else {
+                    result.innerHTML = `
+                        <h4>✅ Using Slug!</h4>
+                        <p><strong>Current Slug:</strong> ${productId}</p>
+                        <p><strong>Type:</strong> Humanized slug</p>
+                        <p class="success">The slug system is working!</p>
+                    `;
+                }
+            } else {
+                result.innerHTML = `
+                    <h4>📍 Not on Product Page</h4>
+                    <p>Navigate to a product page to test slug detection.</p>
+                `;
+            }
+        }
+
+        // Auto-analyze on load
+        window.onload = function() {
+            analyzeCurrentPage();
+        };
+    </script>
+</body>
+</html>

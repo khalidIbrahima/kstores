@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import ProductPrice from './ProductPrice';
 import PromotionBadge from './PromotionBadge';
 import { useCart } from '../contexts/CartContext';
+import { urlUtils } from '../utils/slugUtils';
 
 const PromotedProducts = () => {
   const [promotedProducts, setPromotedProducts] = useState([]);
@@ -117,7 +118,7 @@ const PromotedProducts = () => {
               transition={{ duration: 0.4, delay: index * 0.1 }}
               className="group overflow-hidden rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
-              <Link to={`/product/${product.id}`} className="block">
+              <Link to={urlUtils.generateProductUrl(product)} className="block">
                 <div className="h-56 overflow-hidden relative">
                   <img
                     src={product.image_url}
