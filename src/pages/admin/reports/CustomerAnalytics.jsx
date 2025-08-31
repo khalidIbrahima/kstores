@@ -87,7 +87,7 @@ const CustomerAnalytics = () => {
       // Get unique guest customers from shipping addresses
       const guestCustomers = guestOrders.map(order => {
         const phone = order.shipping_address?.phone;
-        const email = order.shipping_address?.email || `guest_${phone ? phone.replace(/\D/g, '') : order.id}@kapitalstores.shop`;
+        const email = order.shipping_address?.email || `guest_${phone ? phone.replace(/\D/g, '') : order.id}@kapital-stores.shop`;
         return {
           id: `guest_${phone || email}`,
           full_name: order.shipping_address?.name || 'Guest Customer',

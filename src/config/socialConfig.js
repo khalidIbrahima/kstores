@@ -1,28 +1,28 @@
 // Configuration des métadonnées sociales pour KStores
 export const socialConfig = {
   // Informations de base
-  siteName: 'KStores',
-  siteUrl: 'https://kstores.com',
-  siteDescription: 'Boutique en ligne KStores - Produits tech, électronique et plus. Livraison rapide, prix bas, qualité garantie.',
+  siteName: 'Kapital Stores',
+  siteUrl: 'https://kapital-stores.shop',
+  siteDescription: 'Boutique en ligne Kapital Stores - Produits tech, électronique et plus. Livraison rapide, prix bas, qualité garantie.',
   
   // Images par défaut
-  defaultImage: '/src/assets/logo-transparent.png',
+  defaultImage: 'https://kapital-stores.shop/src/assets/logo-transparent.png',
   defaultImageWidth: 1200,
   defaultImageHeight: 630,
   
   // Réseaux sociaux
   socialMedia: {
     facebook: {
-      url: 'https://facebook.com/kstores',
-      username: '@kstores'
+      url: 'https://facebook.com/people/kstoressn/100063748556013',
+      username: '@kstoressn'
     },
     twitter: {
-      url: 'https://twitter.com/kstores',
-      username: '@kstores'
+      url: 'https://twitter.com/kapital_stores',
+      username: '@kapital_stores'
     },
     instagram: {
-      url: 'https://instagram.com/kstores',
-      username: '@kstores'
+      url: 'https://instagram.com/k.stores.sn',
+      username: '@k.stores.sn'
     },
     youtube: {
       url: 'https://youtube.com/kstores',
@@ -32,15 +32,15 @@ export const socialConfig = {
   
   // Contact
   contact: {
-    email: 'contact@kstores.com',
-    phone: '+1-555-123-4567',
-    address: '123 Commerce Street, Business City, 12345'
+    email: 'contact@kapital-stores.shop',
+    phone: '+221761800649',
+    address: 'Dakar, Sénégal'
   },
   
   // Métadonnées par défaut pour les pages
   defaultMeta: {
-    keywords: 'boutique en ligne, produits tech, électronique, livraison rapide, KStores',
-    author: 'KStores',
+    keywords: 'boutique en ligne, produits tech, électronique, livraison rapide, Kapital Stores',
+    author: 'Kapital Stores',
     robots: 'index, follow',
     locale: 'fr_FR',
     type: 'website'
@@ -51,45 +51,42 @@ export const socialConfig = {
     organization: {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "KStores",
-      "url": "https://kstores.com",
-      "logo": "https://kstores.com/src/assets/logo-transparent.png",
+      "name": "Kapital Stores",
+      "url": "https://kapital-stores.shop",
+      "logo": "https://kapital-stores.shop/src/assets/logo-transparent.png",
       "description": "Boutique en ligne spécialisée dans les produits tech et électronique",
       "sameAs": [
-        "https://facebook.com/kstores",
-        "https://twitter.com/kstores",
-        "https://instagram.com/kstores",
-        "https://youtube.com/kstores"
+        "https://facebook.com/people/kstoressn/100063748556013",
+        "https://twitter.com/kapital_stores",
+        "https://instagram.com/k.stores.sn"
       ],
       "contactPoint": {
         "@type": "ContactPoint",
-        "telephone": "+1-555-123-4567",
+        "telephone": "+221761800649",
         "contactType": "customer service",
         "availableLanguage": ["French", "English"],
-        "email": "contact@kstores.com"
+        "email": "contact@kapital-stores.shop"
       },
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "123 Commerce Street",
-        "addressLocality": "Business City",
-        "postalCode": "12345",
-        "addressCountry": "CI"
+        "addressLocality": "Dakar",
+        "addressCountry": "SN"
       }
     },
     
     website: {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "KStores",
-      "url": "https://kstores.com",
-      "description": "Boutique en ligne KStores - Produits tech, électronique et plus",
+      "name": "Kapital Stores",
+      "url": "https://kapital-stores.shop",
+      "description": "Boutique en ligne Kapital Stores - Produits tech, électronique et plus",
       "publisher": {
         "@type": "Organization",
-        "name": "KStores"
+        "name": "Kapital Stores"
       },
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://kstores.com/search?q={search_term_string}",
+        "target": "https://kapital-stores.shop/search?q={search_term_string}",
         "query-input": "required name=search_term_string"
       }
     }
@@ -154,7 +151,7 @@ export const generateProductStructuredData = (product) => {
     "url": `${socialConfig.siteUrl}/product/${product.id}`,
     "brand": {
       "@type": "Brand",
-      "name": "KStores"
+      "name": "Kapital Stores"
     },
     "offers": {
       "@type": "Offer",
@@ -163,7 +160,7 @@ export const generateProductStructuredData = (product) => {
       "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       "seller": {
         "@type": "Organization",
-        "name": "KStores"
+        "name": "Kapital Stores"
       }
     },
     "aggregateRating": product.reviews?.avg ? {

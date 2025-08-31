@@ -26,6 +26,7 @@ import RegisterPage from './pages/RegisterPage';
 import ContactPage from './pages/ContactPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsPage from './pages/TermsPage';
+import ReturnPolicyPage from './pages/ReturnPolicyPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -35,6 +36,7 @@ import OrderConfirmationPage from './pages/checkout/OrderConfirmationPage';
 import ErrorPage from './pages/checkout/ErrorPage';
 import SuccessPage from './pages/checkout/SuccessPage';
 import DynamicFavicon from './components/DynamicFavicon';
+import SocialMetaManager from './components/SocialMetaManager';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
@@ -84,6 +86,7 @@ function App() {
             <DynamicFavicon />
             <Router {...router}>
               <AnalyticsTracker />
+              <SocialMetaManager />
               <Toaster position="top-center" />
               <GoogleAuthPopup />
               <Routes>
@@ -114,6 +117,7 @@ function App() {
                   <Route path="contact" element={<ContactPage />} />
                   <Route path="privacy" element={<PrivacyPolicyPage />} />
                   <Route path="terms" element={<TermsPage />} />
+                  <Route path="returns" element={<ReturnPolicyPage />} />
                   <Route path="iptv" element={<IPTVPage />} />
                   <Route path="login" element={<LoginPage />} />
                   <Route path="register" element={<RegisterPage />} />

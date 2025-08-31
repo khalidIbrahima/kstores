@@ -105,6 +105,8 @@ export interface Database {
           shipping_options: Json
           tax_rate: number
           maintenance_mode: boolean
+          return_policy: string | null
+          return_policy_enabled: boolean
           created_at: string
           updated_at: string
         }
@@ -125,6 +127,8 @@ export interface Database {
           shipping_options?: Json
           tax_rate?: number
           maintenance_mode?: boolean
+          return_policy?: string | null
+          return_policy_enabled?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -145,6 +149,8 @@ export interface Database {
           shipping_options?: Json
           tax_rate?: number
           maintenance_mode?: boolean
+          return_policy?: string | null
+          return_policy_enabled?: boolean
           created_at?: string
           updated_at?: string
         }

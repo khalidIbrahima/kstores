@@ -3,22 +3,30 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { formatPrice } from '../../utils/currency';
 import AdminNavbar from '../../components/AdminNavbar';
+import ProductForm from '../../components/ProductForm';
 
 const ProductsPage = () => {
   const { t, i18n } = useTranslation();
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
 
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
 
   const fetchProducts = async () => {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select('*')
+        .select(`
+          *,
+          categories(name)
+        `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -31,19 +39,45 @@ const ProductsPage = () => {
     }
   };
 
-  const handleStatusChange = async (productId, newStatus) => {
+  const fetchCategories = async () => {
     try {
-      const { error } = await supabase
-        .from('products')
-        .update({ status: newStatus })
-        .eq('id', productId);
-
+      const { data, error } = await supabase
+        .from('categories')
+        .select('id, name')
+        .order('name');
+      
       if (error) throw error;
-      fetchProducts();
+      setCategories(data || []);
     } catch (error) {
-      setError(t('admin.products.updateError'));
-      console.error('Error updating product status:', error);
+      console.error('Error fetching categories:', error);
     }
+  };
+
+  const handleAddProduct = () => {
+    setEditingProduct(null);
+    setShowForm(true);
+  };
+
+  const handleEditProduct = (product) => {
+    setEditingProduct(product);
+    setShowForm(true);
+  };
+
+  const handleFormSubmit = () => {
+    setShowForm(false);
+    setEditingProduct(null);
+    fetchProducts();
+  };
+
+  const handleFormCancel = () => {
+    setShowForm(false);
+    setEditingProduct(null);
+  };
+
+  const getCategoryName = (categoryId) => {
+    if (!categoryId) return '-';
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? category.name : '-';
   };
 
   if (loading) {
@@ -68,7 +102,7 @@ const ProductsPage = () => {
             {t('admin.products.title')}
           </h1>
           <button
-            onClick={() => {/* TODO: Implement add product */}}
+            onClick={handleAddProduct}
             className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors"
           >
             {t('admin.products.addProduct')}
@@ -98,7 +132,7 @@ const ProductsPage = () => {
                   {t('admin.products.stock')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('admin.products.status')}
+                  {t('admin.products.category')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {t('admin.products.actions')}
@@ -132,7 +166,7 @@ const ProductsPage = () => {
                           {product.name}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {product.category}
+                          {product.description || '-'}
                         </div>
                       </div>
                     </div>
@@ -146,28 +180,13 @@ const ProductsPage = () => {
                     <div className="text-sm text-gray-900">{product.stock}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      product.status === 'active'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {t(`admin.products.statuses.${product.status}`)}
-                    </span>
+                    <div className="text-sm text-gray-900">
+                      {getCategoryName(product.category_id)}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
-                      onClick={() => handleStatusChange(
-                        product.id,
-                        product.status === 'active' ? 'inactive' : 'active'
-                      )}
-                      className="text-primary hover:text-primary-dark mr-4"
-                    >
-                      {product.status === 'active'
-                        ? t('admin.products.deactivate')
-                        : t('admin.products.activate')}
-                    </button>
-                    <button
-                      onClick={() => {/* TODO: Implement edit product */}}
+                      onClick={() => handleEditProduct(product)}
                       className="text-primary hover:text-primary-dark"
                     >
                       {t('admin.products.edit')}
@@ -178,6 +197,33 @@ const ProductsPage = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Modal pour le formulaire de produit */}
+        {showForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">
+                  {editingProduct ? t('admin.products.editProduct') : t('admin.products.addProduct')}
+                </h2>
+                <button
+                  onClick={handleFormCancel}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <ProductForm
+                product={editingProduct}
+                onSubmit={handleFormSubmit}
+                onCancel={handleFormCancel}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -41,7 +41,9 @@ export const storeSettingsService = {
           p_payment_methods: settings.payment_methods,
           p_shipping_options: settings.shipping_options,
           p_tax_rate: settings.tax_rate,
-          p_maintenance_mode: settings.maintenance_mode
+          p_maintenance_mode: settings.maintenance_mode,
+          p_return_policy: settings.return_policy,
+          p_return_policy_enabled: settings.return_policy_enabled
         });
 
       if (error) {
@@ -165,6 +167,27 @@ export const storeSettingsService = {
       return data;
     } catch (error) {
       console.error('Error in updateSocialMedia:', error);
+      throw error;
+    }
+  },
+
+  // Mettre à jour la politique de retour
+  async updateReturnPolicy(returnPolicy, enabled = true) {
+    try {
+      const { data, error } = await supabase
+        .rpc('update_store_settings', {
+          p_return_policy: returnPolicy,
+          p_return_policy_enabled: enabled
+        });
+
+      if (error) {
+        console.error('Error updating return policy:', error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error in updateReturnPolicy:', error);
       throw error;
     }
   }

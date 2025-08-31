@@ -1,30 +1,20 @@
 /*
-  # Add Email Configuration to Store Settings
+  # Add Return Policy Field to Store Settings
 
-  1. Add email_config column to store_settings table
-  2. Update update_store_settings function to handle email_config
-  3. Add default email configuration
+  1. New Fields
+    - `return_policy` (text) - Stores the return policy content
+    - `return_policy_enabled` (boolean) - Whether return policy is enabled
+
+  2. Update existing function
+    - Update the update_store_settings function to include the new field
 */
 
--- Add email_config column to store_settings table
+-- Add return_policy field to store_settings table
 ALTER TABLE store_settings 
-ADD COLUMN IF NOT EXISTS email_config jsonb DEFAULT '{
-  "smtpHost": "",
-  "smtpPort": 587,
-  "smtpUser": "",
-  "smtpPassword": "",
-  "smtpSecure": false,
-  "adminEmail": "admin@kapital-stores.shop",
-  "notifications": {
-    "order": true,
-    "status": true,
-    "lowStock": true,
-    "payment": true,
-    "abandonedCart": true
-  }
-}';
+ADD COLUMN IF NOT EXISTS return_policy text,
+ADD COLUMN IF NOT EXISTS return_policy_enabled boolean DEFAULT true;
 
--- Update the update_store_settings function to handle email_config
+-- Update the update_store_settings function to include return_policy
 CREATE OR REPLACE FUNCTION update_store_settings(
   p_store_name text DEFAULT NULL,
   p_store_url text DEFAULT NULL,
@@ -41,36 +31,26 @@ CREATE OR REPLACE FUNCTION update_store_settings(
   p_shipping_options jsonb DEFAULT NULL,
   p_tax_rate decimal DEFAULT NULL,
   p_maintenance_mode boolean DEFAULT NULL,
-  p_email_config jsonb DEFAULT NULL
-)
-RETURNS jsonb
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
+  p_email_config jsonb DEFAULT NULL,
+  p_return_policy text DEFAULT NULL,
+  p_return_policy_enabled boolean DEFAULT NULL
+) RETURNS store_settings AS $$
 DECLARE
-  v_settings_id uuid;
-  v_result jsonb;
+  v_settings store_settings;
+  v_id uuid;
 BEGIN
-  -- Check if user is admin
-  IF NOT EXISTS (
-    SELECT 1 FROM profiles
-    WHERE id = auth.uid()
-    AND is_admin = true
-  ) THEN
-    RAISE EXCEPTION 'Only administrators can update store settings';
-  END IF;
-
-  -- Get the settings ID (should be only one record)
-  SELECT id INTO v_settings_id FROM store_settings LIMIT 1;
+  -- Get the first (and should be only) settings record
+  SELECT id INTO v_id FROM store_settings LIMIT 1;
   
   -- If no settings exist, create one
-  IF v_settings_id IS NULL THEN
-    INSERT INTO store_settings (store_name) VALUES ('Kapital Store')
-    RETURNING id INTO v_settings_id;
+  IF v_id IS NULL THEN
+    INSERT INTO store_settings (store_name) VALUES (COALESCE(p_store_name, 'Kapital Store'))
+    RETURNING id INTO v_id;
   END IF;
-
-  -- Update settings
-  UPDATE store_settings SET
+  
+  -- Update the settings
+  UPDATE store_settings 
+  SET 
     store_name = COALESCE(p_store_name, store_name),
     store_url = COALESCE(p_store_url, store_url),
     contact_email = COALESCE(p_contact_email, contact_email),
@@ -87,14 +67,19 @@ BEGIN
     tax_rate = COALESCE(p_tax_rate, tax_rate),
     maintenance_mode = COALESCE(p_maintenance_mode, maintenance_mode),
     email_config = COALESCE(p_email_config, email_config),
+    return_policy = COALESCE(p_return_policy, return_policy),
+    return_policy_enabled = COALESCE(p_return_policy_enabled, return_policy_enabled),
     updated_at = now()
-  WHERE id = v_settings_id;
-
-  -- Return updated settings
-  SELECT to_jsonb(store_settings.*) INTO v_result
-  FROM store_settings
-  WHERE id = v_settings_id;
-
-  RETURN v_result;
+  WHERE id = v_id
+  RETURNING * INTO v_settings;
+  
+  RETURN v_settings;
 END;
-$$; 
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Add default return policy content for existing records
+UPDATE store_settings 
+SET 
+  return_policy = COALESCE(return_policy, 'Politique de retour par défaut. Veuillez la personnaliser dans les paramètres du store.'),
+  return_policy_enabled = COALESCE(return_policy_enabled, true)
+WHERE return_policy IS NULL OR return_policy_enabled IS NULL;

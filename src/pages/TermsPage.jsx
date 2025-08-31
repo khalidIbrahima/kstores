@@ -73,7 +73,7 @@ const TermsPage = () => {
                 2. Définitions
               </h2>
               <ul className="list-disc list-inside text-gray-700 space-y-2">
-                <li><strong>Site :</strong> Le site web kapitalstores.shop</li>
+                <li><strong>Site :</strong> Le site web kapital-stores.shop</li>
                 <li><strong>Utilisateur :</strong> Toute personne utilisant le site</li>
                 <li><strong>Client :</strong> Utilisateur effectuant un achat</li>
                 <li><strong>Commande :</strong> Demande d'achat de produits</li>
