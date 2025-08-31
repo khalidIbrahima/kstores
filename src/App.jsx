@@ -37,6 +37,8 @@ import ErrorPage from './pages/checkout/ErrorPage';
 import SuccessPage from './pages/checkout/SuccessPage';
 import DynamicFavicon from './components/DynamicFavicon';
 import SocialMetaManager from './components/SocialMetaManager';
+import ScrollToTopOnRouteChange from './components/ScrollToTopOnRouteChange';
+import DarkModeProvider from './components/DarkModeProvider';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
@@ -79,14 +81,16 @@ const router = {
 
 function App() {
   return (
-    <AuthProvider>
-      <StoreSettingsProvider>
-        <FavoritesProvider>
-          <CartProvider>
-            <DynamicFavicon />
-            <Router {...router}>
-              <AnalyticsTracker />
-              <SocialMetaManager />
+    <DarkModeProvider>
+      <AuthProvider>
+        <StoreSettingsProvider>
+          <FavoritesProvider>
+            <CartProvider>
+              <DynamicFavicon />
+              <Router {...router}>
+                <AnalyticsTracker />
+                <SocialMetaManager />
+                <ScrollToTopOnRouteChange />
               <Toaster position="top-center" />
               <GoogleAuthPopup />
               <Routes>
@@ -189,6 +193,7 @@ function App() {
         </FavoritesProvider>
       </StoreSettingsProvider>
     </AuthProvider>
+    </DarkModeProvider>
   );
 }
 

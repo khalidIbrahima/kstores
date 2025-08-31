@@ -8,6 +8,7 @@ import { useCart } from '../contexts/CartContext';
 import { formatPrice } from '../utils/currency';
 import DynamicSocialMetaTags from '../components/DynamicSocialMetaTags';
 import PromotedProducts from '../components/PromotedProducts';
+import { urlUtils } from '../utils/slugUtils';
 
 const HomePage = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -325,7 +326,7 @@ const HomePage = () => {
                     transition={{ duration: 0.3 }}
                     className="group overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-lg"
                   >
-                    <Link to={`/product/${product.id}`} className="block overflow-hidden">
+                    <Link to={urlUtils.generateProductUrl(product)} className="block overflow-hidden">
                       <div className="h-64 overflow-hidden relative">
                         <img
                           src={product.image_url}

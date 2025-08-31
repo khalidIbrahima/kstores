@@ -21,6 +21,7 @@ import ProductStats from '../components/analytics/ProductStats';
 import ProductPrice from '../components/ProductPrice';
 import PromotionBadge from '../components/PromotionBadge';
 import { urlUtils } from '../utils/slugUtils';
+import { scrollToTop } from '../utils/scrollUtils';
 
 const ProductPage = () => {
   const { id: idOrSlug } = useParams();
@@ -46,6 +47,9 @@ const ProductPage = () => {
   const { viewsCount, isLoading: viewsLoading } = useProductStats(productId);
 
   useEffect(() => {
+    // Faire défiler vers le haut quand on change de produit
+    scrollToTop({ behavior: 'instant' });
+    
     const fetchProduct = async () => {
       if (!idOrSlug) return;
       
@@ -641,7 +645,7 @@ const ProductPage = () => {
                 transition={{ duration: 0.3 }}
                 className="group overflow-hidden rounded-lg bg-background shadow-md transition-all hover:shadow-lg"
               >
-                <Link to={`/product/${relatedProduct.id}`} className="block overflow-hidden">
+                <Link to={urlUtils.generateProductUrl(relatedProduct)} className="block overflow-hidden">
                   <div className="h-48 overflow-hidden relative">
                     <img
                       src={relatedProduct.image_url}
