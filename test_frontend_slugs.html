@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test URLs Humanisées - Kapital Stores</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1e40af;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background-color: #f9fafb;
+        }
+        .test-url {
+            font-family: monospace;
+            background: #1f2937;
+            color: #10b981;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .status {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            display: inline-block;
+        }
+        .success { background: #dcfce7; color: #166534; }
+        .warning { background: #fef3c7; color: #92400e; }
+        .error { background: #fecaca; color: #991b1b; }
+        button {
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            background: #f3f4f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test des URLs Humanisées</h1>
+        
+        <div class="test-section">
+            <h3>🔍 État Actuel</h3>
+            <p>Ce test va vérifier si vos URLs de produits utilisent les slugs ou les IDs.</p>
+            
+            <div id="current-status" class="status warning">
+                ⏳ Vérification en cours...
+            </div>
+            
+            <button onclick="testCurrentURL()">Tester l'URL Actuelle</button>
+            <button onclick="testProductPage()">Tester une Page Produit</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 URLs à Tester</h3>
+            <p>Testez ces URLs dans votre application pour voir le format utilisé :</p>
+            
+            <div class="test-url">
+                http://localhost:5173/product/iphone-15-pro-max-abc123de
+            </div>
+            <div class="test-url">
+                http://localhost:5173/product/macbook-air-m2-def456gh
+            </div>
+            <div class="test-url">
+                http://localhost:5173/product/samsung-galaxy-s24-ghi789jk
+            </div>
+            
+            <button onclick="openTestURL()">Ouvrir URL Test</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🚀 Actions Recommandées</h3>
+            <div id="recommendations">
+                <p><strong>Si vous voyez encore des IDs UUID dans l'URL :</strong></p>
+                <ol>
+                    <li>Vérifiez que la migration SQL a bien été exécutée</li>
+                    <li>Redémarrez votre serveur de développement (<code>npm run dev</code>)</li>
+                    <li>Videz le cache du navigateur (Ctrl+F5)</li>
+                    <li>Testez une URL de produit existant</li>
+                </ol>
+                
+                <p><strong>Si vous voyez des slugs :</strong></p>
+                <ul>
+                    <li>✅ Félicitations ! Les URLs humanisées fonctionnent</li>
+                    <li>📱 Testez le partage sur WhatsApp/Facebook</li>
+                    <li>🔍 Vérifiez le SEO avec les outils développeur</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Résultats des Tests</h3>
+            <div id="test-results">
+                <p>Cliquez sur les boutons ci-dessus pour lancer les tests.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function testCurrentURL() {
+            const currentURL = window.location.href;
+            const results = document.getElementById('test-results');
+            
+            results.innerHTML = `
+                <h4>🔍 Test de l'URL Actuelle</h4>
+                <p><strong>URL:</strong> ${currentURL}</p>
+                <p><strong>Analyse:</strong> Cette page de test ne contient pas de produits.</p>
+                <div class="status warning">
+                    ⚠️ Naviguez vers une page produit de votre application pour tester.
+                </div>
+            `;
+        }
+
+        function testProductPage() {
+            const results = document.getElementById('test-results');
+            const testURLs = [
+                'http://localhost:5173/products',
+                'http://localhost:5173/product/test-slug-12345678'
+            ];
+            
+            results.innerHTML = `
+                <h4>🧪 Test des Pages Produits</h4>
+                <p><strong>Instructions:</strong></p>
+                <ol>
+                    <li>Allez sur votre site en développement</li>
+                    <li>Naviguez vers la page des produits</li>
+                    <li>Cliquez sur un produit</li>
+                    <li>Observez l'URL dans la barre d'adresse</li>
+                </ol>
+                
+                <h5>🎯 Ce que vous devriez voir :</h5>
+                <div class="test-url">✅ /product/nom-du-produit-abc123de</div>
+                <div style="margin-top: 10px;">
+                <h5>❌ Ce que vous ne devriez plus voir :</h5>
+                <div class="test-url" style="color: #ef4444;">❌ /product/abc123def-456-789-ghi-012345678901</div>
+                </div>
+            `;
+        }
+
+        function openTestURL() {
+            const testURL = 'http://localhost:5173/products';
+            window.open(testURL, '_blank');
+            
+            const results = document.getElementById('test-results');
+            results.innerHTML = `
+                <h4>🌐 Ouverture de l'URL de Test</h4>
+                <p>J'ai ouvert: <code>${testURL}</code></p>
+                <div class="status success">
+                    ✅ Naviguez vers un produit et vérifiez l'URL
+                </div>
+                
+                <h5>📝 Instructions :</h5>
+                <ol>
+                    <li>Dans l'onglet ouvert, cliquez sur un produit</li>
+                    <li>Regardez l'URL dans la barre d'adresse</li>
+                    <li>Elle devrait ressembler à : <code>/product/nom-produit-abc123de</code></li>
+                </ol>
+            `;
+        }
+
+        // Test automatique au chargement
+        window.onload = function() {
+            const status = document.getElementById('current-status');
+            status.innerHTML = '🔍 Prêt pour les tests';
+            status.className = 'status success';
+            
+            // Détection du contexte
+            if (window.location.href.includes('localhost:5173')) {
+                status.innerHTML = '✅ Vous êtes sur localhost - parfait pour tester';
+            } else {
+                status.innerHTML = '⚠️ Ouvrez ce fichier depuis localhost:5173 pour de meilleurs tests';
+            }
+        };
+    </script>
+</body>
+</html>
