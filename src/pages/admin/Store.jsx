@@ -250,23 +250,23 @@ const Store = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl bg-gradient-to-br from-green-50 to-green-100 p-6 border border-green-200"
+          className="rounded-xl bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-6 border border-green-200 dark:border-green-700"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-green-700">Revenus totaux</p>
+              <p className="text-sm font-medium text-green-700 dark:text-green-300">Revenus totaux</p>
               <h3 className="text-2xl font-bold text-green-900 dark:text-green-100">{storeData.totalRevenue.toFixed(2)} FCFA</h3>
             </div>
-            <div className="rounded-full bg-green-500 p-3">
+            <div className="rounded-full bg-green-500 dark:bg-green-600 p-3">
               <DollarSign className="h-6 w-6 text-white" />
             </div>
           </div>
-          <div className={`mt-3 flex items-center text-sm ${storeData.revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`mt-3 flex items-center text-sm ${storeData.revenueGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
             {storeData.revenueGrowth >= 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
             <span className="font-medium">
               {isNaN(storeData.revenueGrowth) ? '0.0' : Math.abs(storeData.revenueGrowth).toFixed(1)}%
             </span>
-            <span className="ml-1 text-gray-600">vs mois dernier</span>
+            <span className="ml-1 text-gray-600 dark:text-gray-400">vs mois dernier</span>
           </div>
         </motion.div>
 
@@ -275,23 +275,23 @@ const Store = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 p-6 border border-blue-200"
+          className="rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 border border-blue-200 dark:border-blue-700"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-blue-700">Commandes totales</p>
+              <p className="text-sm font-medium text-blue-700 dark:text-blue-300">Commandes totales</p>
               <h3 className="text-2xl font-bold text-blue-900 dark:text-blue-100">{storeData.totalOrders}</h3>
             </div>
-            <div className="rounded-full bg-blue-500 p-3">
+            <div className="rounded-full bg-blue-500 dark:bg-blue-600 p-3">
               <ShoppingCart className="h-6 w-6 text-white" />
             </div>
           </div>
-          <div className={`mt-3 flex items-center text-sm ${storeData.orderGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`mt-3 flex items-center text-sm ${storeData.orderGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
             {storeData.orderGrowth >= 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
             <span className="font-medium">
               {isNaN(storeData.orderGrowth) ? '0.0' : Math.abs(storeData.orderGrowth).toFixed(1)}%
             </span>
-            <span className="ml-1 text-gray-600">vs mois dernier</span>
+            <span className="ml-1 text-gray-600 dark:text-gray-400">vs mois dernier</span>
           </div>
         </motion.div>
 
@@ -300,28 +300,28 @@ const Store = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 p-6 border border-purple-200"
+          className="rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-6 border border-purple-200 dark:border-purple-700"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-purple-700">Produits en stock</p>
+              <p className="text-sm font-medium text-purple-700 dark:text-purple-300">Produits en stock</p>
               <h3 className="text-2xl font-bold text-purple-900 dark:text-purple-100">{storeData.totalProducts}</h3>
             </div>
-            <div className="rounded-full bg-purple-500 p-3">
+            <div className="rounded-full bg-purple-500 dark:bg-purple-600 p-3">
               <Package className="h-6 w-6 text-white" />
             </div>
           </div>
           <div className="mt-3 space-y-1">
-            <div className="flex items-center text-sm text-orange-600">
+            <div className="flex items-center text-sm text-orange-600 dark:text-orange-400">
               <AlertTriangle className="h-4 w-4 mr-1" />
               <span className="font-medium">{storeData.lowStockProducts.length}</span>
-              <span className="ml-1 text-gray-600">stock faible</span>
+              <span className="ml-1 text-gray-600 dark:text-gray-400">stock faible</span>
             </div>
             {storeData.outOfStockProducts.length > 0 && (
-              <div className="flex items-center text-sm text-red-600">
+              <div className="flex items-center text-sm text-red-600 dark:text-red-400">
                 <XCircle className="h-4 w-4 mr-1" />
                 <span className="font-medium">{storeData.outOfStockProducts.length}</span>
-                <span className="ml-1 text-gray-600">écoulés</span>
+                <span className="ml-1 text-gray-600 dark:text-gray-400">écoulés</span>
               </div>
             )}
           </div>
@@ -332,21 +332,21 @@ const Store = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 p-6 border border-orange-200"
+          className="rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-6 border border-orange-200 dark:border-orange-700"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-orange-700">Clients connectés</p>
+              <p className="text-sm font-medium text-orange-700 dark:text-orange-300">Clients connectés</p>
               <h3 className="text-2xl font-bold text-orange-900 dark:text-orange-100">{storeData.totalCustomers}</h3>
             </div>
-            <div className="rounded-full bg-orange-500 p-3">
+            <div className="rounded-full bg-orange-500 dark:bg-orange-600 p-3">
               <Users className="h-6 w-6 text-white" />
             </div>
           </div>
-          <div className="mt-3 flex items-center text-sm text-green-600">
+          <div className="mt-3 flex items-center text-sm text-green-600 dark:text-green-400">
             <TrendingUp className="h-4 w-4 mr-1" />
             <span className="font-medium">{storeData.customerStats.newCustomers}</span>
-            <span className="ml-1 text-gray-600">nouveaux ce mois</span>
+            <span className="ml-1 text-gray-600 dark:text-gray-400">nouveaux ce mois</span>
           </div>
         </motion.div>
       </div>
@@ -357,24 +357,24 @@ const Store = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 p-6 border border-gray-200"
+          className="rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-700/50 p-6 border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-700">Clients anonymes</p>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Clients anonymes</p>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{storeData.customerStats.anonymousCustomers}</h3>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 {((storeData.customerStats.anonymousCustomers / Math.max(storeData.totalOrders, 1)) * 100).toFixed(1)}% des commandes
               </p>
             </div>
-            <div className="rounded-full bg-gray-500 p-3">
+            <div className="rounded-full bg-gray-500 dark:bg-gray-600 p-3">
               <Users className="h-6 w-6 text-white" />
             </div>
           </div>
-          <div className="mt-3 flex items-center text-sm text-blue-600">
+          <div className="mt-3 flex items-center text-sm text-blue-600 dark:text-blue-400">
             <Calendar className="h-4 w-4 mr-1" />
             <span className="font-medium">{storeData.customerStats.newAnonymousCustomers}</span>
-            <span className="ml-1 text-gray-600">nouveaux ce mois</span>
+            <span className="ml-1 text-gray-600 dark:text-gray-400">nouveaux ce mois</span>
           </div>
         </motion.div>
       </div>
@@ -385,7 +385,7 @@ const Store = () => {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="rounded-xl bg-white p-6 shadow-lg border border-gray-200"
+          className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-lg border border-gray-200 dark:border-gray-700"
         >
           <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Tendance des ventes (7 derniers jours)</h3>
           <div className="h-64">
@@ -431,7 +431,7 @@ const Store = () => {
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="rounded-xl bg-white p-6 shadow-lg border border-gray-200"
+          className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-lg border border-gray-200 dark:border-gray-700"
         >
           <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Commandes par statut</h3>
           <div className="h-64">
@@ -486,23 +486,23 @@ const Store = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="rounded-lg bg-white p-4 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-200 group-hover:scale-105"
+                  className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-200 group-hover:scale-105"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className={`p-2 rounded-full ${colorClass.replace('text-', 'bg-').replace('bg-', 'bg-').replace('text-', 'text-')}`}>
                       <Icon className="h-5 w-5" />
                     </div>
-                    <span className="text-2xl font-bold">{count}</span>
+                    <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">{count}</span>
                   </div>
-                  <p className="text-sm font-medium text-gray-700 capitalize">{status}</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">{status}</p>
                   <div className="mt-2">
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                       <div 
                         className={`h-2 rounded-full ${colorClass.replace('text-', 'bg-').replace('bg-', 'bg-').replace('text-', 'bg-')}`}
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">{percentage.toFixed(1)}% du total</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{percentage.toFixed(1)}% du total</p>
                   </div>
                 </motion.div>
               </Link>
@@ -517,11 +517,11 @@ const Store = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl bg-white p-6 shadow-lg border border-gray-200"
+          className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-lg border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Commandes récentes</h3>
-            <Link to="/admin/orders" className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+            <Link to="/admin/orders" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium transition-colors">
               Voir toutes →
             </Link>
           </div>
@@ -532,18 +532,18 @@ const Store = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="flex items-center justify-between p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between p-3 rounded-lg border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 <div className="flex items-center space-x-3">
                   <div className={`w-2 h-2 rounded-full ${statusColors[order.status]?.replace('bg-', 'bg-').replace('text-', 'bg-')}`}></div>
                   <div>
-                    <p className="font-medium text-sm">#{order.id.slice(-8)}</p>
-                    <p className="text-xs text-gray-500">{order.profiles?.full_name || 'Client invité'}</p>
+                    <p className="font-medium text-sm text-gray-900 dark:text-gray-100">#{order.id.slice(-8)}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{order.profiles?.full_name || 'Client invité'}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-medium text-sm">{order.total.toFixed(2)} FCFA</p>
-                  <p className="text-xs text-gray-500">{new Date(order.created_at).toLocaleDateString()}</p>
+                  <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{order.total.toFixed(2)} FCFA</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(order.created_at).toLocaleDateString()}</p>
                 </div>
               </motion.div>
             ))}
@@ -554,11 +554,11 @@ const Store = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl bg-white p-6 shadow-lg border border-gray-200"
+          className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-lg border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Alertes de stock</h3>
-            <Link to="/admin/products" className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+            <Link to="/admin/products" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium transition-colors">
               Gérer les produits →
             </Link>
           </div>
@@ -577,7 +577,7 @@ const Store = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="flex items-center space-x-3 p-3 rounded-lg border border-red-200 bg-red-50"
+                    className="flex items-center space-x-3 p-3 rounded-lg border border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20"
                   >
                     <div className="w-10 h-10 rounded-lg overflow-hidden">
                       <img
@@ -587,20 +587,20 @@ const Store = () => {
                       />
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-sm">{product.name}</p>
+                      <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{product.name}</p>
                       <div className="flex items-center mt-1">
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200">
                           Écoulé
                         </span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-medium">{product.price?.toFixed(2)} FCFA</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{product.price?.toFixed(2)} FCFA</p>
                     </div>
                   </motion.div>
                 ))}
                 {storeData.outOfStockProducts.length > 3 && (
-                  <p className="text-xs text-gray-500 text-center">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
                     +{storeData.outOfStockProducts.length - 3} autres produits écoulés
                   </p>
                 )}
@@ -622,7 +622,7 @@ const Store = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="flex items-center space-x-3 p-3 rounded-lg border border-orange-200 bg-orange-50"
+                    className="flex items-center space-x-3 p-3 rounded-lg border border-orange-200 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20"
                   >
                     <div className="w-10 h-10 rounded-lg overflow-hidden">
                       <img
@@ -632,16 +632,16 @@ const Store = () => {
                       />
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-sm">{product.name}</p>
-                      <p className="text-xs text-orange-600">Stock: {product.inventory} unités</p>
+                      <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{product.name}</p>
+                      <p className="text-xs text-orange-600 dark:text-orange-400">Stock: {product.inventory} unités</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-medium">{product.price?.toFixed(2)} FCFA</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{product.price?.toFixed(2)} FCFA</p>
                     </div>
                   </motion.div>
                 ))}
                 {storeData.lowStockProducts.length > 3 && (
-                  <p className="text-xs text-gray-500 text-center">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
                     +{storeData.lowStockProducts.length - 3} autres produits en stock faible
                   </p>
                 )}
@@ -653,8 +653,8 @@ const Store = () => {
           {storeData.lowStockProducts.length === 0 && storeData.outOfStockProducts.length === 0 && (
             <div className="text-center py-8">
               <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
-              <p className="text-gray-600">Aucune alerte de stock</p>
-              <p className="text-sm text-gray-500">Tous vos produits ont un stock suffisant</p>
+              <p className="text-gray-600 dark:text-gray-300">Aucune alerte de stock</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Tous vos produits ont un stock suffisant</p>
             </div>
           )}
         </motion.div>
@@ -664,7 +664,7 @@ const Store = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 p-6 border border-blue-200"
+        className="rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 border border-blue-200 dark:border-blue-700"
       >
         <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Insights clients</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -672,29 +672,29 @@ const Store = () => {
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
               <Users className="h-8 w-8 text-blue-600" />
             </div>
-            <p className="text-2xl font-bold text-blue-900">{storeData.customerStats.newCustomers}</p>
-            <p className="text-sm text-blue-700">Nouveaux clients connectés</p>
+            <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">{storeData.customerStats.newCustomers}</p>
+            <p className="text-sm text-blue-700 dark:text-blue-300">Nouveaux clients connectés</p>
           </div>
           <div className="text-center">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Heart className="h-8 w-8 text-purple-600" />
+            <div className="w-16 h-16 bg-purple-100 dark:bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Heart className="h-8 w-8 text-purple-600 dark:text-purple-300" />
             </div>
-            <p className="text-2xl font-bold text-purple-900">{storeData.customerStats.returningCustomers}</p>
-            <p className="text-sm text-purple-700">Clients fidèles</p>
+            <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{storeData.customerStats.returningCustomers}</p>
+            <p className="text-sm text-purple-700 dark:text-purple-300">Clients fidèles</p>
           </div>
           <div className="text-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Users className="h-8 w-8 text-gray-600" />
+            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Users className="h-8 w-8 text-gray-600 dark:text-gray-300" />
             </div>
-            <p className="text-2xl font-bold text-gray-900">{storeData.customerStats.newAnonymousCustomers}</p>
-            <p className="text-sm text-gray-700">Nouveaux clients anonymes</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{storeData.customerStats.newAnonymousCustomers}</p>
+            <p className="text-sm text-gray-700 dark:text-gray-300">Nouveaux clients anonymes</p>
           </div>
           <div className="text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <DollarSign className="h-8 w-8 text-green-600" />
+            <div className="w-16 h-16 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mx-auto mb-3">
+              <DollarSign className="h-8 w-8 text-green-600 dark:text-green-300" />
             </div>
-            <p className="text-2xl font-bold text-green-900">{storeData.customerStats.averageOrderValue.toFixed(2)} FCFA</p>
-            <p className="text-sm text-green-700">Panier moyen</p>
+            <p className="text-2xl font-bold text-green-900 dark:text-green-100">{storeData.customerStats.averageOrderValue.toFixed(2)} FCFA</p>
+            <p className="text-sm text-green-700 dark:text-green-300">Panier moyen</p>
           </div>
         </div>
       </motion.div>

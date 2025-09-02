@@ -282,11 +282,11 @@ const Dashboard = () => {
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">{t('dashboard.total_orders')}</p>
               <h3 className="text-base sm:text-lg lg:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{stats.totalOrders}</h3>
             </div>
-            <div className="rounded-full bg-blue-100 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
-              <ShoppingBag className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-blue-600" />
+            <div className="rounded-full bg-blue-100 dark:bg-blue-900/30 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
+              <ShoppingBag className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
-          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.orderGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.orderGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
             {stats.orderGrowth >= 0 ? <ArrowUpRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" /> : <ArrowDownRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" />}
             <span className="truncate ml-1">{Math.abs(stats.orderGrowth).toFixed(1)}% {t('dashboard.from_last_month')}</span>
           </div>
@@ -303,11 +303,11 @@ const Dashboard = () => {
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">{t('dashboard.total_revenue')}</p>
               <h3 className="text-base sm:text-lg lg:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{stats.totalRevenue.toFixed(2)} FCFA</h3>
             </div>
-            <div className="rounded-full bg-green-100 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
-              <DollarSign className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-green-600" />
+            <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
+              <DollarSign className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-green-600 dark:text-green-400" />
             </div>
           </div>
-          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.revenueGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
             {stats.revenueGrowth >= 0 ? <ArrowUpRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" /> : <ArrowDownRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" />}
             <span className="truncate ml-1">{Math.abs(stats.revenueGrowth).toFixed(1)}% {t('dashboard.from_last_month')}</span>
           </div>
@@ -324,11 +324,11 @@ const Dashboard = () => {
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">{t('dashboard.total_views')}</p>
               <h3 className="text-base sm:text-lg lg:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{stats.totalViews}</h3>
             </div>
-            <div className="rounded-full bg-purple-100 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
-              <Eye className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-purple-600" />
+            <div className="rounded-full bg-purple-100 dark:bg-purple-900/30 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
+              <Eye className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-purple-600 dark:text-purple-400" />
             </div>
           </div>
-          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.viewsGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.viewsGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
             {stats.viewsGrowth >= 0 ? <ArrowUpRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" /> : <ArrowDownRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" />}
             <span className="truncate ml-1">{Math.abs(stats.viewsGrowth).toFixed(1)}% {t('dashboard.from_last_month')}</span>
           </div>
@@ -345,11 +345,11 @@ const Dashboard = () => {
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">{t('dashboard.total_visits')}</p>
               <h3 className="text-base sm:text-lg lg:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{stats.totalVisits}</h3>
             </div>
-            <div className="rounded-full bg-orange-100 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
-              <Activity className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-orange-600" />
+            <div className="rounded-full bg-orange-100 dark:bg-orange-900/30 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
+              <Activity className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-orange-600 dark:text-orange-400" />
             </div>
           </div>
-          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.visitsGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.visitsGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
             {stats.visitsGrowth >= 0 ? <ArrowUpRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" /> : <ArrowDownRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" />}
             <span className="truncate ml-1">{Math.abs(stats.visitsGrowth).toFixed(1)}% {t('dashboard.from_last_month')}</span>
           </div>
@@ -833,11 +833,11 @@ const Dashboard = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Produits actifs</p>
-                <p className="text-lg sm:text-2xl font-bold text-blue-600">{stats.totalProducts}</p>
+                <p className="text-lg sm:text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.totalProducts}</p>
               </div>
               <div className="text-center">
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Clients totaux</p>
-                <p className="text-lg sm:text-2xl font-bold text-green-600">{stats.totalCustomers}</p>
+                <p className="text-lg sm:text-2xl font-bold text-green-600 dark:text-green-400">{stats.totalCustomers}</p>
               </div>
             </div>
           </div>
