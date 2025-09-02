@@ -4,6 +4,9 @@ export default {
   darkMode: 'media', // Respecte les préférences système
   theme: {
     extend: {
+      screens: {
+        'xs': '475px', // Extra small devices
+      },
       colors: {
         primary: {
           DEFAULT: '#183153', // Bleu foncé principal
@@ -32,8 +35,52 @@ export default {
         }
       },
       fontFamily: {
-        logo: ['Pacifico', 'cursive'],
-        sans: ['Segoe UI', 'Arial', 'sans-serif'],
+        logo: ['Pacifico', 'cursive', 'system-ui', 'sans-serif'],
+        sans: [
+          // Modern system fonts
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          // Windows
+          'Segoe UI',
+          // Android
+          'Roboto',
+          // Ubuntu/Linux
+          'Ubuntu',
+          'Cantarell',
+          // Fallbacks
+          'Noto Sans',
+          'Helvetica Neue',
+          'Arial',
+          'Apple Color Emoji',
+          'Segoe UI Emoji',
+          'Segoe UI Symbol',
+          'Noto Color Emoji',
+          'sans-serif'
+        ],
+        mono: [
+          'SF Mono',
+          'Monaco',
+          'Inconsolata',
+          'Roboto Mono',
+          'Source Code Pro',
+          'Menlo',
+          'Consolas',
+          'DejaVu Sans Mono',
+          'monospace'
+        ]
+      },
+      fontSize: {
+        'xs': ['0.75rem', { lineHeight: '1.5', letterSpacing: '0.025em' }],
+        'sm': ['0.875rem', { lineHeight: '1.5', letterSpacing: '0.025em' }],
+        'base': ['1rem', { lineHeight: '1.6', letterSpacing: '0.015em' }],
+        'lg': ['1.125rem', { lineHeight: '1.6', letterSpacing: '0.015em' }],
+        'xl': ['1.25rem', { lineHeight: '1.6', letterSpacing: '0.015em' }],
+        '2xl': ['1.5rem', { lineHeight: '1.5', letterSpacing: '0.01em' }],
+        '3xl': ['1.875rem', { lineHeight: '1.4', letterSpacing: '0.01em' }],
+        '4xl': ['2.25rem', { lineHeight: '1.3', letterSpacing: '0.005em' }],
+        '5xl': ['3rem', { lineHeight: '1.2', letterSpacing: '0' }],
+        '6xl': ['3.75rem', { lineHeight: '1.1', letterSpacing: '-0.01em' }],
       },
     },
   },
