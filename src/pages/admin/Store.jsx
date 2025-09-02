@@ -240,8 +240,8 @@ const Store = () => {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Vue d'ensemble de la boutique</h1>
-        <p className="text-gray-600 mt-2">Analyse complète de vos performances commerciales</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Vue d'ensemble de la boutique</h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">Analyse complète de vos performances commerciales</p>
       </div>
 
       {/* Key Metrics Grid */}
@@ -255,7 +255,7 @@ const Store = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-green-700">Revenus totaux</p>
-              <h3 className="text-2xl font-bold text-green-900">{storeData.totalRevenue.toFixed(2)} FCFA</h3>
+              <h3 className="text-2xl font-bold text-green-900 dark:text-green-100">{storeData.totalRevenue.toFixed(2)} FCFA</h3>
             </div>
             <div className="rounded-full bg-green-500 p-3">
               <DollarSign className="h-6 w-6 text-white" />
@@ -280,7 +280,7 @@ const Store = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-blue-700">Commandes totales</p>
-              <h3 className="text-2xl font-bold text-blue-900">{storeData.totalOrders}</h3>
+              <h3 className="text-2xl font-bold text-blue-900 dark:text-blue-100">{storeData.totalOrders}</h3>
             </div>
             <div className="rounded-full bg-blue-500 p-3">
               <ShoppingCart className="h-6 w-6 text-white" />
@@ -305,7 +305,7 @@ const Store = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-purple-700">Produits en stock</p>
-              <h3 className="text-2xl font-bold text-purple-900">{storeData.totalProducts}</h3>
+              <h3 className="text-2xl font-bold text-purple-900 dark:text-purple-100">{storeData.totalProducts}</h3>
             </div>
             <div className="rounded-full bg-purple-500 p-3">
               <Package className="h-6 w-6 text-white" />
@@ -337,7 +337,7 @@ const Store = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-orange-700">Clients connectés</p>
-              <h3 className="text-2xl font-bold text-orange-900">{storeData.totalCustomers}</h3>
+              <h3 className="text-2xl font-bold text-orange-900 dark:text-orange-100">{storeData.totalCustomers}</h3>
             </div>
             <div className="rounded-full bg-orange-500 p-3">
               <Users className="h-6 w-6 text-white" />
@@ -362,7 +362,7 @@ const Store = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-700">Clients anonymes</p>
-              <h3 className="text-2xl font-bold text-gray-900">{storeData.customerStats.anonymousCustomers}</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{storeData.customerStats.anonymousCustomers}</h3>
               <p className="text-sm text-gray-600 mt-1">
                 {((storeData.customerStats.anonymousCustomers / Math.max(storeData.totalOrders, 1)) * 100).toFixed(1)}% des commandes
               </p>
@@ -387,7 +387,7 @@ const Store = () => {
           animate={{ opacity: 1, x: 0 }}
           className="rounded-xl bg-white p-6 shadow-lg border border-gray-200"
         >
-          <h3 className="text-lg font-semibold mb-4">Tendance des ventes (7 derniers jours)</h3>
+          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Tendance des ventes (7 derniers jours)</h3>
           <div className="h-64">
             <Line
               data={{
@@ -433,7 +433,7 @@ const Store = () => {
           animate={{ opacity: 1, x: 0 }}
           className="rounded-xl bg-white p-6 shadow-lg border border-gray-200"
         >
-          <h3 className="text-lg font-semibold mb-4">Commandes par statut</h3>
+          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Commandes par statut</h3>
           <div className="h-64">
             <Doughnut
               data={{
@@ -473,7 +473,7 @@ const Store = () => {
 
       {/* Orders by Status Cards */}
       <div className="mb-8">
-        <h2 className="text-xl font-bold mb-6">Répartition des commandes</h2>
+        <h2 className="text-xl font-bold mb-6 text-gray-900 dark:text-gray-100">Répartition des commandes</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {Object.entries(storeData.ordersByStatus).map(([status, count], index) => {
             const Icon = statusIcons[status];
@@ -520,7 +520,7 @@ const Store = () => {
           className="rounded-xl bg-white p-6 shadow-lg border border-gray-200"
         >
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Commandes récentes</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Commandes récentes</h3>
             <Link to="/admin/orders" className="text-blue-600 hover:text-blue-800 text-sm font-medium">
               Voir toutes →
             </Link>
@@ -557,7 +557,7 @@ const Store = () => {
           className="rounded-xl bg-white p-6 shadow-lg border border-gray-200"
         >
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Alertes de stock</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Alertes de stock</h3>
             <Link to="/admin/products" className="text-blue-600 hover:text-blue-800 text-sm font-medium">
               Gérer les produits →
             </Link>
@@ -566,7 +566,7 @@ const Store = () => {
           {/* Out of Stock Products */}
           {storeData.outOfStockProducts.length > 0 && (
             <div className="mb-4">
-              <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center">
                 <XCircle className="h-4 w-4 mr-2 text-red-500" />
                 Produits écoulés ({storeData.outOfStockProducts.length})
               </h4>
@@ -611,7 +611,7 @@ const Store = () => {
           {/* Low Stock Products */}
           {storeData.lowStockProducts.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center">
                 <AlertTriangle className="h-4 w-4 mr-2 text-orange-500" />
                 Stock faible ({storeData.lowStockProducts.length})
               </h4>
@@ -666,7 +666,7 @@ const Store = () => {
         animate={{ opacity: 1, y: 0 }}
         className="rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 p-6 border border-blue-200"
       >
-        <h3 className="text-lg font-semibold mb-4">Insights clients</h3>
+        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Insights clients</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="text-center">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -708,7 +708,7 @@ const Store = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-yellow-800 mb-2">Bienvenue dans votre tableau de bord !</h3>
+              <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Bienvenue dans votre tableau de bord !</h3>
               <p className="text-yellow-700 mb-4">
                 Votre boutique est prête ! Pour voir des données réelles, commencez par :
               </p>

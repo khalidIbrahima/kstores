@@ -226,8 +226,8 @@ const Analytics = () => {
       {/* Header */}
       <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">Analytics</h1>
-          <p className="text-sm text-gray-600 sm:text-base">Vue d'ensemble de vos performances</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 sm:text-2xl">Analytics</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400 sm:text-base">Vue d'ensemble de vos performances</p>
         </div>
         <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-x-4 sm:space-y-0">
           <select
@@ -457,22 +457,9 @@ const Analytics = () => {
         />
         <RealTimeChart
           title="Commandes en temps réel"
-          data={{
-            labels: Array.from({ length: 12 }, (_, i) => 
-              new Date(Date.now() - (11 - i) * 5000).toLocaleTimeString('fr-FR', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-              })
-            ),
-            datasets: [{
-              label: 'Commandes',
-              data: Array.from({ length: 12 }, () => Math.random() * 20 + 5),
-              borderColor: 'rgb(34, 197, 94)',
-              backgroundColor: 'rgba(34, 197, 94, 0.1)',
-              fill: true,
-            }]
-          }}
-          updateInterval={3000}
+          showOrders={true}
+          showVisitors={false}
+          updateInterval={60000}
         />
       </motion.div>
 

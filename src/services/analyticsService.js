@@ -510,4 +510,115 @@ export const getActiveVisitorsHistory = async (dataPoints = 12, intervalMinutes 
       visitors: 0
     }));
   }
+};
+
+// Obtenir le nombre de commandes récentes (temps réel)
+export const getCurrentActiveOrders = async (timeWindowMinutes = 60) => {
+  try {
+    const now = new Date();
+    const timeThreshold = new Date(now.getTime() - (timeWindowMinutes * 60 * 1000));
+
+    // Compter les commandes dans la fenêtre de temps
+    const { data, error } = await supabase
+      .from('orders')
+      .select('id, created_at, status')
+      .gte('created_at', timeThreshold.toISOString())
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erreur lors de la récupération des commandes actives:', error);
+      return 0;
+    }
+
+    return data?.length || 0;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des commandes actives:', error);
+    return 0;
+  }
+};
+
+// Obtenir l'historique des commandes pour un graphique en temps réel
+export const getActiveOrdersHistory = async (dataPoints = 12, intervalMinutes = 5) => {
+  try {
+    const now = new Date();
+    const history = [];
+
+    for (let i = dataPoints - 1; i >= 0; i--) {
+      const timePoint = new Date(now.getTime() - (i * intervalMinutes * 60 * 1000));
+      const timeThreshold = new Date(timePoint.getTime() - (intervalMinutes * 60 * 1000));
+
+      const { data, error } = await supabase
+        .from('orders')
+        .select('id, created_at, status')
+        .gte('created_at', timeThreshold.toISOString())
+        .lte('created_at', timePoint.toISOString());
+
+      if (error) {
+        console.error('Erreur lors de la récupération de l\'historique des commandes:', error);
+        history.push({
+          time: timePoint.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+          orders: 0
+        });
+        continue;
+      }
+
+      history.push({
+        time: timePoint.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+        orders: data?.length || 0
+      });
+    }
+
+    return history;
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l\'historique des commandes:', error);
+    return Array.from({ length: dataPoints }, (_, i) => ({
+      time: new Date(Date.now() - ((dataPoints - 1 - i) * intervalMinutes * 60 * 1000))
+        .toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+      orders: 0
+    }));
+  }
+};
+
+// Obtenir les statistiques détaillées des commandes récentes
+export const getRecentOrdersStats = async (timeWindowMinutes = 60) => {
+  try {
+    const now = new Date();
+    const timeThreshold = new Date(now.getTime() - (timeWindowMinutes * 60 * 1000));
+
+    const { data, error } = await supabase
+      .from('orders')
+      .select('id, created_at, status, total')
+      .gte('created_at', timeThreshold.toISOString())
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erreur lors de la récupération des stats de commandes:', error);
+      return {
+        total: 0,
+        revenue: 0,
+        pending: 0,
+        processing: 0,
+        delivered: 0
+      };
+    }
+
+    const stats = {
+      total: data?.length || 0,
+      revenue: data?.reduce((sum, order) => sum + (order.total || 0), 0) || 0,
+      pending: data?.filter(order => order.status === 'pending').length || 0,
+      processing: data?.filter(order => order.status === 'processing').length || 0,
+      delivered: data?.filter(order => order.status === 'delivered').length || 0
+    };
+
+    return stats;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des stats de commandes:', error);
+    return {
+      total: 0,
+      revenue: 0,
+      pending: 0,
+      processing: 0,
+      delivered: 0
+    };
+  }
 }; 

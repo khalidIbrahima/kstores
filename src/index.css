@@ -67,7 +67,7 @@
   }
   
   a:hover, a:focus {
-    text-decoration: underline;
+    text-decoration: none;
     outline: 2px solid transparent;
     outline-offset: 2px;
   }

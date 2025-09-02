@@ -12,7 +12,7 @@ import {
   Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { getCurrentActiveVisitors, getActiveVisitorsHistory } from '../../services/analyticsService';
+import { getCurrentActiveVisitors, getActiveVisitorsHistory, getCurrentActiveOrders, getActiveOrdersHistory } from '../../services/analyticsService';
 
 ChartJS.register(
   CategoryScale,
@@ -30,9 +30,22 @@ const RealTimeChart = ({
   data, 
   height = '300px', 
   updateInterval = 30000, // 30 seconds for real data
-  showVisitors = true 
+  showVisitors = true,
+  showOrders = false 
 }) => {
   // Default data if none provided
+  const getDefaultColor = () => {
+    if (showVisitors) return { border: 'rgb(34, 197, 94)', bg: 'rgba(34, 197, 94, 0.1)' };
+    if (showOrders) return { border: 'rgb(245, 158, 11)', bg: 'rgba(245, 158, 11, 0.1)' };
+    return { border: 'rgb(59, 130, 246)', bg: 'rgba(59, 130, 246, 0.1)' };
+  };
+
+  const getDefaultLabel = () => {
+    if (showVisitors) return 'Visiteurs actifs';
+    if (showOrders) return 'Commandes récentes';
+    return 'Activité';
+  };
+
   const defaultData = {
     labels: Array.from({ length: 12 }, (_, i) => {
       const date = new Date();
@@ -40,10 +53,10 @@ const RealTimeChart = ({
       return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     }),
     datasets: [{
-      label: showVisitors ? 'Visiteurs actifs' : 'Activité',
+      label: getDefaultLabel(),
       data: Array.from({ length: 12 }, () => 0),
-      borderColor: showVisitors ? 'rgb(34, 197, 94)' : 'rgb(59, 130, 246)',
-      backgroundColor: showVisitors ? 'rgba(34, 197, 94, 0.1)' : 'rgba(59, 130, 246, 0.1)',
+      borderColor: getDefaultColor().border,
+      backgroundColor: getDefaultColor().bg,
       tension: 0.4,
       fill: true
     }]
@@ -52,6 +65,7 @@ const RealTimeChart = ({
   const [chartData, setChartData] = useState(data || defaultData);
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentVisitors, setCurrentVisitors] = useState(0);
+  const [currentOrders, setCurrentOrders] = useState(0);
   const intervalRef = useRef(null);
 
   useEffect(() => {
@@ -60,9 +74,9 @@ const RealTimeChart = ({
     }
   }, [data]);
 
-  // Function to fetch real visitor data
-  const fetchVisitorData = async () => {
-    if (!showVisitors) return;
+  // Function to fetch real-time data
+  const fetchRealTimeData = async () => {
+    if (!showVisitors && !showOrders) return;
     
     try {
       setIsUpdating(true);
@@ -70,7 +84,7 @@ const RealTimeChart = ({
       if (data) {
         // If external data is provided, use it
         setChartData(data);
-      } else {
+      } else if (showVisitors) {
         // Fetch real-time visitor data
         const [currentCount, history] = await Promise.all([
           getCurrentActiveVisitors(),
@@ -92,24 +106,46 @@ const RealTimeChart = ({
         };
         
         setChartData(newData);
+      } else if (showOrders) {
+        // Fetch real-time orders data
+        const [currentCount, history] = await Promise.all([
+          getCurrentActiveOrders(60), // 60 minutes window for orders
+          getActiveOrdersHistory(12, 5) // 12 points, 5 minute intervals
+        ]);
+        
+        setCurrentOrders(currentCount);
+        
+        const newData = {
+          labels: history.map(point => point.time),
+          datasets: [{
+            label: 'Commandes récentes',
+            data: history.map(point => point.orders),
+            borderColor: 'rgb(245, 158, 11)',
+            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        };
+        
+        setChartData(newData);
       }
       
       setTimeout(() => setIsUpdating(false), 500);
     } catch (error) {
-      console.error('Error fetching visitor data:', error);
+      console.error('Error fetching real-time data:', error);
       setIsUpdating(false);
     }
   };
 
   // Initial data fetch
   useEffect(() => {
-    fetchVisitorData();
-  }, [showVisitors]);
+    fetchRealTimeData();
+  }, [showVisitors, showOrders]);
 
   // Set up interval for real-time updates
   useEffect(() => {
-    if (showVisitors) {
-      intervalRef.current = setInterval(fetchVisitorData, updateInterval);
+    if (showVisitors || showOrders) {
+      intervalRef.current = setInterval(fetchRealTimeData, updateInterval);
     }
 
     return () => {
@@ -117,7 +153,7 @@ const RealTimeChart = ({
         clearInterval(intervalRef.current);
       }
     };
-  }, [updateInterval, showVisitors]);
+  }, [updateInterval, showVisitors, showOrders]);
 
   const options = {
     responsive: true,
@@ -138,9 +174,13 @@ const RealTimeChart = ({
           title: (context) => `Temps: ${context[0].label}`,
           label: (context) => {
             const value = Math.round(context.parsed.y);
-            return showVisitors 
-              ? `${context.dataset.label}: ${value} visiteur${value > 1 ? 's' : ''}` 
-              : `${context.dataset.label}: ${context.parsed.y.toFixed(1)}`;
+            if (showVisitors) {
+              return `${context.dataset.label}: ${value} visiteur${value > 1 ? 's' : ''}`;
+            } else if (showOrders) {
+              return `${context.dataset.label}: ${value} commande${value > 1 ? 's' : ''}`;
+            } else {
+              return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}`;
+            }
           }
         }
       },
@@ -244,26 +284,31 @@ const RealTimeChart = ({
       <div className="mt-4 grid grid-cols-3 gap-4">
         <div className="text-center">
           <p className="text-xs text-gray-500">
-            {showVisitors ? 'En ligne maintenant' : 'Actuel'}
+            {showVisitors ? 'En ligne maintenant' : showOrders ? 'Dernière heure' : 'Actuel'}
           </p>
           <p className="text-lg font-semibold text-gray-900">
             {showVisitors 
               ? (currentVisitors || Math.round(chartData.datasets[0]?.data[chartData.datasets[0].data.length - 1] || 0))
+              : showOrders
+              ? (currentOrders || Math.round(chartData.datasets[0]?.data[chartData.datasets[0].data.length - 1] || 0))
               : (chartData.datasets[0]?.data[chartData.datasets[0].data.length - 1]?.toFixed(1) || '0')
             }
-            {showVisitors && (
+            {(showVisitors || showOrders) && (
               <span className="text-xs text-gray-500 ml-1">
-                visiteur{((currentVisitors || 0) > 1) ? 's' : ''}
+                {showVisitors 
+                  ? `visiteur${((currentVisitors || 0) > 1) ? 's' : ''}`
+                  : `commande${((currentOrders || 0) > 1) ? 's' : ''}`
+                }
               </span>
             )}
           </p>
         </div>
         <div className="text-center">
           <p className="text-xs text-gray-500">
-            {showVisitors ? 'Moyenne/heure' : 'Moyenne'}
+            {showVisitors ? 'Moyenne/heure' : showOrders ? 'Moyenne/période' : 'Moyenne'}
           </p>
           <p className="text-lg font-semibold text-gray-900">
-            {showVisitors 
+            {(showVisitors || showOrders)
               ? Math.round(chartData.datasets[0]?.data.reduce((a, b) => a + b, 0) / chartData.datasets[0]?.data.length || 0)
               : (chartData.datasets[0]?.data.reduce((a, b) => a + b, 0) / chartData.datasets[0]?.data.length || 0).toFixed(1)
             }
@@ -271,10 +316,10 @@ const RealTimeChart = ({
         </div>
         <div className="text-center">
           <p className="text-xs text-gray-500">
-            {showVisitors ? 'Pic aujourd\'hui' : 'Max'}
+            {showVisitors ? 'Pic aujourd\'hui' : showOrders ? 'Pic période' : 'Max'}
           </p>
           <p className="text-lg font-semibold text-gray-900">
-            {showVisitors 
+            {(showVisitors || showOrders)
               ? Math.round(Math.max(...(chartData.datasets[0]?.data || [0])))
               : Math.max(...(chartData.datasets[0]?.data || [0])).toFixed(1)
             }

@@ -206,8 +206,8 @@ const Products = () => {
     <div className="container mx-auto px-4 py-12">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">{t('products.title')}</h1>
-          <p className="text-gray-600">{t('products.manage_inventory')}</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{t('products.title')}</h1>
+          <p className="text-gray-600 dark:text-gray-400">{t('products.manage_inventory')}</p>
         </div>
         
         <div className="flex flex-wrap items-center gap-4">
@@ -372,7 +372,7 @@ const Products = () => {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="relative w-full max-w-4xl bg-white rounded-lg shadow-xl max-h-[90vh] overflow-hidden">
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                   {selectedProduct ? 'Modifier le produit' : 'Ajouter un produit'}
                 </h2>
                 <button

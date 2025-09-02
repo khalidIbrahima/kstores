@@ -175,8 +175,8 @@ const Orders = () => {
     <div className="container mx-auto px-4 py-12">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">{t('orders.title')}</h1>
-          <p className="text-gray-600">{t('orders.manage_customer_orders')}</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{t('orders.title')}</h1>
+          <p className="text-gray-600 dark:text-gray-400">{t('orders.manage_customer_orders')}</p>
         </div>
         <div className="flex gap-4 items-center">
           <button

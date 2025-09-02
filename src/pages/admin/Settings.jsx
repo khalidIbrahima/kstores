@@ -578,8 +578,8 @@ const Settings = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">{t('settings.title')}</h1>
-        <p className="text-gray-600">{t('settings.subtitle')}</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t('settings.title')}</h1>
+        <p className="text-gray-600 dark:text-gray-400">{t('settings.subtitle')}</p>
       </div>
 
       {/* Message de notification */}
