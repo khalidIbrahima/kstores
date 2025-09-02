@@ -157,12 +157,12 @@ const CheckoutPage = () => {
           transition={{ duration: 0.5 }}
           className="order-2 lg:order-1"
         >
-          <div className="rounded-lg bg-white p-6 shadow-md">
-            <h2 className="mb-6 text-2xl font-bold">{t('checkout.title')}</h2>
+          <div className="rounded-lg bg-white dark:bg-gray-800 p-6 shadow-md border border-gray-200 dark:border-gray-700">
+            <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">{t('checkout.title')}</h2>
             
             {!user && (
-              <div className="mb-6 rounded-lg bg-blue-50 p-4">
-                <p className="text-sm text-blue-700">
+              <div className="mb-6 rounded-lg bg-blue-50 dark:bg-blue-900/20 p-4 border border-blue-200 dark:border-blue-800">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
                   {t('checkout.guest.message')}
                 </p>
               </div>
@@ -171,10 +171,10 @@ const CheckoutPage = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Contact Information */}
               <div>
-                <h3 className="mb-4 text-lg font-medium">{t('checkout.contact.title')}</h3>
+                <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">{t('checkout.contact.title')}</h3>
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       {t('checkout.shipping.fullName')}
                     </label>
                     <input
@@ -183,7 +183,7 @@ const CheckoutPage = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                      className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                       required
                     />
                   </div>
@@ -197,7 +197,7 @@ const CheckoutPage = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                      className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                       required
                     />
                   </div>
@@ -211,7 +211,7 @@ const CheckoutPage = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                      className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                       required
                     />
                   </div>
@@ -220,7 +220,7 @@ const CheckoutPage = () => {
 
               {/* Shipping Address */}
               {<div>
-                <h3 className="mb-4 text-lg font-medium">{t('checkout.shipping.title')}</h3>
+                <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">{t('checkout.shipping.title')}</h3>
                 <div className="space-y-4">
                   <div>
                     <label htmlFor="address" className="block text-sm font-medium text-gray-700">
@@ -232,7 +232,7 @@ const CheckoutPage = () => {
                       name="address"
                       value={formData.address}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                      className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                       required
                     />
                   </div>
@@ -248,7 +248,7 @@ const CheckoutPage = () => {
                         name="city"
                         value={formData.city}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                         required
                       />
                     </div>
@@ -263,7 +263,7 @@ const CheckoutPage = () => {
                         name="state"
                         value={formData.state}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                         required
                       />
                     </div>
@@ -278,7 +278,7 @@ const CheckoutPage = () => {
                         name="zipCode"
                         value={formData.zipCode}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                         required
                       />
                     </div>
@@ -287,7 +287,7 @@ const CheckoutPage = () => {
               </div>}
               {/* Location Picker */}
               <div>
-                <h3 className="mb-4 text-lg font-medium">{t('checkout.location.title')}</h3>
+                <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">{t('checkout.location.title')}</h3>
                 <div className="h-[300px] rounded-lg overflow-hidden">
                   <LocationPicker onLocationSelect={handleLocationSelect} />
                 </div>
@@ -327,7 +327,7 @@ const CheckoutPage = () => {
                         name="expiryDate"
                         value={formData.expiryDate}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                         placeholder="MM/YY"
                         required
                       />
@@ -343,7 +343,7 @@ const CheckoutPage = () => {
                         name="cvv"
                         value={formData.cvv}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                         placeholder="123"
                         required
                       />
@@ -370,29 +370,29 @@ const CheckoutPage = () => {
           transition={{ duration: 0.5 }}
           className="order-1 lg:order-2"
         >
-          <div className="rounded-lg bg-white p-6 shadow-md">
-            <h2 className="mb-6 text-2xl font-bold">{t('checkout.order.title')}</h2>
+          <div className="rounded-lg bg-white dark:bg-gray-800 p-6 shadow-md border border-gray-200 dark:border-gray-700">
+            <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">{t('checkout.order.title')}</h2>
             
             <div className="space-y-4">
               {items.map((item) => (
                 <div key={item.id} className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-medium">{item.name}</h3>
-                    <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">{item.name}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Qty: {item.quantity}</p>
                   </div>
-                  <p className="font-medium">{formatPrice(item.price * item.quantity)}</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">{formatPrice(item.price * item.quantity)}</p>
                 </div>
               ))}
               
-              <div className="border-t pt-4">
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-gray-600">{t('checkout.order.subtotal')}</p>
-                  <p className="font-medium">{formatPrice(total)}</p>
+                  <p className="text-gray-600 dark:text-gray-400">{t('checkout.order.subtotal')}</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">{formatPrice(total)}</p>
                 </div>
                 
-                <div className="mt-4 flex items-center justify-between border-t pt-4">
-                  <p className="text-lg font-bold">{t('checkout.order.total')}</p>
-                  <p className="text-lg font-bold">{formatPrice(total)}</p>
+                <div className="mt-4 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
+                  <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{t('checkout.order.total')}</p>
+                  <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{formatPrice(total)}</p>
                 </div>
               </div>
             </div>

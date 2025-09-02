@@ -680,8 +680,8 @@ const ProductPage = () => {
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
-        <section className="mt-16">
-          <h2 className="mb-8 text-2xl font-bold text-gray-900 dark:text-gray-100">{t('product.relatedProducts')}</h2>
+        <section className="mt-16 px-4 sm:px-6 py-8 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+          <h2 className="mb-8 text-2xl font-bold text-gray-900 dark:text-white">{t('product.relatedProducts')}</h2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {relatedProducts.map((relatedProduct) => (
               <motion.div
@@ -689,9 +689,9 @@ const ProductPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                className="group overflow-hidden rounded-lg bg-background shadow-md transition-all hover:shadow-lg"
+                className="group overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow-md transition-all hover:shadow-lg hover:shadow-gray-500/25 dark:hover:shadow-gray-900/50 border border-gray-200 dark:border-gray-600"
               >
-                <Link to={urlUtils.generateProductUrl(relatedProduct)} className="block overflow-hidden">
+                <Link to={urlUtils.generateProductUrl(relatedProduct)} className="block overflow-hidden hover:no-underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded-lg">
                   <div className="h-48 overflow-hidden relative">
                     <img
                       src={relatedProduct.image_url}
@@ -703,11 +703,11 @@ const ProductPage = () => {
                       }}
                     />
                     <div 
-                      className="h-full w-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs"
+                      className="h-full w-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 text-xs"
                       style={{ display: 'none' }}
                     >
                       <div className="text-center">
-                        <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center mb-1">
+                        <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center mb-1">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
@@ -716,25 +716,25 @@ const ProductPage = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100 line-clamp-2">
+                  <div className="p-5 bg-white dark:bg-gray-800">
+                    <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white line-clamp-2">
                       {relatedProduct.name}
                     </h3>
                     
                     {/* Colors Display for Related Products */}
                     {relatedProduct.colors && relatedProduct.colors.length > 0 && (
-                      <div className="mb-2">
-                        <div className="flex items-center gap-1">
+                      <div className="mb-3">
+                        <div className="flex items-center gap-1.5">
                           {relatedProduct.colors.filter(color => color.available !== false).slice(0, 4).map((color, index) => (
                             <div
                               key={index}
-                              className="w-3 h-3 rounded-full border border-gray-300"
+                              className="w-3 h-3 rounded-full border border-gray-300 dark:border-gray-500"
                               style={{ backgroundColor: color.hex }}
                               title={color.name}
                             />
                           ))}
                           {relatedProduct.colors.filter(color => color.available !== false).length > 4 && (
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-gray-500 dark:text-gray-300">
                               +{relatedProduct.colors.filter(color => color.available !== false).length - 4}
                             </span>
                           )}
@@ -742,7 +742,7 @@ const ProductPage = () => {
                       </div>
                     )}
                     
-                    <p className="text-xl font-bold text-primary">
+                    <p className="text-xl font-bold text-primary dark:text-blue-400 mt-1">
                       {formatPrice(relatedProduct.price)}
                     </p>
                   </div>
