@@ -12,6 +12,7 @@ import {
   Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { getCurrentActiveVisitors, getActiveVisitorsHistory } from '../../services/analyticsService';
 
 ChartJS.register(
   CategoryScale,
@@ -25,10 +26,11 @@ ChartJS.register(
 );
 
 const RealTimeChart = ({ 
-  title = 'Activité en temps réel', 
+  title = 'Visiteurs en temps réel', 
   data, 
   height = '300px', 
-  updateInterval = 5000 
+  updateInterval = 30000, // 30 seconds for real data
+  showVisitors = true 
 }) => {
   // Default data if none provided
   const defaultData = {
@@ -38,10 +40,10 @@ const RealTimeChart = ({
       return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     }),
     datasets: [{
-      label: 'Activité',
-      data: Array.from({ length: 12 }, () => Math.random() * 100 + 50),
-      borderColor: 'rgb(59, 130, 246)',
-      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+      label: showVisitors ? 'Visiteurs actifs' : 'Activité',
+      data: Array.from({ length: 12 }, () => 0),
+      borderColor: showVisitors ? 'rgb(34, 197, 94)' : 'rgb(59, 130, 246)',
+      backgroundColor: showVisitors ? 'rgba(34, 197, 94, 0.1)' : 'rgba(59, 130, 246, 0.1)',
       tension: 0.4,
       fill: true
     }]
@@ -49,42 +51,73 @@ const RealTimeChart = ({
 
   const [chartData, setChartData] = useState(data || defaultData);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [currentVisitors, setCurrentVisitors] = useState(0);
   const intervalRef = useRef(null);
 
   useEffect(() => {
-    setChartData(data || defaultData);
+    if (data) {
+      setChartData(data);
+    }
   }, [data]);
 
-  useEffect(() => {
-    // Simuler des mises à jour en temps réel
-    intervalRef.current = setInterval(() => {
+  // Function to fetch real visitor data
+  const fetchVisitorData = async () => {
+    if (!showVisitors) return;
+    
+    try {
       setIsUpdating(true);
       
-      // Ajouter un nouveau point de données
-      const currentData = chartData || defaultData;
-      const newData = {
-        ...currentData,
-        labels: [...currentData.labels.slice(-11), new Date().toLocaleTimeString('fr-FR', { 
-          hour: '2-digit', 
-          minute: '2-digit' 
-        })],
-        datasets: currentData.datasets.map(dataset => ({
-          ...dataset,
-          data: [...dataset.data.slice(-11), Math.random() * 100 + 50]
-        }))
-      };
-      
-      setChartData(newData);
+      if (data) {
+        // If external data is provided, use it
+        setChartData(data);
+      } else {
+        // Fetch real-time visitor data
+        const [currentCount, history] = await Promise.all([
+          getCurrentActiveVisitors(),
+          getActiveVisitorsHistory(12, 5) // 12 points, 5 minute intervals
+        ]);
+        
+        setCurrentVisitors(currentCount);
+        
+        const newData = {
+          labels: history.map(point => point.time),
+          datasets: [{
+            label: 'Visiteurs actifs',
+            data: history.map(point => point.visitors),
+            borderColor: 'rgb(34, 197, 94)',
+            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        };
+        
+        setChartData(newData);
+      }
       
       setTimeout(() => setIsUpdating(false), 500);
-    }, updateInterval);
+    } catch (error) {
+      console.error('Error fetching visitor data:', error);
+      setIsUpdating(false);
+    }
+  };
+
+  // Initial data fetch
+  useEffect(() => {
+    fetchVisitorData();
+  }, [showVisitors]);
+
+  // Set up interval for real-time updates
+  useEffect(() => {
+    if (showVisitors) {
+      intervalRef.current = setInterval(fetchVisitorData, updateInterval);
+    }
 
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
     };
-  }, [chartData, updateInterval, defaultData]);
+  }, [updateInterval, showVisitors]);
 
   const options = {
     responsive: true,
@@ -103,7 +136,12 @@ const RealTimeChart = ({
         displayColors: false,
         callbacks: {
           title: (context) => `Temps: ${context[0].label}`,
-          label: (context) => `${context.dataset.label}: ${context.parsed.y.toFixed(1)}`
+          label: (context) => {
+            const value = Math.round(context.parsed.y);
+            return showVisitors 
+              ? `${context.dataset.label}: ${value} visiteur${value > 1 ? 's' : ''}` 
+              : `${context.dataset.label}: ${context.parsed.y.toFixed(1)}`;
+          }
         }
       },
     },
@@ -205,21 +243,41 @@ const RealTimeChart = ({
       {/* Statistiques en bas */}
       <div className="mt-4 grid grid-cols-3 gap-4">
         <div className="text-center">
-          <p className="text-xs text-gray-500">Actuel</p>
+          <p className="text-xs text-gray-500">
+            {showVisitors ? 'En ligne maintenant' : 'Actuel'}
+          </p>
           <p className="text-lg font-semibold text-gray-900">
-            {chartData.datasets[0]?.data[chartData.datasets[0].data.length - 1]?.toFixed(1) || '0'}
+            {showVisitors 
+              ? (currentVisitors || Math.round(chartData.datasets[0]?.data[chartData.datasets[0].data.length - 1] || 0))
+              : (chartData.datasets[0]?.data[chartData.datasets[0].data.length - 1]?.toFixed(1) || '0')
+            }
+            {showVisitors && (
+              <span className="text-xs text-gray-500 ml-1">
+                visiteur{((currentVisitors || 0) > 1) ? 's' : ''}
+              </span>
+            )}
           </p>
         </div>
         <div className="text-center">
-          <p className="text-xs text-gray-500">Moyenne</p>
+          <p className="text-xs text-gray-500">
+            {showVisitors ? 'Moyenne/heure' : 'Moyenne'}
+          </p>
           <p className="text-lg font-semibold text-gray-900">
-            {(chartData.datasets[0]?.data.reduce((a, b) => a + b, 0) / chartData.datasets[0]?.data.length || 0).toFixed(1)}
+            {showVisitors 
+              ? Math.round(chartData.datasets[0]?.data.reduce((a, b) => a + b, 0) / chartData.datasets[0]?.data.length || 0)
+              : (chartData.datasets[0]?.data.reduce((a, b) => a + b, 0) / chartData.datasets[0]?.data.length || 0).toFixed(1)
+            }
           </p>
         </div>
         <div className="text-center">
-          <p className="text-xs text-gray-500">Max</p>
+          <p className="text-xs text-gray-500">
+            {showVisitors ? 'Pic aujourd\'hui' : 'Max'}
+          </p>
           <p className="text-lg font-semibold text-gray-900">
-            {Math.max(...(chartData.datasets[0]?.data || [0])).toFixed(1)}
+            {showVisitors 
+              ? Math.round(Math.max(...(chartData.datasets[0]?.data || [0])))
+              : Math.max(...(chartData.datasets[0]?.data || [0])).toFixed(1)
+            }
           </p>
         </div>
       </div>

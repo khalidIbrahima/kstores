@@ -451,23 +451,9 @@ const Analytics = () => {
         className="grid grid-cols-1 gap-6 lg:grid-cols-2"
       >
         <RealTimeChart
-          title="Activité en temps réel"
-          data={{
-            labels: Array.from({ length: 12 }, (_, i) => 
-              new Date(Date.now() - (11 - i) * 5000).toLocaleTimeString('fr-FR', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-              })
-            ),
-            datasets: [{
-              label: 'Visites',
-              data: Array.from({ length: 12 }, () => Math.random() * 100 + 50),
-              borderColor: 'rgb(59, 130, 246)',
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              fill: true,
-            }]
-          }}
-          updateInterval={5000}
+          title="Visiteurs en temps réel"
+          showVisitors={true}
+          updateInterval={30000}
         />
         <RealTimeChart
           title="Commandes en temps réel"
