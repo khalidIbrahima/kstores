@@ -583,14 +583,15 @@ const ProductsPage = () => {
                   className="block overflow-hidden"
                   aria-label={`Voir les détails de ${product.name}`}
                 >
-                  <div className="h-40 xs:h-32 sm:h-36 md:h-44 lg:h-48 xl:h-52 overflow-hidden relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800">
+                  <div className="aspect-square xs:aspect-[4/3] sm:aspect-square overflow-hidden relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
                     <img
                       src={product.image_url}
                       alt={`${product.name} - ${product.categories?.name || 'Produit'}`}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
                       itemProp="image"
                       loading="lazy"
                       decoding="async"
+                      style={{ padding: '8px' }}
                       onError={(e) => {
                         e.target.style.display = 'none';
                         e.target.nextSibling.style.display = 'flex';
