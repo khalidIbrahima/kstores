@@ -13,7 +13,16 @@
     "deploy:help": "node scripts/deploy-final.mjs --help",
     "deploy:config": "node scripts/deploy-final.mjs --config",
     "deploy:explore": "node scripts/deploy-final.mjs --explore",
-    "build:deploy": "node scripts/deploy-final.mjs"
+    "build:deploy": "node scripts/deploy-final.mjs",
+    "test:social": "node scripts/test-social-meta.mjs",
+    "test:social:help": "node scripts/test-social-meta.mjs --help",
+    "generate:meta": "node scripts/generate-static-meta.mjs",
+    "generate:products": "node scripts/generate-product-pages.mjs",
+    "build:with-meta": "npm run build && npm run generate:meta",
+    "build:with-products": "npm run build && npm run generate:products",
+    "deploy:products": "node scripts/deploy-products-only.mjs",
+    "start:server": "node server.js",
+    "start:prod": "npm run build && npm run start:server"
   },
   "dependencies": {
     "@react-oauth/google": "^0.12.2",
@@ -22,6 +31,7 @@
     "@supabase/supabase-js": "^2.39.6",
     "chart.js": "^4.5.0",
     "date-fns": "^4.1.0",
+    "express": "^5.1.0",
     "framer-motion": "^11.0.5",
     "i18next": "^23.8.2",
     "i18next-browser-languagedetector": "^7.2.0",

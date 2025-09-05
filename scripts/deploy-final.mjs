@@ -87,19 +87,8 @@ async function uploadFiles(client, localDir, remoteDir = '') {
     if (file.isDirectory()) {
       // Créer le dossier s'il n'existe pas
       try {
-        const currentPath = await client.pwd();
-        
-        try {
-          await client.cd(remotePath);
-          logInfo(`📁 ${remotePath}/ (existant)`);
-          // Revenir au dossier d'origine
-          await client.cd(currentPath);
-        } catch (error) {
-          // Le dossier n'existe pas, le créer
-          await client.ensureDir(remotePath);
-          logInfo(`📁 ${remotePath}/ (créé)`);
-        }
-        
+        await client.ensureDir(remotePath);
+        logInfo(`📁 ${remotePath}/ (créé/vérifié)`);
         count += await uploadFiles(client, localPath, remotePath);
       } catch (error) {
         logError(`Erreur dossier ${remotePath}: ${error.message}`);
@@ -107,11 +96,15 @@ async function uploadFiles(client, localDir, remoteDir = '') {
     } else {
       // Upload du fichier
       try {
+        // S'assurer que le dossier parent existe
+        if (remoteDir) {
+          await client.ensureDir(remoteDir);
+        }
         await client.uploadFrom(localPath, remotePath);
         logSuccess(`📤 ${remotePath}`);
         count++;
       } catch (error) {
-        logError(`Erreur upload ${file.name}: ${error.message}`);
+        logError(`Erreur upload ${remotePath}: ${error.message}`);
       }
     }
   }
