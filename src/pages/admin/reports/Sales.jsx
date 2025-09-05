@@ -209,7 +209,7 @@ const SalesReports = () => {
   return (
     <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">Sales Reports</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Sales Reports</h1>
         <p className="text-gray-600">Analyze sales performance and trends</p>
       </div>
 
@@ -257,7 +257,7 @@ const SalesReports = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Sales</p>
-              <h3 className="text-2xl font-bold">${data.stats.totalSales.toFixed(2)}</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">${data.stats.totalSales.toFixed(2)}</h3>
             </div>
             <div className="rounded-full bg-green-100 p-3">
               <DollarSign className="h-6 w-6 text-green-600" />

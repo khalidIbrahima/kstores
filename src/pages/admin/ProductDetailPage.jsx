@@ -82,26 +82,26 @@ const ProductDetailPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-6xl">
-      <Link to="/admin/products" className="mb-8 inline-flex items-center text-blue-600 hover:underline">
+      <Link to="/admin/products" className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200">
         <ArrowLeft className="mr-2 h-5 w-5" /> Retour à la liste
       </Link>
-      <div className="rounded-2xl bg-white shadow-xl p-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+      <div className="rounded-2xl bg-white dark:bg-gray-800 shadow-xl p-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-start border border-gray-200 dark:border-gray-700">
         <div>
           <ProductImageCarousel images={images} />
         </div>
         <div>
           <div className="flex items-center mb-4">
-            <h1 className="text-3xl font-bold mr-4">{product.name}</h1>
-            <span className={`px-3 py-1 rounded-full text-xs font-semibold ml-2 ${product.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+            <h1 className="text-3xl font-bold mr-4 text-gray-900 dark:text-gray-100">{product.name}</h1>
+            <span className={`px-3 py-1 rounded-full text-xs font-semibold ml-2 ${product.isActive ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' : 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300'}`}>
               {product.isActive ? 'Actif' : 'Inactif'}
             </span>
           </div>
-          <div className="mb-6 text-gray-700 text-base">{formatDescriptionFull(product.description)}</div>
+          <div className="mb-6 text-gray-700 dark:text-gray-300 text-base">{formatDescriptionFull(product.description)}</div>
           <div className="mb-8">
-            <span className="text-4xl font-bold text-blue-700">{product.price} FCFA</span>
+            <span className="text-4xl font-bold text-blue-700 dark:text-blue-400">{product.price} FCFA</span>
           </div>
-          <div className="mb-4"><span className="font-semibold text-gray-700">Stock :</span> {product.inventory}</div>
-          <div className="mb-4"><span className="font-semibold text-gray-700">Catégorie :</span> {product.categories?.name || '-'}</div>
+          <div className="mb-4 text-gray-700 dark:text-gray-300"><span className="font-semibold text-gray-900 dark:text-gray-100">Stock :</span> {product.inventory}</div>
+          <div className="mb-4 text-gray-700 dark:text-gray-300"><span className="font-semibold text-gray-900 dark:text-gray-100">Catégorie :</span> {product.categories?.name || '-'}</div>
           <div className="flex gap-4 mt-8">
             <button
               onClick={handleEdit}
@@ -123,11 +123,11 @@ const ProductDetailPage = () => {
         <>
           <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="relative w-full max-w-4xl bg-white rounded-lg shadow-xl max-h-[90vh] overflow-hidden">
-              <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900">Modifier le produit</h2>
+            <div className="relative w-full max-w-4xl bg-white dark:bg-gray-800 rounded-lg shadow-xl max-h-[90vh] overflow-hidden border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Modifier le produit</h2>
                 <button
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                   onClick={handleModalClose}
                 >
                   <X className="h-6 w-6" />

@@ -424,4 +424,201 @@ export const getDailyVisits = async (days = 7) => {
 // Obtenir les produits les plus vus (alias pour getMostViewedProducts)
 export const getTopViewedProducts = async (limit = 10) => {
   return getMostViewedProducts(limit);
+};
+
+// Obtenir le nombre de visiteurs actuellement actifs
+export const getCurrentActiveVisitors = async (timeWindowMinutes = 5) => {
+  try {
+    const now = new Date();
+    const timeThreshold = new Date(now.getTime() - (timeWindowMinutes * 60 * 1000));
+
+    // Compter les sessions uniques actives dans la fenêtre de temps
+    const { data, error } = await supabase
+      .from('page_visits')
+      .select('session_id, user_id, created_at')
+      .gte('created_at', timeThreshold.toISOString())
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erreur lors de la récupération des visiteurs actifs:', error);
+      return 0;
+    }
+
+    // Compter les sessions uniques (utilisateurs et invités)
+    const activeSessions = new Set();
+    data?.forEach(visit => {
+      // Utiliser l'ID utilisateur si disponible, sinon l'ID de session
+      const identifier = visit.user_id || visit.session_id;
+      if (identifier) {
+        activeSessions.add(identifier);
+      }
+    });
+
+    return activeSessions.size;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des visiteurs actifs:', error);
+    return 0;
+  }
+};
+
+// Obtenir l'historique des visiteurs actifs pour un graphique en temps réel
+export const getActiveVisitorsHistory = async (dataPoints = 12, intervalMinutes = 1) => {
+  try {
+    const now = new Date();
+    const history = [];
+
+    for (let i = dataPoints - 1; i >= 0; i--) {
+      const timePoint = new Date(now.getTime() - (i * intervalMinutes * 60 * 1000));
+      const timeThreshold = new Date(timePoint.getTime() - (5 * 60 * 1000)); // 5 minutes window
+
+      const { data, error } = await supabase
+        .from('page_visits')
+        .select('session_id, user_id')
+        .gte('created_at', timeThreshold.toISOString())
+        .lte('created_at', timePoint.toISOString());
+
+      if (error) {
+        console.error('Erreur lors de la récupération de l\'historique:', error);
+        history.push({
+          time: timePoint.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+          visitors: 0
+        });
+        continue;
+      }
+
+      // Compter les sessions uniques
+      const activeSessions = new Set();
+      data?.forEach(visit => {
+        const identifier = visit.user_id || visit.session_id;
+        if (identifier) {
+          activeSessions.add(identifier);
+        }
+      });
+
+      history.push({
+        time: timePoint.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+        visitors: activeSessions.size
+      });
+    }
+
+    return history;
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l\'historique des visiteurs actifs:', error);
+    return Array.from({ length: dataPoints }, (_, i) => ({
+      time: new Date(Date.now() - ((dataPoints - 1 - i) * intervalMinutes * 60 * 1000))
+        .toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+      visitors: 0
+    }));
+  }
+};
+
+// Obtenir le nombre de commandes récentes (temps réel)
+export const getCurrentActiveOrders = async (timeWindowMinutes = 60) => {
+  try {
+    const now = new Date();
+    const timeThreshold = new Date(now.getTime() - (timeWindowMinutes * 60 * 1000));
+
+    // Compter les commandes dans la fenêtre de temps
+    const { data, error } = await supabase
+      .from('orders')
+      .select('id, created_at, status')
+      .gte('created_at', timeThreshold.toISOString())
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erreur lors de la récupération des commandes actives:', error);
+      return 0;
+    }
+
+    return data?.length || 0;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des commandes actives:', error);
+    return 0;
+  }
+};
+
+// Obtenir l'historique des commandes pour un graphique en temps réel
+export const getActiveOrdersHistory = async (dataPoints = 12, intervalMinutes = 5) => {
+  try {
+    const now = new Date();
+    const history = [];
+
+    for (let i = dataPoints - 1; i >= 0; i--) {
+      const timePoint = new Date(now.getTime() - (i * intervalMinutes * 60 * 1000));
+      const timeThreshold = new Date(timePoint.getTime() - (intervalMinutes * 60 * 1000));
+
+      const { data, error } = await supabase
+        .from('orders')
+        .select('id, created_at, status')
+        .gte('created_at', timeThreshold.toISOString())
+        .lte('created_at', timePoint.toISOString());
+
+      if (error) {
+        console.error('Erreur lors de la récupération de l\'historique des commandes:', error);
+        history.push({
+          time: timePoint.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+          orders: 0
+        });
+        continue;
+      }
+
+      history.push({
+        time: timePoint.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+        orders: data?.length || 0
+      });
+    }
+
+    return history;
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l\'historique des commandes:', error);
+    return Array.from({ length: dataPoints }, (_, i) => ({
+      time: new Date(Date.now() - ((dataPoints - 1 - i) * intervalMinutes * 60 * 1000))
+        .toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+      orders: 0
+    }));
+  }
+};
+
+// Obtenir les statistiques détaillées des commandes récentes
+export const getRecentOrdersStats = async (timeWindowMinutes = 60) => {
+  try {
+    const now = new Date();
+    const timeThreshold = new Date(now.getTime() - (timeWindowMinutes * 60 * 1000));
+
+    const { data, error } = await supabase
+      .from('orders')
+      .select('id, created_at, status, total')
+      .gte('created_at', timeThreshold.toISOString())
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erreur lors de la récupération des stats de commandes:', error);
+      return {
+        total: 0,
+        revenue: 0,
+        pending: 0,
+        processing: 0,
+        delivered: 0
+      };
+    }
+
+    const stats = {
+      total: data?.length || 0,
+      revenue: data?.reduce((sum, order) => sum + (order.total || 0), 0) || 0,
+      pending: data?.filter(order => order.status === 'pending').length || 0,
+      processing: data?.filter(order => order.status === 'processing').length || 0,
+      delivered: data?.filter(order => order.status === 'delivered').length || 0
+    };
+
+    return stats;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des stats de commandes:', error);
+    return {
+      total: 0,
+      revenue: 0,
+      pending: 0,
+      processing: 0,
+      delivered: 0
+    };
+  }
 }; 

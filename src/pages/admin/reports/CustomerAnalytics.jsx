@@ -220,7 +220,7 @@ const CustomerAnalytics = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Customer Analytics</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Customer Analytics</h1>
         <p className="text-gray-600">Analyze customer behavior and trends</p>
       </div>
 
@@ -249,7 +249,7 @@ const CustomerAnalytics = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">New Customers</p>
-              <h3 className="text-2xl font-bold">{data.stats.newCustomers}</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{data.stats.newCustomers}</h3>
             </div>
             <div className="rounded-full bg-blue-100 p-3">
               <UserPlus className="h-6 w-6 text-blue-600" />
@@ -272,7 +272,7 @@ const CustomerAnalytics = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Avg. Order Value</p>
-              <h3 className="text-2xl font-bold">${data.stats.averageOrderValue.toFixed(2)}</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">${data.stats.averageOrderValue.toFixed(2)}</h3>
             </div>
             <div className="rounded-full bg-green-100 p-3">
               <DollarSign className="h-6 w-6 text-green-600" />
@@ -295,7 +295,7 @@ const CustomerAnalytics = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Purchase Frequency</p>
-              <h3 className="text-2xl font-bold">{data.stats.purchaseFrequency.toFixed(1)}</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{data.stats.purchaseFrequency.toFixed(1)}</h3>
             </div>
             <div className="rounded-full bg-purple-100 p-3">
               <ShoppingBag className="h-6 w-6 text-purple-600" />

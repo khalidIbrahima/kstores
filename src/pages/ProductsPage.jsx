@@ -367,7 +367,7 @@ const ProductsPage = () => {
               
               <div className="bg-white bg-opacity-20 dark:bg-gray-800 dark:bg-opacity-50 backdrop-blur-sm rounded-lg p-3 sm:p-4 lg:p-6">
                 <Zap className="h-6 w-6 sm:h-8 sm:w-8 text-orange-300 dark:text-orange-400 mx-auto mb-1 sm:mb-2" />
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">24h</div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">1h</div>
                 <div className="text-xs sm:text-sm text-blue-100 dark:text-gray-300">Livraison</div>
               </div>
               
@@ -388,7 +388,7 @@ const ProductsPage = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 lg:py-12 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:py-12 dark:bg-gray-900 min-h-screen transition-colors duration-300">
         <DynamicSocialMetaTags 
           pageType="products"
           title={`${t('product.allProducts')} - KStores`}
@@ -562,7 +562,7 @@ const ProductsPage = () => {
               Liste des produits ({filteredProducts.length} {filteredProducts.length === 1 ? 'résultat' : 'résultats'})
             </h2>
             <div 
-              className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+              className="grid grid-cols-1 gap-4 xs:grid-cols-2 xs:gap-3 sm:gap-4 md:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
               role="grid"
               aria-label="Grille de produits"
             >
@@ -572,7 +572,7 @@ const ProductsPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="group overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl dark:shadow-gray-900/20 dark:hover:shadow-gray-900/40 transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/20 dark:hover:border-blue-400/30 transform hover:-translate-y-1"
+                className="group overflow-hidden rounded-xl sm:rounded-2xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-lg sm:shadow-md sm:hover:shadow-xl dark:shadow-gray-900/20 dark:hover:shadow-gray-900/40 transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/20 dark:hover:border-blue-400/30 transform hover:-translate-y-1"
                 role="gridcell"
                 aria-label={`Produit ${index + 1} sur ${filteredProducts.length}`}
                 itemScope
@@ -583,7 +583,7 @@ const ProductsPage = () => {
                   className="block overflow-hidden"
                   aria-label={`Voir les détails de ${product.name}`}
                 >
-                  <div className="h-32 sm:h-40 md:h-48 lg:h-52 overflow-hidden relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800">
+                  <div className="h-40 xs:h-32 sm:h-36 md:h-44 lg:h-48 xl:h-52 overflow-hidden relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800">
                     <img
                       src={product.image_url}
                       alt={`${product.name} - ${product.categories?.name || 'Produit'}`}
@@ -611,18 +611,18 @@ const ProductsPage = () => {
                   </div>
                   {product.inventory === 0 && (
                     <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-                      <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg">
+                      <span className="bg-red-600 text-white px-2 py-1 xs:px-3 rounded-full text-xs xs:text-sm font-medium shadow-lg">
                         Écoulé
                       </span>
                     </div>
                   )}
                   <PromotionBadge product={product} size="sm" showEndDate={false} />
                 </div>
-                <div className="p-2 sm:p-3 md:p-4">
-                  <div className="mb-1 sm:mb-2 text-xs font-medium text-primary dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-full inline-block" itemProp="category">
+                <div className="p-3 xs:p-2 sm:p-3 md:p-4">
+                  <div className="mb-2 text-xs font-medium text-primary dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-full inline-block" itemProp="category">
                     {product.categories?.name}
                   </div>
-                  <h3 className="mb-1 sm:mb-2 text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-primary dark:group-hover:text-blue-400 transition-colors duration-200" itemProp="name">
+                  <h3 className="mb-2 text-sm xs:text-xs sm:text-sm md:text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-primary dark:group-hover:text-blue-400 transition-colors duration-200 leading-tight" itemProp="name">
                     {product.name}
                   </h3>
                   
@@ -633,12 +633,12 @@ const ProductsPage = () => {
                   
                   {/* Colors Display */}
                   {product.colors && product.colors.length > 0 && (
-                    <div className="mb-2">
-                      <div className="flex items-center gap-1">
-                        {product.colors.filter(color => color.available !== false).slice(0, 5).map((color, index) => (
+                    <div className="mb-3">
+                      <div className="flex items-center gap-1.5">
+                        {product.colors.filter(color => color.available !== false).slice(0, 4).map((color, index) => (
                           <div
                             key={index}
-                            className={`w-4 h-4 rounded-full border cursor-pointer transition-colors ${
+                            className={`w-5 h-5 xs:w-4 xs:h-4 sm:w-5 sm:h-5 rounded-full border cursor-pointer transition-colors ${
                               selectedColorForProduct[product.id]?.name === color.name 
                                 ? 'border-primary ring-1 ring-primary' 
                                 : 'border-gray-300 hover:border-primary'
@@ -654,32 +654,32 @@ const ProductsPage = () => {
                             }}
                           />
                         ))}
-                        {product.colors.filter(color => color.available !== false).length > 5 && (
+                        {product.colors.filter(color => color.available !== false).length > 4 && (
                           <span className="text-xs text-gray-500">
-                            +{product.colors.filter(color => color.available !== false).length - 5}
+                            +{product.colors.filter(color => color.available !== false).length - 4}
                           </span>
                         )}
                       </div>
                       {selectedColorForProduct[product.id] && (
-                        <p className="text-xs text-primary font-medium mt-1">
+                        <p className="text-xs text-primary font-medium mt-1.5">
                           {selectedColorForProduct[product.id].name}
                         </p>
                       )}
                     </div>
                   )}
                   
-                  <div className="mb-1 flex items-center" itemProp="aggregateRating" itemScope itemType="https://schema.org/AggregateRating">
+                  <div className="mb-2 flex items-center" itemProp="aggregateRating" itemScope itemType="https://schema.org/AggregateRating">
                     <div className="flex text-accent" aria-label={`Note ${product.reviews?.avg || 0} sur 5 étoiles`}>
                       {[...Array(5)].map((_, i) => (
                         <Star 
                           key={i} 
-                          className={`h-4 w-4 ${i < Math.round(product.reviews?.avg || 0) ? 'fill-current' : ''}`}
+                          className={`h-3 w-3 xs:h-3 xs:w-3 sm:h-4 sm:w-4 ${i < Math.round(product.reviews?.avg || 0) ? 'fill-current' : ''}`}
                           aria-hidden="true"
                         />
                       ))}
                     </div>
-                    <span className="ml-2 text-xs text-gray-600">
-                      ({product.reviews?.count || 0} {t('product.reviews')})
+                    <span className="ml-1.5 text-xs text-gray-600 dark:text-gray-400">
+                      ({product.reviews?.count || 0})
                     </span>
                     {product.reviews?.count > 0 && (
                       <>
@@ -690,10 +690,10 @@ const ProductsPage = () => {
                       </>
                     )}
                   </div>
-                  <div className="flex items-center justify-between" itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                  <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:justify-between" itemProp="offers" itemScope itemType="https://schema.org/Offer">
                     <div className="flex flex-col">
                       <div itemProp="price" content={product.price}>
-                        <ProductPrice product={product} size="base" showEndDate={false} />
+                        <ProductPrice product={product} size="sm" showEndDate={false} />
                       </div>
                       <meta itemProp="priceCurrency" content="XOF" />
                       <meta itemProp="availability" content={product.inventory > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} />
@@ -701,13 +701,13 @@ const ProductsPage = () => {
                     <button
                       onClick={(e) => handleAddToCart(product, e)}
                       disabled={product.inventory === 0}
-                      className={`rounded-full px-2 py-1 text-xs transition-colors ${
+                      className={`w-full xs:w-auto rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors shadow-sm ${
                         product.inventory === 0 
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                          : 'bg-gray-100 text-gray-700 hover:bg-blue-600 hover:text-white'
+                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200' 
+                          : 'bg-primary text-white hover:bg-blue-700 active:bg-blue-800 border border-primary hover:border-blue-700'
                       }`}
                     >
-                      {product.inventory === 0 ? 'Indisponible' : t('product.addToCart')}
+                      {product.inventory === 0 ? 'Indisponible' : 'Ajouter'}
                     </button>
                   </div>
                 </div>

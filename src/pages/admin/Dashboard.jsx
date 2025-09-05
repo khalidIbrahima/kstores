@@ -266,8 +266,8 @@ const Dashboard = () => {
   return (
     <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-12">
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold">{t('dashboard.title')}</h1>
-        <p className="text-sm sm:text-base text-gray-600">{t('dashboard.welcome')}</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">{t('dashboard.title')}</h1>
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{t('dashboard.welcome')}</p>
       </div>
 
       {/* Stats Grid */}
@@ -275,18 +275,18 @@ const Dashboard = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-lg bg-white p-3 sm:p-4 lg:p-6 shadow-md min-w-0"
+          className="rounded-lg bg-white dark:bg-gray-800 p-3 sm:p-4 lg:p-6 shadow-md min-w-0 border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0 flex-1">
-              <p className="text-xs sm:text-sm text-gray-600 truncate">{t('dashboard.total_orders')}</p>
-              <h3 className="text-base sm:text-lg lg:text-2xl font-bold truncate">{stats.totalOrders}</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">{t('dashboard.total_orders')}</p>
+              <h3 className="text-base sm:text-lg lg:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{stats.totalOrders}</h3>
             </div>
-            <div className="rounded-full bg-blue-100 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
-              <ShoppingBag className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-blue-600" />
+            <div className="rounded-full bg-blue-100 dark:bg-blue-900/30 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
+              <ShoppingBag className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
-          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.orderGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.orderGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
             {stats.orderGrowth >= 0 ? <ArrowUpRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" /> : <ArrowDownRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" />}
             <span className="truncate ml-1">{Math.abs(stats.orderGrowth).toFixed(1)}% {t('dashboard.from_last_month')}</span>
           </div>
@@ -296,18 +296,18 @@ const Dashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="rounded-lg bg-white p-3 sm:p-4 lg:p-6 shadow-md min-w-0"
+          className="rounded-lg bg-white dark:bg-gray-800 p-3 sm:p-4 lg:p-6 shadow-md min-w-0 border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0 flex-1">
-              <p className="text-xs sm:text-sm text-gray-600 truncate">{t('dashboard.total_revenue')}</p>
-              <h3 className="text-base sm:text-lg lg:text-2xl font-bold truncate">{stats.totalRevenue.toFixed(2)} FCFA</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">{t('dashboard.total_revenue')}</p>
+              <h3 className="text-base sm:text-lg lg:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{stats.totalRevenue.toFixed(2)} FCFA</h3>
             </div>
-            <div className="rounded-full bg-green-100 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
-              <DollarSign className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-green-600" />
+            <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
+              <DollarSign className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-green-600 dark:text-green-400" />
             </div>
           </div>
-          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.revenueGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
             {stats.revenueGrowth >= 0 ? <ArrowUpRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" /> : <ArrowDownRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" />}
             <span className="truncate ml-1">{Math.abs(stats.revenueGrowth).toFixed(1)}% {t('dashboard.from_last_month')}</span>
           </div>
@@ -317,18 +317,18 @@ const Dashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="rounded-lg bg-white p-3 sm:p-4 lg:p-6 shadow-md min-w-0"
+          className="rounded-lg bg-white dark:bg-gray-800 p-3 sm:p-4 lg:p-6 shadow-md min-w-0 border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0 flex-1">
-              <p className="text-xs sm:text-sm text-gray-600 truncate">{t('dashboard.total_views')}</p>
-              <h3 className="text-base sm:text-lg lg:text-2xl font-bold truncate">{stats.totalViews}</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">{t('dashboard.total_views')}</p>
+              <h3 className="text-base sm:text-lg lg:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{stats.totalViews}</h3>
             </div>
-            <div className="rounded-full bg-purple-100 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
-              <Eye className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-purple-600" />
+            <div className="rounded-full bg-purple-100 dark:bg-purple-900/30 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
+              <Eye className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-purple-600 dark:text-purple-400" />
             </div>
           </div>
-          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.viewsGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.viewsGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
             {stats.viewsGrowth >= 0 ? <ArrowUpRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" /> : <ArrowDownRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" />}
             <span className="truncate ml-1">{Math.abs(stats.viewsGrowth).toFixed(1)}% {t('dashboard.from_last_month')}</span>
           </div>
@@ -338,18 +338,18 @@ const Dashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="rounded-lg bg-white p-3 sm:p-4 lg:p-6 shadow-md min-w-0"
+          className="rounded-lg bg-white dark:bg-gray-800 p-3 sm:p-4 lg:p-6 shadow-md min-w-0 border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0 flex-1">
-              <p className="text-xs sm:text-sm text-gray-600 truncate">{t('dashboard.total_visits')}</p>
-              <h3 className="text-base sm:text-lg lg:text-2xl font-bold truncate">{stats.totalVisits}</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">{t('dashboard.total_visits')}</p>
+              <h3 className="text-base sm:text-lg lg:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{stats.totalVisits}</h3>
             </div>
-            <div className="rounded-full bg-orange-100 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
-              <Activity className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-orange-600" />
+            <div className="rounded-full bg-orange-100 dark:bg-orange-900/30 p-1 sm:p-1.5 lg:p-2 flex-shrink-0 overflow-hidden">
+              <Activity className="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-4 lg:w-4 text-orange-600 dark:text-orange-400" />
             </div>
           </div>
-          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.visitsGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`mt-2 flex items-center text-xs sm:text-sm ${stats.visitsGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
             {stats.visitsGrowth >= 0 ? <ArrowUpRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" /> : <ArrowDownRight className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" />}
             <span className="truncate ml-1">{Math.abs(stats.visitsGrowth).toFixed(1)}% {t('dashboard.from_last_month')}</span>
           </div>
@@ -358,10 +358,10 @@ const Dashboard = () => {
 
       {/* Analytics Overview */}
       <div className="mb-12">
-        <h2 className="mb-6 text-xl sm:text-2xl font-bold">{t('dashboard.analytics_overview')}</h2>
+        <h2 className="mb-6 text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{t('dashboard.analytics_overview')}</h2>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <div className="rounded-lg bg-white p-4 sm:p-6 shadow-md">
-            <h3 className="mb-4 text-base sm:text-lg font-semibold">{t('dashboard.views_trend')}</h3>
+          <div className="rounded-lg bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-md border border-gray-200 dark:border-gray-700">
+            <h3 className="mb-4 text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">{t('dashboard.views_trend')}</h3>
             <div className="h-48 sm:h-64">
               <Line
                 data={{
@@ -401,8 +401,8 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="rounded-lg bg-white p-4 sm:p-6 shadow-md">
-            <h3 className="mb-4 text-base sm:text-lg font-semibold">{t('dashboard.visits_trend')}</h3>
+          <div className="rounded-lg bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-md border border-gray-200 dark:border-gray-700">
+            <h3 className="mb-4 text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">{t('dashboard.visits_trend')}</h3>
             <div className="h-48 sm:h-64">
               <Bar
                 data={{
@@ -444,11 +444,11 @@ const Dashboard = () => {
       </div>
 
       {/* Sales Chart */}
-      <div className="mb-12 rounded-lg bg-white p-4 sm:p-6 shadow-md">
+      <div className="mb-12 rounded-lg bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-md border border-gray-200 dark:border-gray-700">
         <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <h2 className="text-lg sm:text-xl font-bold">{t('dashboard.sales_overview')}</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">{t('dashboard.sales_overview')}</h2>
           <select
-            className="rounded-md border border-gray-300 px-3 py-1 text-sm w-full sm:w-auto"
+            className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-1 text-sm w-full sm:w-auto"
             value={period}
             onChange={e => setPeriod(Number(e.target.value))}
           >
@@ -468,8 +468,8 @@ const Dashboard = () => {
                     minHeight: '12px'
                   }}
                 ></div>
-                <span className="mt-2 text-xs text-gray-600 whitespace-nowrap">{data.date}</span>
-                <span className="text-xs text-gray-500 whitespace-nowrap">{data.sales.toFixed(2)} FCFA</span>
+                <span className="mt-2 text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">{data.date}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{data.sales.toFixed(2)} FCFA</span>
               </div>
             ))}
           </div>
@@ -478,9 +478,9 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Recent Orders */}
-        <div className="rounded-lg bg-white p-4 sm:p-6 shadow-md">
+        <div className="rounded-lg bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-md border border-gray-200 dark:border-gray-700">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg sm:text-xl font-bold">{t('dashboard.recent_orders')}</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">{t('dashboard.recent_orders')}</h2>
             <Link
               to="/admin/orders"
               className="text-sm font-medium text-blue-600 hover:text-blue-500"
@@ -489,17 +489,17 @@ const Dashboard = () => {
             </Link>
           </div>
           
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {stats.recentOrders.map((order) => (
               <div key={order.id} className="flex items-center py-3 sm:py-4">
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">{order.profiles?.full_name || 'Unknown User'}</p>
-                  <p className="text-xs sm:text-sm text-gray-600">
+                  <p className="font-medium text-gray-900 dark:text-gray-100 truncate">{order.profiles?.full_name || 'Unknown User'}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                     {new Date(order.created_at).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0 ml-2">
-                  <p className="font-medium text-sm sm:text-base">{order.total.toFixed(2)} FCFA</p>
+                  <p className="font-medium text-sm sm:text-base text-gray-900 dark:text-gray-100">{order.total.toFixed(2)} FCFA</p>
                   <span className="inline-flex rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
                     {order.status}
                   </span>
@@ -510,9 +510,9 @@ const Dashboard = () => {
         </div>
 
         {/* Most Viewed Products */}
-        <div className="rounded-lg bg-white p-4 sm:p-6 shadow-md">
+        <div className="rounded-lg bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-md border border-gray-200 dark:border-gray-700">
           <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <h2 className="text-lg sm:text-xl font-bold">{t('dashboard.most_viewed_products')}</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">{t('dashboard.most_viewed_products')}</h2>
             <Link
               to="/admin/products"
               className="text-sm font-medium text-blue-600 hover:text-blue-500"
@@ -529,7 +529,7 @@ const Dashboard = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="flex flex-col sm:flex-row sm:items-center p-3 sm:p-4 rounded-lg border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all duration-200"
+                  className="flex flex-col sm:flex-row sm:items-center p-3 sm:p-4 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-600 hover:bg-blue-50/30 dark:hover:bg-blue-900/20 transition-all duration-200"
                 >
                   {/* Top Row for Mobile */}
                   <div className="flex items-center justify-between sm:hidden mb-2">
@@ -578,10 +578,10 @@ const Dashboard = () => {
 
                   {/* Product Info */}
                   <div className="ml-2 sm:ml-3 lg:ml-4 flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 truncate text-xs sm:text-sm lg:text-base">
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate text-xs sm:text-sm lg:text-base">
                       {product.product.name}
                     </h3>
-                    <p className="text-xs text-gray-600">
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
                       {product.product.price?.toFixed(2)} FCFA
                     </p>
                     <div className="flex flex-wrap items-center mt-1 gap-1 sm:gap-2">
@@ -629,30 +629,30 @@ const Dashboard = () => {
             ) : (
               <div className="text-center py-8">
                 <Eye className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">Aucun produit consulté pour le moment</p>
-                <p className="text-sm text-gray-400 mt-1">Les vues de produits apparaîtront ici</p>
+                <p className="text-gray-500 dark:text-gray-400">Aucun produit consulté pour le moment</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Les vues de produits apparaîtront ici</p>
               </div>
             )}
           </div>
 
           {/* Summary Stats */}
           {analyticsData.topViewedProducts.length > 0 && (
-            <div className="mt-6 pt-4 border-t border-gray-200">
+            <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-center">
                 <div>
-                  <p className="text-xs text-gray-600">Total vues</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Total vues</p>
                   <p className="text-sm sm:text-base lg:text-lg font-bold text-blue-600">
                     {analyticsData.topViewedProducts.reduce((sum, p) => sum + p.views, 0)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-600">Produits populaires</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Produits populaires</p>
                   <p className="text-sm sm:text-base lg:text-lg font-bold text-purple-600">
                     {analyticsData.topViewedProducts.length}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-600">Moyenne vues</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Moyenne vues</p>
                   <p className="text-sm sm:text-base lg:text-lg font-bold text-green-600">
                     {Math.round(analyticsData.topViewedProducts.reduce((sum, p) => sum + p.views, 0) / analyticsData.topViewedProducts.length)}
                   </p>
@@ -665,18 +665,18 @@ const Dashboard = () => {
 
       {/* Orders by Status */}
       <div className="mt-12">
-        <h2 className="mb-6 text-xl sm:text-2xl font-bold">Commandes par statut</h2>
+        <h2 className="mb-6 text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Commandes par statut</h2>
         <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           <Link to="/admin/orders?status=pending" className="block group">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               whileHover={{ scale: 1.03 }}
-              className="rounded-lg bg-white p-4 sm:p-6 shadow-md border-l-4 border-yellow-500 cursor-pointer transition-transform group-hover:shadow-lg min-w-0"
+              className="rounded-lg bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-md border-l-4 border-yellow-500 cursor-pointer transition-transform group-hover:shadow-lg min-w-0 border border-gray-200 dark:border-gray-700"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm text-gray-600 truncate">En attente</p>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">En attente</p>
                   <h3 className="text-lg sm:text-2xl font-bold text-yellow-600 truncate">{stats.ordersByStatus.pending}</h3>
                 </div>
                 <div className="rounded-full bg-yellow-100 p-1.5 sm:p-2 lg:p-3 flex-shrink-0 overflow-hidden">
@@ -690,7 +690,7 @@ const Dashboard = () => {
                     style={{ width: `${stats.totalOrders > 0 ? (stats.ordersByStatus.pending / stats.totalOrders) * 100 : 0}%` }}
                   ></div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1 truncate">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">
                   {stats.totalOrders > 0 ? ((stats.ordersByStatus.pending / stats.totalOrders) * 100).toFixed(1) : 0}% du total
                 </p>
               </div>
@@ -703,11 +703,11 @@ const Dashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               whileHover={{ scale: 1.03 }}
-              className="rounded-lg bg-white p-4 sm:p-6 shadow-md border-l-4 border-blue-500 cursor-pointer transition-transform group-hover:shadow-lg min-w-0"
+              className="rounded-lg bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-md border-l-4 border-blue-500 cursor-pointer transition-transform group-hover:shadow-lg min-w-0 border border-gray-200 dark:border-gray-700"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm text-gray-600 truncate">En traitement</p>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">En traitement</p>
                   <h3 className="text-lg sm:text-2xl font-bold text-blue-600 truncate">{stats.ordersByStatus.processing}</h3>
                 </div>
                 <div className="rounded-full bg-blue-100 p-1.5 sm:p-2 lg:p-3 flex-shrink-0 overflow-hidden">
@@ -721,7 +721,7 @@ const Dashboard = () => {
                     style={{ width: `${stats.totalOrders > 0 ? (stats.ordersByStatus.processing / stats.totalOrders) * 100 : 0}%` }}
                   ></div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1 truncate">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">
                   {stats.totalOrders > 0 ? ((stats.ordersByStatus.processing / stats.totalOrders) * 100).toFixed(1) : 0}% du total
                 </p>
               </div>
@@ -734,11 +734,11 @@ const Dashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               whileHover={{ scale: 1.03 }}
-              className="rounded-lg bg-white p-4 sm:p-6 shadow-md border-l-4 border-purple-500 cursor-pointer transition-transform group-hover:shadow-lg min-w-0"
+              className="rounded-lg bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-md border-l-4 border-purple-500 cursor-pointer transition-transform group-hover:shadow-lg min-w-0 border border-gray-200 dark:border-gray-700"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm text-gray-600 truncate">Expédiées</p>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">Expédiées</p>
                   <h3 className="text-lg sm:text-2xl font-bold text-purple-600 truncate">{stats.ordersByStatus.shipped}</h3>
                 </div>
                 <div className="rounded-full bg-purple-100 p-1.5 sm:p-2 lg:p-3 flex-shrink-0 overflow-hidden">
@@ -752,7 +752,7 @@ const Dashboard = () => {
                     style={{ width: `${stats.totalOrders > 0 ? (stats.ordersByStatus.shipped / stats.totalOrders) * 100 : 0}%` }}
                   ></div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1 truncate">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">
                   {stats.totalOrders > 0 ? ((stats.ordersByStatus.shipped / stats.totalOrders) * 100).toFixed(1) : 0}% du total
                 </p>
               </div>
@@ -765,11 +765,11 @@ const Dashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               whileHover={{ scale: 1.03 }}
-              className="rounded-lg bg-white p-4 sm:p-6 shadow-md border-l-4 border-green-500 cursor-pointer transition-transform group-hover:shadow-lg min-w-0"
+              className="rounded-lg bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-md border-l-4 border-green-500 cursor-pointer transition-transform group-hover:shadow-lg min-w-0 border border-gray-200 dark:border-gray-700"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm text-gray-600 truncate">Livrées</p>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">Livrées</p>
                   <h3 className="text-lg sm:text-2xl font-bold text-green-600 truncate">{stats.ordersByStatus.delivered}</h3>
                 </div>
                 <div className="rounded-full bg-green-100 p-1.5 sm:p-2 lg:p-3 flex-shrink-0 overflow-hidden">
@@ -783,7 +783,7 @@ const Dashboard = () => {
                     style={{ width: `${stats.totalOrders > 0 ? (stats.ordersByStatus.delivered / stats.totalOrders) * 100 : 0}%` }}
                   ></div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1 truncate">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">
                   {stats.totalOrders > 0 ? ((stats.ordersByStatus.delivered / stats.totalOrders) * 100).toFixed(1) : 0}% du total
                 </p>
               </div>
@@ -796,11 +796,11 @@ const Dashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
               whileHover={{ scale: 1.03 }}
-              className="rounded-lg bg-white p-4 sm:p-6 shadow-md border-l-4 border-red-500 cursor-pointer transition-transform group-hover:shadow-lg min-w-0"
+              className="rounded-lg bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-md border-l-4 border-red-500 cursor-pointer transition-transform group-hover:shadow-lg min-w-0 border border-gray-200 dark:border-gray-700"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm text-gray-600 truncate">Annulées</p>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">Annulées</p>
                   <h3 className="text-lg sm:text-2xl font-bold text-red-600 truncate">{stats.ordersByStatus.cancelled}</h3>
                 </div>
                 <div className="rounded-full bg-red-100 p-1.5 sm:p-2 lg:p-3 flex-shrink-0 overflow-hidden">
@@ -814,7 +814,7 @@ const Dashboard = () => {
                     style={{ width: `${stats.totalOrders > 0 ? (stats.ordersByStatus.cancelled / stats.totalOrders) * 100 : 0}%` }}
                   ></div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1 truncate">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">
                   {stats.totalOrders > 0 ? ((stats.ordersByStatus.cancelled / stats.totalOrders) * 100).toFixed(1) : 0}% du total
                 </p>
               </div>
@@ -825,19 +825,19 @@ const Dashboard = () => {
 
       {/* Modern Analytics Components */}
       <div className="mt-12">
-        <h2 className="mb-6 text-xl sm:text-2xl font-bold">{t('dashboard.advanced_analytics')}</h2>
+        <h2 className="mb-6 text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{t('dashboard.advanced_analytics')}</h2>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <SiteStats />
-          <div className="rounded-lg bg-white p-4 sm:p-6 shadow-md">
-            <h3 className="mb-4 text-base sm:text-lg font-semibold">Statistiques globales</h3>
+          <div className="rounded-lg bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-md border border-gray-200 dark:border-gray-700">
+            <h3 className="mb-4 text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Statistiques globales</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
-                <p className="text-xs sm:text-sm text-gray-600">Produits actifs</p>
-                <p className="text-lg sm:text-2xl font-bold text-blue-600">{stats.totalProducts}</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Produits actifs</p>
+                <p className="text-lg sm:text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.totalProducts}</p>
               </div>
               <div className="text-center">
-                <p className="text-xs sm:text-sm text-gray-600">Clients totaux</p>
-                <p className="text-lg sm:text-2xl font-bold text-green-600">{stats.totalCustomers}</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Clients totaux</p>
+                <p className="text-lg sm:text-2xl font-bold text-green-600 dark:text-green-400">{stats.totalCustomers}</p>
               </div>
             </div>
           </div>

@@ -131,7 +131,7 @@ export default function AdminInventory() {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
           <Package className="h-6 w-6" />
           Inventory Management
         </h1>
@@ -150,7 +150,7 @@ export default function AdminInventory() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Products</p>
-              <h3 className="text-2xl font-bold">{stats.totalProducts}</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.totalProducts}</h3>
             </div>
             <div className="rounded-full bg-blue-100 p-3">
               <Package className="h-6 w-6 text-blue-600" />

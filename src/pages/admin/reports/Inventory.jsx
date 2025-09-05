@@ -147,7 +147,7 @@ const InventoryReports = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Inventory Reports</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Inventory Reports</h1>
         <p className="text-gray-600">Track inventory levels and movements</p>
       </div>
 
@@ -187,7 +187,7 @@ const InventoryReports = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Stock Value</p>
-              <h3 className="text-2xl font-bold">{data.stats.totalStockValue.toFixed(2)} {t('common.currency')}</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{data.stats.totalStockValue.toFixed(2)} {t('common.currency')}</h3>
             </div>
             <div className="rounded-full bg-blue-100 p-3">
               <Package className="h-6 w-6 text-blue-600" />

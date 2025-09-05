@@ -273,9 +273,9 @@ const DashboardOverview = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl bg-white p-6 shadow-lg border border-gray-100"
+          className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-lg border border-gray-100 dark:border-gray-700"
         >
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">Évolution des revenus</h3>
+          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Évolution des revenus</h3>
           <TrendChart data={chartData.revenue} height="300px" />
         </motion.div>
 
@@ -284,9 +284,9 @@ const DashboardOverview = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="rounded-xl bg-white p-6 shadow-lg border border-gray-100"
+          className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-lg border border-gray-100 dark:border-gray-700"
         >
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">Trafic du site</h3>
+          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Trafic du site</h3>
           <AreaChart data={chartData.traffic} height="300px" />
         </motion.div>
 
@@ -295,9 +295,9 @@ const DashboardOverview = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="rounded-xl bg-white p-6 shadow-lg border border-gray-100"
+          className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-lg border border-gray-100 dark:border-gray-700"
         >
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">Produits populaires</h3>
+          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Produits populaires</h3>
           <ModernBarChart data={chartData.products} height="300px" />
         </motion.div>
 
@@ -306,9 +306,9 @@ const DashboardOverview = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="rounded-xl bg-white p-6 shadow-lg border border-gray-100"
+          className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-lg border border-gray-100 dark:border-gray-700"
         >
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">Métriques de performance</h3>
+          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Métriques de performance</h3>
           <MetricsRadarChart data={chartData.performance} height="300px" />
         </motion.div>
       </div>

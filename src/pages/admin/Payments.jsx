@@ -143,8 +143,8 @@ const Payments = () => {
 
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">{t('admin.payments.title')}</h1>
-          <p className="text-gray-600">{t('admin.payments.description')}</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t('admin.payments.title')}</h1>
+          <p className="text-gray-600 dark:text-gray-400">{t('admin.payments.description')}</p>
         </div>
 
         {/* Filters */}
@@ -156,7 +156,7 @@ const Payments = () => {
                 placeholder={t('admin.payments.search_placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               />
               <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
             </div>
@@ -165,7 +165,7 @@ const Payments = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           >
             <option value="all">{t('admin.payments.filters.all')}</option>
             <option value="completed">{t('admin.payments.filters.completed')}</option>
@@ -176,7 +176,7 @@ const Payments = () => {
           <select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           >
             <option value="all">{t('admin.payments.filters.all_time')}</option>
             <option value="today">{t('admin.payments.filters.today')}</option>
@@ -245,7 +245,7 @@ const Payments = () => {
                   </td>
                   <td className="px-6 py-4">
                     <button
-                      className="text-blue-600 hover:underline font-mono"
+                      className="text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 font-mono transition-colors duration-200"
                       onClick={() => fetchOrderDetails(payment.orders?.id)}
                       disabled={!payment.orders?.id}
                     >

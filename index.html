@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,6 +21,7 @@
     <meta property="og:url" content="https://kapital-stores.shop" />
     <meta property="og:site_name" content="Kapital Stores" />
     <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale:alternate" content="en_US" />
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -45,6 +46,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
+    <!-- Balises hreflang pour le SEO multilingue -->
+    <link rel="alternate" hreflang="fr" href="https://kapital-stores.shop" />
+    <link rel="alternate" hreflang="en" href="https://kapital-stores.shop/en" />
+    <link rel="alternate" hreflang="x-default" href="https://kapital-stores.shop" />
+    
     <!-- Structured Data for Rich Snippets -->
     <script type="application/ld+json">
     {
@@ -64,7 +70,14 @@
         "telephone": "+221761800649",
         "contactType": "customer service",
         "availableLanguage": ["French", "English"]
-      }
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "SN",
+        "addressLocality": "Dakar",
+        "addressRegion": "Dakar"
+      },
+      "inLanguage": "fr-FR"
     }
     </script>
   </head>
