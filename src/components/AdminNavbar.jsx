@@ -11,32 +11,32 @@ const AdminNavbar = () => {
         <div className="flex h-16 justify-between">
           <div className="flex">
             <div className="flex flex-shrink-0 items-center">
-              <Link to="/admin" className="text-xl font-bold text-text-dark hover:text-primary transition-colors">
+              <Link to="/admin" className="text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-primary transition-colors">
                 {t('admin.sidebar.dashboard')}
               </Link>
             </div>
             <div className="ml-6 flex items-center space-x-4">
               <Link
                 to="/admin/orders"
-                className="rounded-md px-3 py-2 text-sm font-medium text-text-dark hover:text-primary hover:bg-background-light transition-colors"
+                className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-background-light transition-colors"
               >
                 {t('admin.sidebar.orders')}
               </Link>
               <Link
                 to="/admin/products"
-                className="rounded-md px-3 py-2 text-sm font-medium text-text-dark hover:text-primary hover:bg-background-light transition-colors"
+                className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-background-light transition-colors"
               >
                 {t('admin.sidebar.products')}
               </Link>
               <Link
                 to="/admin/users"
-                className="rounded-md px-3 py-2 text-sm font-medium text-text-dark hover:text-primary hover:bg-background-light transition-colors"
+                className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-background-light transition-colors"
               >
                 {t('admin.sidebar.customers')}
               </Link>
               <Link
                 to="/admin/supplier-orders"
-                className="rounded-md px-3 py-2 text-sm font-medium text-text-dark hover:text-primary hover:bg-background-light transition-colors"
+                className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-background-light transition-colors"
               >
                 Commandes Fournisseur
               </Link>

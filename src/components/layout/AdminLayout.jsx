@@ -135,7 +135,7 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-background-light overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
       {/* Overlay pour fermer le menu sur mobile */}
       {isSidebarOpen && (
         <motion.div 
@@ -152,7 +152,7 @@ const AdminLayout = () => {
         initial={{ x: -256 }}
         animate={{ x: isSidebarOpen ? 0 : -256 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-background shadow-lg lg:relative lg:translate-x-0 lg:flex-shrink-0`}
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg lg:relative lg:translate-x-0 lg:flex-shrink-0`}
       >
         <div className="flex h-full flex-col">
           {/* Logo */}
@@ -186,7 +186,7 @@ const AdminLayout = () => {
           <nav className="flex-1 space-y-6 overflow-y-auto p-4">
             {menuSections.map((section, index) => (
               <div key={index} className="space-y-2">
-                <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-text-light">
+                <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {section.title}
                 </h3>
                 {section.items.map((item) => {
@@ -199,7 +199,7 @@ const AdminLayout = () => {
                       className={`flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                         isActive
                           ? 'bg-accent-light text-primary'
-                          : 'text-text-dark hover:bg-background-light hover:text-primary'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-background-light hover:text-primary'
                       }`}
                     >
                       <item.icon className={`h-5 w-5 ${isActive ? 'text-primary' : 'text-text-light'}`} />
@@ -222,7 +222,7 @@ const AdminLayout = () => {
             <Link
               to="/"
               onClick={handleNavClick}
-              className="mb-4 flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-text-dark hover:bg-background-light hover:text-primary transition-colors"
+              className="mb-4 flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-background-light hover:text-primary transition-colors"
             >
               <Store className="h-5 w-5 text-text-light" />
               <span>View Store</span>
@@ -241,7 +241,7 @@ const AdminLayout = () => {
       {/* Main Content */}
       <div className="flex flex-1 flex-col min-w-0">
         {/* Top Bar */}
-        <header className="flex-shrink-0 bg-background shadow-sm border-b border-background-dark">
+        <header className="flex-shrink-0 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
           <div className="flex h-16 items-center justify-between px-4">
             <div className="flex items-center space-x-4">
               <button
@@ -277,14 +277,14 @@ const AdminLayout = () => {
           <div className="p-8">
             {open && (
               <div className="absolute right-0 mt-2 w-80 bg-background shadow-lg rounded-lg z-50 max-h-96 overflow-y-auto">
-                <div className="p-4 border-b border-background-dark font-bold text-text-dark">{t('notifications.title')}</div>
+                <div className="p-4 border-b border-background-dark font-bold text-gray-900 dark:text-gray-100">{t('notifications.title')}</div>
                 {unreadNotifications.length === 0 && (
                   <div className="p-4 text-text-light">{t('notifications.no_notifications')}</div>
                 )}
                 {unreadNotifications.map(n => (
                   <div
                     key={n.id}
-                    className={`p-4 border-b border-background-dark cursor-pointer hover:bg-background-light transition-colors font-bold text-text-dark`}
+                    className={`p-4 border-b border-background-dark cursor-pointer hover:bg-background-light transition-colors font-bold text-gray-900 dark:text-gray-100`}
                     onClick={() => {
                       if (n.type === 'order_received' && n.data?.orderId) {
                         navigate(`/admin/orders/${n.data.orderId}`);

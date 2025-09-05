@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
@@ -80,6 +82,19 @@ const router = {
 };
 
 function App() {
+  const { i18n } = useTranslation();
+
+  // Mettre à jour l'attribut lang du HTML quand la langue change
+  useEffect(() => {
+    // S'assurer que le français est la langue par défaut
+    if (!i18n.language) {
+      i18n.changeLanguage('fr');
+    }
+    
+    // Mettre à jour l'attribut lang du document HTML
+    document.documentElement.lang = i18n.language || 'fr';
+  }, [i18n.language]);
+
   return (
     <DarkModeProvider>
       <AuthProvider>

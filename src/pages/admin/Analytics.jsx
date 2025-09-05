@@ -226,8 +226,8 @@ const Analytics = () => {
       {/* Header */}
       <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">Analytics</h1>
-          <p className="text-sm text-gray-600 sm:text-base">Vue d'ensemble de vos performances</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 sm:text-2xl">Analytics</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400 sm:text-base">Vue d'ensemble de vos performances</p>
         </div>
         <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-x-4 sm:space-y-0">
           <select
@@ -262,6 +262,26 @@ const Analytics = () => {
         </div>
       </div>
 
+      {/* Real-time Analytics - Moved to top for better visibility */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="grid grid-cols-1 gap-6 lg:grid-cols-2"
+      >
+        <RealTimeChart
+          title="Visiteurs en temps réel"
+          showVisitors={true}
+          updateInterval={30000}
+        />
+        <RealTimeChart
+          title="Commandes en temps réel"
+          showOrders={true}
+          showVisitors={false}
+          updateInterval={60000}
+        />
+      </motion.div>
+
       {/* Modern Dashboard Overview */}
       <DashboardOverview />
 
@@ -271,12 +291,12 @@ const Analytics = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-lg bg-white p-4 shadow-md sm:p-6"
+          className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-xs text-gray-600 sm:text-sm">Revenus</p>
-              <h3 className="text-lg font-bold text-gray-900 sm:text-xl lg:text-2xl">{formatCurrency(data.revenue.current)}</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">Revenus</p>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl lg:text-2xl">{formatCurrency(data.revenue.current)}</h3>
             </div>
             <div className="ml-4 rounded-full bg-blue-100 p-2 sm:p-3">
               <LineChart className="h-5 w-5 text-blue-600 sm:h-6 sm:w-6" />
@@ -295,7 +315,7 @@ const Analytics = () => {
             }`}>
               {Math.abs(calculateGrowth(data.revenue.current, data.revenue.previous)).toFixed(1)}%
             </span>
-            <span className="ml-1 text-xs text-gray-500 sm:text-sm">vs période précédente</span>
+            <span className="ml-1 text-xs text-gray-500 dark:text-gray-400 sm:text-sm">vs période précédente</span>
           </div>
         </motion.div>
 
@@ -304,12 +324,12 @@ const Analytics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="rounded-lg bg-white p-4 shadow-md sm:p-6"
+          className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-xs text-gray-600 sm:text-sm">Commandes</p>
-              <h3 className="text-lg font-bold text-gray-900 sm:text-xl lg:text-2xl">{data.orders.current}</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">Commandes</p>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl lg:text-2xl">{data.orders.current}</h3>
             </div>
             <div className="ml-4 rounded-full bg-purple-100 p-2 sm:p-3">
               <BarChart className="h-5 w-5 text-purple-600 sm:h-6 sm:w-6" />
@@ -328,7 +348,7 @@ const Analytics = () => {
             }`}>
               {Math.abs(calculateGrowth(data.orders.current, data.orders.previous)).toFixed(1)}%
             </span>
-            <span className="ml-1 text-xs text-gray-500 sm:text-sm">vs période précédente</span>
+            <span className="ml-1 text-xs text-gray-500 dark:text-gray-400 sm:text-sm">vs période précédente</span>
           </div>
         </motion.div>
 
@@ -337,12 +357,12 @@ const Analytics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="rounded-lg bg-white p-4 shadow-md sm:p-6"
+          className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-xs text-gray-600 sm:text-sm">Nouveaux clients</p>
-              <h3 className="text-lg font-bold text-gray-900 sm:text-xl lg:text-2xl">{data.customers.current}</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">Nouveaux clients</p>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl lg:text-2xl">{data.customers.current}</h3>
             </div>
             <div className="ml-4 rounded-full bg-green-100 p-2 sm:p-3">
               <Users className="h-5 w-5 text-green-600 sm:h-6 sm:w-6" />
@@ -361,7 +381,7 @@ const Analytics = () => {
             }`}>
               {Math.abs(calculateGrowth(data.customers.current, data.customers.previous)).toFixed(1)}%
             </span>
-            <span className="ml-1 text-xs text-gray-500 sm:text-sm">vs période précédente</span>
+            <span className="ml-1 text-xs text-gray-500 dark:text-gray-400 sm:text-sm">vs période précédente</span>
           </div>
         </motion.div>
 
@@ -370,12 +390,12 @@ const Analytics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="rounded-lg bg-white p-4 shadow-md sm:p-6"
+          className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-xs text-gray-600 sm:text-sm">Visites de pages</p>
-              <h3 className="text-lg font-bold text-gray-900 sm:text-xl lg:text-2xl">{data.pageViews.current.toLocaleString()}</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">Visites de pages</p>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl lg:text-2xl">{data.pageViews.current.toLocaleString()}</h3>
             </div>
             <div className="ml-4 rounded-full bg-orange-100 p-2 sm:p-3">
               <TrendingUp className="h-5 w-5 text-orange-600 sm:h-6 sm:w-6" />
@@ -394,7 +414,7 @@ const Analytics = () => {
             }`}>
               {Math.abs(calculateGrowth(data.pageViews.current, data.pageViews.previous)).toFixed(1)}%
             </span>
-            <span className="ml-1 text-xs text-gray-500 sm:text-sm">vs période précédente</span>
+            <span className="ml-1 text-xs text-gray-500 dark:text-gray-400 sm:text-sm">vs période précédente</span>
           </div>
         </motion.div>
 
@@ -403,12 +423,12 @@ const Analytics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="rounded-lg bg-white p-4 shadow-md sm:p-6"
+          className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-xs text-gray-600 sm:text-sm">Vues de produits</p>
-              <h3 className="text-lg font-bold text-gray-900 sm:text-xl lg:text-2xl">{data.productViews.current.toLocaleString()}</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">Vues de produits</p>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl lg:text-2xl">{data.productViews.current.toLocaleString()}</h3>
             </div>
             <div className="ml-4 rounded-full bg-indigo-100 p-2 sm:p-3">
               <Eye className="h-5 w-5 text-indigo-600 sm:h-6 sm:w-6" />
@@ -427,7 +447,7 @@ const Analytics = () => {
             }`}>
               {Math.abs(calculateGrowth(data.productViews.current, data.productViews.previous)).toFixed(1)}%
             </span>
-            <span className="ml-1 text-xs text-gray-500 sm:text-sm">vs période précédente</span>
+            <span className="ml-1 text-xs text-gray-500 dark:text-gray-400 sm:text-sm">vs période précédente</span>
           </div>
         </motion.div>
       </div>
@@ -437,57 +457,10 @@ const Analytics = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="rounded-lg bg-white p-4 shadow-md sm:p-6"
+        className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700"
       >
-        <h3 className="mb-4 text-base font-medium text-gray-900 sm:text-lg">Statistiques globales du site</h3>
+        <h3 className="mb-4 text-base font-medium text-gray-900 dark:text-gray-100 sm:text-lg">Statistiques globales du site</h3>
         <SiteStats />
-      </motion.div>
-
-      {/* Real-time Analytics */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="grid grid-cols-1 gap-6 lg:grid-cols-2"
-      >
-        <RealTimeChart
-          title="Activité en temps réel"
-          data={{
-            labels: Array.from({ length: 12 }, (_, i) => 
-              new Date(Date.now() - (11 - i) * 5000).toLocaleTimeString('fr-FR', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-              })
-            ),
-            datasets: [{
-              label: 'Visites',
-              data: Array.from({ length: 12 }, () => Math.random() * 100 + 50),
-              borderColor: 'rgb(59, 130, 246)',
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              fill: true,
-            }]
-          }}
-          updateInterval={5000}
-        />
-        <RealTimeChart
-          title="Commandes en temps réel"
-          data={{
-            labels: Array.from({ length: 12 }, (_, i) => 
-              new Date(Date.now() - (11 - i) * 5000).toLocaleTimeString('fr-FR', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-              })
-            ),
-            datasets: [{
-              label: 'Commandes',
-              data: Array.from({ length: 12 }, () => Math.random() * 20 + 5),
-              borderColor: 'rgb(34, 197, 94)',
-              backgroundColor: 'rgba(34, 197, 94, 0.1)',
-              fill: true,
-            }]
-          }}
-          updateInterval={3000}
-        />
       </motion.div>
 
       {/* Advanced Metrics */}
@@ -555,9 +528,9 @@ const Analytics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="rounded-lg bg-white p-4 shadow-md sm:p-6"
+          className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700"
         >
-          <h3 className="mb-4 text-base font-medium text-gray-900 sm:text-lg">Trafic quotidien</h3>
+          <h3 className="mb-4 text-base font-medium text-gray-900 dark:text-gray-100 sm:text-lg">Trafic quotidien</h3>
           <div className="h-48 w-full sm:h-64">
             {dailyStats.length > 0 ? (
               <AnalyticsChart
@@ -602,7 +575,7 @@ const Analytics = () => {
                 }}
               />
             ) : (
-              <div className="flex h-full items-center justify-center text-gray-500">
+              <div className="flex h-full items-center justify-center text-gray-500 dark:text-gray-400">
                 Aucune donnée disponible
               </div>
             )}
@@ -614,9 +587,9 @@ const Analytics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="rounded-lg bg-white p-4 shadow-md sm:p-6"
+          className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700"
         >
-          <h3 className="mb-4 text-base font-medium text-gray-900 sm:text-lg">Pages les plus visitées</h3>
+          <h3 className="mb-4 text-base font-medium text-gray-900 dark:text-gray-100 sm:text-lg">Pages les plus visitées</h3>
           <div className="h-48 w-full sm:h-64">
             {topPages.length > 0 ? (
               <AnalyticsChart
@@ -661,7 +634,7 @@ const Analytics = () => {
                 }}
               />
             ) : (
-              <div className="flex h-full items-center justify-center text-gray-500">
+              <div className="flex h-full items-center justify-center text-gray-500 dark:text-gray-400">
                 Aucune donnée disponible
               </div>
             )}
@@ -676,9 +649,9 @@ const Analytics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="rounded-lg bg-white p-4 shadow-md sm:p-6"
+          className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700"
         >
-          <h3 className="mb-4 text-base font-medium text-gray-900 sm:text-lg">Produits les plus vus</h3>
+          <h3 className="mb-4 text-base font-medium text-gray-900 dark:text-gray-100 sm:text-lg">Produits les plus vus</h3>
           <div className="space-y-3 sm:space-y-4">
             {mostViewedProducts.length > 0 ? (
               mostViewedProducts.map((item, index) => (
@@ -689,18 +662,18 @@ const Analytics = () => {
                     className="h-10 w-10 rounded-lg object-cover sm:h-12 sm:w-12"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-medium text-gray-900 line-clamp-1 sm:text-sm">
+                    <p className="text-xs font-medium text-gray-900 dark:text-gray-100 line-clamp-1 sm:text-sm">
                       {item.product.name}
                     </p>
-                    <p className="text-xs text-gray-500">{item.views} vues</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{item.views} vues</p>
                   </div>
-                  <span className="text-xs font-medium text-gray-900 sm:text-sm">
+                  <span className="text-xs font-medium text-gray-900 dark:text-gray-100 sm:text-sm">
                     {formatCurrency(item.product.price)}
                   </span>
                 </div>
               ))
             ) : (
-              <div className="text-center text-gray-500">Aucun produit vu</div>
+              <div className="text-center text-gray-500 dark:text-gray-400">Aucun produit vu</div>
             )}
           </div>
         </motion.div>
@@ -710,9 +683,9 @@ const Analytics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="rounded-lg bg-white p-4 shadow-md sm:p-6"
+          className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700"
         >
-          <h3 className="mb-4 text-base font-medium text-gray-900 sm:text-lg">Activité récente</h3>
+          <h3 className="mb-4 text-base font-medium text-gray-900 dark:text-gray-100 sm:text-lg">Activité récente</h3>
           <div className="space-y-3 sm:space-y-4">
             {recentActivity.orders.length > 0 || recentActivity.views.length > 0 ? (
               <>
@@ -722,10 +695,10 @@ const Analytics = () => {
                       <Calendar className="h-3 w-3 text-green-600 sm:h-4 sm:w-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-gray-900 sm:text-sm">
+                      <p className="text-xs font-medium text-gray-900 dark:text-gray-100 sm:text-sm">
                         Nouvelle commande #{order.id.slice(0, 8)}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         {formatCurrency(order.total)} • {formatDate(order.created_at)}
                       </p>
                     </div>
@@ -737,10 +710,10 @@ const Analytics = () => {
                       <Eye className="h-3 w-3 text-blue-600 sm:h-4 sm:w-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-gray-900 sm:text-sm">
+                      <p className="text-xs font-medium text-gray-900 dark:text-gray-100 sm:text-sm">
                         Produit consulté
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         {view.products?.name} • {formatDate(view.created_at)}
                       </p>
                     </div>
@@ -748,7 +721,7 @@ const Analytics = () => {
                 ))}
               </>
             ) : (
-              <div className="text-center text-gray-500">Aucune activité récente</div>
+              <div className="text-center text-gray-500 dark:text-gray-400">Aucune activité récente</div>
             )}
           </div>
         </motion.div>

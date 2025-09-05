@@ -12,7 +12,7 @@ import ProductImageCarousel from '../components/ProductImageCarousel';
 import { formatPrice } from '../utils/currency';
 import LocationPicker from '../components/LocationPicker';
 import OrderLocationMap from '../components/OrderLocationMap';
-import DynamicSocialMetaTags from '../components/DynamicSocialMetaTags';
+import ServerSideMeta from '../components/ServerSideMeta';
 import ProductReviewList from '../components/ProductReviewList';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDescriptionFull } from '../utils/formatDescription.jsx';
@@ -22,6 +22,7 @@ import ProductPrice from '../components/ProductPrice';
 import PromotionBadge from '../components/PromotionBadge';
 import { urlUtils } from '../utils/slugUtils';
 import { scrollToTop } from '../utils/scrollUtils';
+import { debugProductSocialMeta, testSocialMetaValidation } from '../utils/debugSocialMeta';
 
 const ProductPage = () => {
   const { id: idOrSlug } = useParams();
@@ -40,11 +41,30 @@ const ProductPage = () => {
   const [userComment, setUserComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [hasUserReviewed, setHasUserReviewed] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false);
   const { user } = useAuth();
   
   // Tracking des vues de produits (utilise l'ID résolu)
   useProductAnalytics(productId);
   const { viewsCount, isLoading: viewsLoading } = useProductStats(productId);
+
+  // Fonction pour gérer l'affichage de la description
+  const getDisplayDescription = (description) => {
+    if (!description) return '';
+    
+    const MAX_LENGTH = 300; // Nombre de caractères maximum avant "Voir plus"
+    
+    if (description.length <= MAX_LENGTH || showFullDescription) {
+      return description; // Retourner la description complète
+    }
+    
+    // Tronquer au dernier espace avant MAX_LENGTH pour éviter de couper les mots
+    const truncated = description.substring(0, MAX_LENGTH);
+    const lastSpace = truncated.lastIndexOf(' ');
+    const finalText = lastSpace > 0 ? truncated.substring(0, lastSpace) : truncated;
+    
+    return finalText + '...';
+  };
 
   useEffect(() => {
     // Faire défiler vers le haut quand on change de produit
@@ -257,8 +277,8 @@ const ProductPage = () => {
   if (!product) {
     return (
       <div className="container mx-auto my-16 px-4 text-center">
-        <h2 className="mb-6 text-2xl font-bold text-text-dark">{t('product.notFound')}</h2>
-        <p className="mb-8 text-text-light">{t('product.notFoundDesc')}</p>
+        <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">{t('product.notFound')}</h2>
+        <p className="mb-8 text-gray-600 dark:text-gray-400">{t('product.notFoundDesc')}</p>
         <Link to="/products" className="btn-primary">
           {t('product.browseCatalog')}
         </Link>
@@ -274,26 +294,34 @@ const ProductPage = () => {
     product.image_url4
   ].filter(Boolean);
 
+  // Fonction de debug pour les métadonnées sociales (développement uniquement)
+  const handleDebugSocialMeta = () => {
+    if (process.env.NODE_ENV === 'development') {
+      debugProductSocialMeta(product, category);
+      testSocialMetaValidation();
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-12">
-      <DynamicSocialMetaTags 
+      <ServerSideMeta 
         pageType="product"
         product={product}
         category={category}
       />
       {/* Breadcrumbs */}
       <nav className="mb-8 flex text-sm">
-        <Link to="/" className="text-text-light hover:text-primary">{t('nav.home')}</Link>
-        <span className="mx-2 text-text-light">/</span>
+        <Link to="/" className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-blue-400">{t('nav.home')}</Link>
+        <span className="mx-2 text-gray-400 dark:text-gray-500">/</span>
         {category && (
           <>
-            <Link to={`/category/${category.slug}`} className="text-text-light hover:text-primary">
+            <Link to={`/category/${category.slug}`} className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-blue-400">
               {category.name}
             </Link>
-            <span className="mx-2 text-text-light">/</span>
+            <span className="mx-2 text-gray-400 dark:text-gray-500">/</span>
           </>
         )}
-        <span className="text-text-dark">{product.name}</span>
+        <span className="text-gray-900 dark:text-gray-100 font-medium">{product.name}</span>
       </nav>
 
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
@@ -314,12 +342,12 @@ const ProductPage = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <h1 className="mb-4 text-3xl font-bold text-text-dark">{product.name}</h1>
+          <h1 className="mb-4 text-3xl font-bold text-gray-900 dark:text-gray-100">{product.name}</h1>
           
           {/* Colors Display */}
           {product.colors && product.colors.length > 0 && (
             <div className="mb-4">
-              <label className="block text-sm font-medium text-text-dark mb-2">Couleurs disponibles</label>
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Couleurs disponibles</label>
               <div className="flex items-center gap-3">
                 {product.colors.filter(color => color.available !== false).map((color, index) => (
                   <div
@@ -336,7 +364,7 @@ const ProductPage = () => {
                       title={color.name}
                       onClick={() => setSelectedColor(color)}
                     />
-                    <span className="text-xs text-text-light">{color.name}</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">{color.name}</span>
                   </div>
                 ))}
               </div>
@@ -353,7 +381,7 @@ const ProductPage = () => {
             <div className="mb-6 space-y-4">
               {product.properties.map((property, index) => (
                 <div key={index} className="space-y-2">
-                  <label className="block text-sm font-medium text-text-dark">
+                  <label className="block text-sm font-medium text-gray-900 dark:text-gray-100">
                     {property.name}
                     {property.required && <span className="text-red-500 ml-1">*</span>}
                   </label>
@@ -509,7 +537,7 @@ const ProductPage = () => {
                   <Star key={i} className={`h-5 w-5 ${i < Math.round(product.avgRating || 0) ? 'fill-current' : ''}`} />
                 ))}
               </div>
-              <span className="ml-2 text-text-light">
+              <span className="ml-2 text-gray-600 dark:text-gray-400">
                 ({product.reviewCount || 0} {t('product.reviews')})
               </span>
             </div>
@@ -551,7 +579,7 @@ const ProductPage = () => {
 
             {/* Quantity Selector */}
             <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-text-dark">
+              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-100">
                 {t('product.quantity')}
               </label>
               <div className="flex items-center space-x-4">
@@ -561,7 +589,7 @@ const ProductPage = () => {
                 >
                   <Minus className="h-5 w-5" />
                 </button>
-                <span className="text-lg font-medium text-text-dark">{quantity}</span>
+                <span className="text-lg font-medium text-gray-900 dark:text-gray-100">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
                   className="rounded-lg p-2 transition-colors bg-background-light text-text-dark hover:bg-background hover:text-primary"
@@ -587,33 +615,60 @@ const ProductPage = () => {
 
           {/* Product Description */}
           <div className="mb-8">
-            <h2 className="mb-4 text-xl font-bold text-text-dark">{t('product.description')}</h2>
-            <div className="prose prose-sm max-w-none text-text-light">
-              {formatDescriptionFull(product.description)}
+            <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-gray-100">
+              {t('product.description')}
+            </h2>
+            <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
+              <div className="text-base text-readable">
+                {showFullDescription ? 
+                  <div>{formatDescriptionFull(product.description)}</div> : 
+                  <div>{getDisplayDescription(product.description)}</div>
+                }
+              </div>
+              
+              {/* Bouton Voir plus / Voir moins */}
+              {product.description && product.description.length > 300 && (
+                <button
+                  onClick={() => setShowFullDescription(!showFullDescription)}
+                  className="mt-3 inline-flex items-center text-sm font-medium text-primary hover:text-primary-dark dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                >
+                  {showFullDescription ? (
+                    <>
+                      <Minus className="w-4 h-4 mr-1" />
+                      Voir moins
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4 mr-1" />
+                      Voir plus
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           </div>
 
           {/* Features */}
           <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="flex items-center space-x-3 rounded-lg bg-background-light p-4">
-              <Truck className="h-6 w-6 text-primary" />
+            <div className="flex items-center space-x-3 rounded-lg bg-gray-50 dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700">
+              <Truck className="h-6 w-6 text-primary dark:text-blue-400" />
               <div>
-                <h3 className="font-medium text-text-dark">{t('product.freeShipping')}</h3>
-                <p className="text-sm text-text-light">{t('product.freeShippingDesc')}</p>
+                <h3 className="font-medium text-gray-900 dark:text-gray-100">{t('product.freeShipping')}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t('product.freeShippingDesc')}</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3 rounded-lg bg-background-light p-4">
-              <ShieldCheck className="h-6 w-6 text-primary" />
+            <div className="flex items-center space-x-3 rounded-lg bg-gray-50 dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700">
+              <ShieldCheck className="h-6 w-6 text-green-500 dark:text-green-400" />
               <div>
-                <h3 className="font-medium text-text-dark">{t('product.securePayment')}</h3>
-                <p className="text-sm text-text-light">{t('product.securePaymentDesc')}</p>
+                <h3 className="font-medium text-gray-900 dark:text-gray-100">{t('product.securePayment')}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t('product.securePaymentDesc')}</p>
               </div>
             </div>
           </div>
 
           {/* Reviews Section */}
           <div className="mt-12">
-            <h2 className="mb-6 text-2xl font-bold text-text-dark">{t('product.reviews')}</h2>
+            <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">{t('product.reviews')}</h2>
             
             {/* Review List */}
             <ProductReviewList productId={product.id} />
@@ -634,8 +689,8 @@ const ProductPage = () => {
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
-        <section className="mt-16">
-          <h2 className="mb-8 text-2xl font-bold text-text-dark">{t('product.relatedProducts')}</h2>
+        <section className="mt-16 px-4 sm:px-6 py-8 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+          <h2 className="mb-8 text-2xl font-bold text-gray-900 dark:text-white">{t('product.relatedProducts')}</h2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {relatedProducts.map((relatedProduct) => (
               <motion.div
@@ -643,9 +698,9 @@ const ProductPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                className="group overflow-hidden rounded-lg bg-background shadow-md transition-all hover:shadow-lg"
+                className="group overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow-md transition-all hover:shadow-lg hover:shadow-gray-500/25 dark:hover:shadow-gray-900/50 border border-gray-200 dark:border-gray-600"
               >
-                <Link to={urlUtils.generateProductUrl(relatedProduct)} className="block overflow-hidden">
+                <Link to={urlUtils.generateProductUrl(relatedProduct)} className="block overflow-hidden hover:no-underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded-lg">
                   <div className="h-48 overflow-hidden relative">
                     <img
                       src={relatedProduct.image_url}
@@ -657,11 +712,11 @@ const ProductPage = () => {
                       }}
                     />
                     <div 
-                      className="h-full w-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs"
+                      className="h-full w-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 text-xs"
                       style={{ display: 'none' }}
                     >
                       <div className="text-center">
-                        <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center mb-1">
+                        <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center mb-1">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
@@ -670,25 +725,25 @@ const ProductPage = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="mb-2 text-lg font-medium text-text-dark line-clamp-2">
+                  <div className="p-5 bg-white dark:bg-gray-800">
+                    <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white line-clamp-2">
                       {relatedProduct.name}
                     </h3>
                     
                     {/* Colors Display for Related Products */}
                     {relatedProduct.colors && relatedProduct.colors.length > 0 && (
-                      <div className="mb-2">
-                        <div className="flex items-center gap-1">
+                      <div className="mb-3">
+                        <div className="flex items-center gap-1.5">
                           {relatedProduct.colors.filter(color => color.available !== false).slice(0, 4).map((color, index) => (
                             <div
                               key={index}
-                              className="w-3 h-3 rounded-full border border-gray-300"
+                              className="w-3 h-3 rounded-full border border-gray-300 dark:border-gray-500"
                               style={{ backgroundColor: color.hex }}
                               title={color.name}
                             />
                           ))}
                           {relatedProduct.colors.filter(color => color.available !== false).length > 4 && (
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-gray-500 dark:text-gray-300">
                               +{relatedProduct.colors.filter(color => color.available !== false).length - 4}
                             </span>
                           )}
@@ -696,7 +751,7 @@ const ProductPage = () => {
                       </div>
                     )}
                     
-                    <p className="text-xl font-bold text-primary">
+                    <p className="text-xl font-bold text-primary dark:text-blue-400 mt-1">
                       {formatPrice(relatedProduct.price)}
                     </p>
                   </div>
@@ -715,6 +770,17 @@ const ProductPage = () => {
         url={window.location.href}
         variant="floating"
       />
+
+      {/* Debug Button (Development Only) */}
+      {process.env.NODE_ENV === 'development' && (
+        <button
+          onClick={handleDebugSocialMeta}
+          className="fixed bottom-20 right-4 bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-lg z-50"
+          title="Debug Social Meta (Dev Only)"
+        >
+          🔍
+        </button>
+      )}
     </div>
   );
 };

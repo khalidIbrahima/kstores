@@ -92,7 +92,7 @@ const Notifications = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{t('notifications.title')}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t('notifications.title')}</h1>
           <p className="text-gray-600">{t('notifications.manage')}</p>
         </div>
         <button

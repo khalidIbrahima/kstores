@@ -111,7 +111,7 @@ export default function Categories() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('categories.title')}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">{t('categories.title')}</h1>
         
         <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
           <div>
