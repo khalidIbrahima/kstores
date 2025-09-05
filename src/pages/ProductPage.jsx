@@ -12,7 +12,7 @@ import ProductImageCarousel from '../components/ProductImageCarousel';
 import { formatPrice } from '../utils/currency';
 import LocationPicker from '../components/LocationPicker';
 import OrderLocationMap from '../components/OrderLocationMap';
-import DynamicSocialMetaTags from '../components/DynamicSocialMetaTags';
+import ServerSideMeta from '../components/ServerSideMeta';
 import ProductReviewList from '../components/ProductReviewList';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDescriptionFull } from '../utils/formatDescription.jsx';
@@ -22,6 +22,7 @@ import ProductPrice from '../components/ProductPrice';
 import PromotionBadge from '../components/PromotionBadge';
 import { urlUtils } from '../utils/slugUtils';
 import { scrollToTop } from '../utils/scrollUtils';
+import { debugProductSocialMeta, testSocialMetaValidation } from '../utils/debugSocialMeta';
 
 const ProductPage = () => {
   const { id: idOrSlug } = useParams();
@@ -293,9 +294,17 @@ const ProductPage = () => {
     product.image_url4
   ].filter(Boolean);
 
+  // Fonction de debug pour les métadonnées sociales (développement uniquement)
+  const handleDebugSocialMeta = () => {
+    if (process.env.NODE_ENV === 'development') {
+      debugProductSocialMeta(product, category);
+      testSocialMetaValidation();
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-12">
-      <DynamicSocialMetaTags 
+      <ServerSideMeta 
         pageType="product"
         product={product}
         category={category}
@@ -761,6 +770,17 @@ const ProductPage = () => {
         url={window.location.href}
         variant="floating"
       />
+
+      {/* Debug Button (Development Only) */}
+      {process.env.NODE_ENV === 'development' && (
+        <button
+          onClick={handleDebugSocialMeta}
+          className="fixed bottom-20 right-4 bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-lg z-50"
+          title="Debug Social Meta (Dev Only)"
+        >
+          🔍
+        </button>
+      )}
     </div>
   );
 };

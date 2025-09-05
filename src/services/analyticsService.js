@@ -426,14 +426,14 @@ export const getTopViewedProducts = async (limit = 10) => {
   return getMostViewedProducts(limit);
 };
 
-// Obtenir le nombre de visiteurs actuellement actifs
+// Obtenir le nombre de visiteurs actuellement actifs (excluant les admins)
 export const getCurrentActiveVisitors = async (timeWindowMinutes = 5) => {
   try {
     const now = new Date();
     const timeThreshold = new Date(now.getTime() - (timeWindowMinutes * 60 * 1000));
 
-    // Compter les sessions uniques actives dans la fenêtre de temps
-    const { data, error } = await supabase
+    // Récupérer toutes les visites dans la fenêtre de temps
+    const { data: visits, error } = await supabase
       .from('page_visits')
       .select('session_id, user_id, created_at')
       .gte('created_at', timeThreshold.toISOString())
@@ -444,9 +444,30 @@ export const getCurrentActiveVisitors = async (timeWindowMinutes = 5) => {
       return 0;
     }
 
-    // Compter les sessions uniques (utilisateurs et invités)
+    // Récupérer les IDs des utilisateurs admin
+    const userIds = [...new Set(visits?.filter(v => v.user_id).map(v => v.user_id))];
+    let adminUserIds = new Set();
+
+    if (userIds.length > 0) {
+      const { data: adminUsers, error: adminError } = await supabase
+        .from('profiles')
+        .select('id')
+        .in('id', userIds)
+        .eq('is_admin', true);
+
+      if (!adminError && adminUsers) {
+        adminUserIds = new Set(adminUsers.map(u => u.id));
+      }
+    }
+
+    // Compter les sessions uniques (utilisateurs non-admin et invités)
     const activeSessions = new Set();
-    data?.forEach(visit => {
+    visits?.forEach(visit => {
+      // Exclure les utilisateurs admin
+      if (visit.user_id && adminUserIds.has(visit.user_id)) {
+        return;
+      }
+      
       // Utiliser l'ID utilisateur si disponible, sinon l'ID de session
       const identifier = visit.user_id || visit.session_id;
       if (identifier) {
@@ -461,11 +482,19 @@ export const getCurrentActiveVisitors = async (timeWindowMinutes = 5) => {
   }
 };
 
-// Obtenir l'historique des visiteurs actifs pour un graphique en temps réel
+// Obtenir l'historique des visiteurs actifs pour un graphique en temps réel (excluant les admins)
 export const getActiveVisitorsHistory = async (dataPoints = 12, intervalMinutes = 1) => {
   try {
     const now = new Date();
     const history = [];
+
+    // Récupérer d'abord tous les utilisateurs admin pour optimiser
+    const { data: adminUsers, error: adminError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('is_admin', true);
+
+    const adminUserIds = new Set(adminUsers?.map(u => u.id) || []);
 
     for (let i = dataPoints - 1; i >= 0; i--) {
       const timePoint = new Date(now.getTime() - (i * intervalMinutes * 60 * 1000));
@@ -486,9 +515,14 @@ export const getActiveVisitorsHistory = async (dataPoints = 12, intervalMinutes 
         continue;
       }
 
-      // Compter les sessions uniques
+      // Compter les sessions uniques en excluant les admins
       const activeSessions = new Set();
       data?.forEach(visit => {
+        // Exclure les utilisateurs admin
+        if (visit.user_id && adminUserIds.has(visit.user_id)) {
+          return;
+        }
+        
         const identifier = visit.user_id || visit.session_id;
         if (identifier) {
           activeSessions.add(identifier);
@@ -619,6 +653,252 @@ export const getRecentOrdersStats = async (timeWindowMinutes = 60) => {
       pending: 0,
       processing: 0,
       delivered: 0
+    };
+  }
+};
+
+// Obtenir les statistiques détaillées des visiteurs avec filtres temporels
+export const getDetailedVisitorStats = async (period = 'day') => {
+  try {
+    const now = new Date();
+    let timeThreshold;
+    let groupBy;
+
+    // Définir la période et le regroupement
+    switch (period) {
+      case 'day':
+        timeThreshold = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        groupBy = 'hour';
+        break;
+      case 'week':
+        timeThreshold = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+        groupBy = 'day';
+        break;
+      case 'month':
+        timeThreshold = new Date(now.getFullYear(), now.getMonth(), 1);
+        groupBy = 'day';
+        break;
+      default:
+        timeThreshold = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        groupBy = 'hour';
+    }
+
+    // Récupérer toutes les visites dans la période
+    const { data: visits, error } = await supabase
+      .from('page_visits')
+      .select('session_id, user_id, created_at, page_path')
+      .gte('created_at', timeThreshold.toISOString())
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    // Récupérer les IDs des utilisateurs admin pour les exclure
+    const userIds = [...new Set(visits?.filter(v => v.user_id).map(v => v.user_id))];
+    let adminUserIds = new Set();
+
+    if (userIds.length > 0) {
+      const { data: adminUsers, error: adminError } = await supabase
+        .from('profiles')
+        .select('id')
+        .in('id', userIds)
+        .eq('is_admin', true);
+
+      if (!adminError && adminUsers) {
+        adminUserIds = new Set(adminUsers.map(u => u.id));
+      }
+    }
+
+    // Filtrer les visites en excluant les admins
+    const filteredVisits = visits?.filter(visit => {
+      if (visit.user_id && adminUserIds.has(visit.user_id)) {
+        return false;
+      }
+      return true;
+    }) || [];
+
+    // Calculer les statistiques
+    const uniqueVisitors = new Set();
+    const pageViews = filteredVisits.length;
+    
+    filteredVisits.forEach(visit => {
+      const identifier = visit.user_id || visit.session_id;
+      if (identifier) {
+        uniqueVisitors.add(identifier);
+      }
+    });
+
+    // Grouper par période
+    const groupedData = {};
+    filteredVisits.forEach(visit => {
+      const date = new Date(visit.created_at);
+      let key;
+
+      if (groupBy === 'hour') {
+        key = `${date.getHours().toString().padStart(2, '0')}:00`;
+      } else if (groupBy === 'day') {
+        key = date.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+      }
+
+      if (!groupedData[key]) {
+        groupedData[key] = {
+          visits: 0,
+          uniqueVisitors: new Set()
+        };
+      }
+      
+      groupedData[key].visits++;
+      const identifier = visit.user_id || visit.session_id;
+      if (identifier) {
+        groupedData[key].uniqueVisitors.add(identifier);
+      }
+    });
+
+    // Formater les données pour le graphique
+    const chartData = Object.entries(groupedData).map(([time, data]) => ({
+      time,
+      visits: data.visits,
+      uniqueVisitors: data.uniqueVisitors.size
+    }));
+
+    return {
+      totalVisitors: uniqueVisitors.size,
+      totalPageViews: pageViews,
+      currentPeriod: period,
+      chartData: chartData.sort((a, b) => a.time.localeCompare(b.time)),
+      summary: {
+        averageVisitsPerPeriod: chartData.length > 0 ? Math.round(pageViews / chartData.length) : 0,
+        peakVisits: chartData.length > 0 ? Math.max(...chartData.map(d => d.visits)) : 0,
+        peakTime: chartData.length > 0 ? chartData.find(d => d.visits === Math.max(...chartData.map(d => d.visits)))?.time : null
+      }
+    };
+  } catch (error) {
+    console.error('Erreur lors de la récupération des stats détaillées de visiteurs:', error);
+    return {
+      totalVisitors: 0,
+      totalPageViews: 0,
+      currentPeriod: period,
+      chartData: [],
+      summary: {
+        averageVisitsPerPeriod: 0,
+        peakVisits: 0,
+        peakTime: null
+      }
+    };
+  }
+};
+
+// Obtenir les statistiques détaillées des commandes avec filtres temporels
+export const getDetailedOrderStats = async (period = 'day') => {
+  try {
+    const now = new Date();
+    let timeThreshold;
+    let groupBy;
+
+    // Définir la période et le regroupement
+    switch (period) {
+      case 'day':
+        timeThreshold = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        groupBy = 'hour';
+        break;
+      case 'week':
+        timeThreshold = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+        groupBy = 'day';
+        break;
+      case 'month':
+        timeThreshold = new Date(now.getFullYear(), now.getMonth(), 1);
+        groupBy = 'day';
+        break;
+      default:
+        timeThreshold = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        groupBy = 'hour';
+    }
+
+    // Récupérer toutes les commandes dans la période
+    const { data: orders, error } = await supabase
+      .from('orders')
+      .select('id, created_at, status, total')
+      .gte('created_at', timeThreshold.toISOString())
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    // Calculer les statistiques
+    const totalOrders = orders?.length || 0;
+    const totalRevenue = orders?.reduce((sum, order) => sum + (order.total || 0), 0) || 0;
+
+    // Grouper par période
+    const groupedData = {};
+    orders?.forEach(order => {
+      const date = new Date(order.created_at);
+      let key;
+
+      if (groupBy === 'hour') {
+        key = `${date.getHours().toString().padStart(2, '0')}:00`;
+      } else if (groupBy === 'day') {
+        key = date.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+      }
+
+      if (!groupedData[key]) {
+        groupedData[key] = {
+          orders: 0,
+          revenue: 0,
+          statuses: {}
+        };
+      }
+      
+      groupedData[key].orders++;
+      groupedData[key].revenue += order.total || 0;
+      
+      const status = order.status || 'unknown';
+      groupedData[key].statuses[status] = (groupedData[key].statuses[status] || 0) + 1;
+    });
+
+    // Formater les données pour le graphique
+    const chartData = Object.entries(groupedData).map(([time, data]) => ({
+      time,
+      orders: data.orders,
+      revenue: data.revenue,
+      statuses: data.statuses
+    }));
+
+    // Statistiques par statut
+    const statusStats = {};
+    orders?.forEach(order => {
+      const status = order.status || 'unknown';
+      statusStats[status] = (statusStats[status] || 0) + 1;
+    });
+
+    return {
+      totalOrders,
+      totalRevenue,
+      currentPeriod: period,
+      chartData: chartData.sort((a, b) => a.time.localeCompare(b.time)),
+      statusStats,
+      summary: {
+        averageOrdersPerPeriod: chartData.length > 0 ? Math.round(totalOrders / chartData.length) : 0,
+        averageOrderValue: totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0,
+        peakOrders: chartData.length > 0 ? Math.max(...chartData.map(d => d.orders)) : 0,
+        peakTime: chartData.length > 0 ? chartData.find(d => d.orders === Math.max(...chartData.map(d => d.orders)))?.time : null
+      }
+    };
+  } catch (error) {
+    console.error('Erreur lors de la récupération des stats détaillées de commandes:', error);
+    return {
+      totalOrders: 0,
+      totalRevenue: 0,
+      currentPeriod: period,
+      chartData: [],
+      statusStats: {},
+      summary: {
+        averageOrdersPerPeriod: 0,
+        averageOrderValue: 0,
+        peakOrders: 0,
+        peakTime: null
+      }
     };
   }
 }; 

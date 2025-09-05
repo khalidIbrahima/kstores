@@ -1,5 +1,27 @@
 // Utilitaires pour la gestion des images et des métadonnées sociales
 import { socialConfig } from '../config/socialConfig';
+import { supabase } from '../lib/supabase';
+
+/**
+ * Génère une URL publique pour une image stockée dans Supabase Storage
+ * @param {string} filePath - Chemin du fichier dans le bucket
+ * @param {string} bucketName - Nom du bucket (défaut: 'product-media')
+ * @returns {string} URL publique de l'image
+ */
+export const getSupabasePublicUrl = (filePath, bucketName = 'product-media') => {
+  if (!filePath) return socialConfig.defaultImage;
+  
+  try {
+    const { data } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(filePath);
+    
+    return data.publicUrl;
+  } catch (error) {
+    console.warn('Erreur lors de la génération de l\'URL publique:', error);
+    return socialConfig.defaultImage;
+  }
+};
 
 /**
  * Valide et normalise une URL d'image pour les métadonnées sociales
@@ -21,6 +43,16 @@ export const normalizeImageUrl = (imageUrl, fallbackUrl = null) => {
   // Si l'URL est relative (commence par /), la convertir en URL absolue
   if (imageUrl.startsWith('/')) {
     return `${socialConfig.siteUrl}${imageUrl}`;
+  }
+
+  // Si c'est une URL Supabase Storage, s'assurer qu'elle est publique
+  if (imageUrl.includes('supabase') || imageUrl.includes('storage')) {
+    // Si l'URL contient déjà le domaine complet, la retourner
+    if (imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    // Sinon, construire l'URL complète
+    return imageUrl.startsWith('/') ? `${socialConfig.siteUrl}${imageUrl}` : `${socialConfig.siteUrl}/${imageUrl}`;
   }
 
   // Pour les autres cas (URLs relatives sans /), ajouter le domaine de base
@@ -48,7 +80,22 @@ export const getBestProductImage = (product) => {
   for (const field of imageFields) {
     const imageUrl = product[field];
     if (imageUrl && imageUrl.trim() !== '') {
-      return normalizeImageUrl(imageUrl);
+      // Si c'est un chemin de fichier Supabase Storage (sans domaine)
+      if (!imageUrl.startsWith('http') && !imageUrl.startsWith('/')) {
+        // Générer une URL publique Supabase
+        return getSupabasePublicUrl(imageUrl);
+      }
+      
+      // Normaliser l'URL pour s'assurer qu'elle est accessible publiquement
+      const normalizedUrl = normalizeImageUrl(imageUrl);
+      
+      // Vérifier si c'est une URL Supabase Storage et s'assurer qu'elle est publique
+      if (normalizedUrl.includes('supabase') && normalizedUrl.includes('storage')) {
+        // S'assurer que l'URL est publique (pas de token d'authentification)
+        return normalizedUrl.split('?')[0]; // Enlever les paramètres de query
+      }
+      
+      return normalizedUrl;
     }
   }
 
@@ -147,11 +194,21 @@ export const generateImageMetadata = (product, category = null) => {
   const dimensions = getSocialImageDimensions(socialConfig.defaultImageWidth, socialConfig.defaultImageHeight);
   const alt = generateProductImageAlt(product, category);
 
+  // Déterminer le type d'image basé sur l'URL
+  let imageType = 'image/png'; // Type par défaut
+  if (imageUrl.includes('.jpg') || imageUrl.includes('.jpeg')) {
+    imageType = 'image/jpeg';
+  } else if (imageUrl.includes('.webp')) {
+    imageType = 'image/webp';
+  } else if (imageUrl.includes('.gif')) {
+    imageType = 'image/gif';
+  }
+
   return {
     url: imageUrl,
     alt: alt,
     width: dimensions.width,
     height: dimensions.height,
-    type: 'image/png' // Type par défaut, pourrait être détecté dynamiquement
+    type: imageType
   };
 };

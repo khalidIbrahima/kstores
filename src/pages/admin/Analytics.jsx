@@ -262,6 +262,26 @@ const Analytics = () => {
         </div>
       </div>
 
+      {/* Real-time Analytics - Moved to top for better visibility */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="grid grid-cols-1 gap-6 lg:grid-cols-2"
+      >
+        <RealTimeChart
+          title="Visiteurs en temps réel"
+          showVisitors={true}
+          updateInterval={30000}
+        />
+        <RealTimeChart
+          title="Commandes en temps réel"
+          showOrders={true}
+          showVisitors={false}
+          updateInterval={60000}
+        />
+      </motion.div>
+
       {/* Modern Dashboard Overview */}
       <DashboardOverview />
 
@@ -441,26 +461,6 @@ const Analytics = () => {
       >
         <h3 className="mb-4 text-base font-medium text-gray-900 dark:text-gray-100 sm:text-lg">Statistiques globales du site</h3>
         <SiteStats />
-      </motion.div>
-
-      {/* Real-time Analytics */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="grid grid-cols-1 gap-6 lg:grid-cols-2"
-      >
-        <RealTimeChart
-          title="Visiteurs en temps réel"
-          showVisitors={true}
-          updateInterval={30000}
-        />
-        <RealTimeChart
-          title="Commandes en temps réel"
-          showOrders={true}
-          showVisitors={false}
-          updateInterval={60000}
-        />
       </motion.div>
 
       {/* Advanced Metrics */}

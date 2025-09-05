@@ -419,7 +419,7 @@ const CartPage = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      </div>
+    </div>
     </>
   );
 };
