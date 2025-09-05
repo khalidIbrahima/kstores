@@ -221,7 +221,7 @@ const DynamicSocialMetaTags = ({
       
       {/* LinkedIn et autres plateformes */}
       <meta property="og:image:secure_url" content={imageMetadata.url} />
-      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:type" content={imageMetadata.type} />
       
       {/* URL canonique */}
       <link rel="canonical" href={currentUrl} />

@@ -270,6 +270,26 @@ const Dashboard = () => {
         <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{t('dashboard.welcome')}</p>
       </div>
 
+      {/* Real-time Analytics - Moved to top for better visibility */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2"
+      >
+        <RealTimeChart
+          title="Visiteurs en temps réel"
+          showVisitors={true}
+          updateInterval={30000}
+        />
+        <RealTimeChart
+          title="Commandes en temps réel"
+          showOrders={true}
+          showVisitors={false}
+          updateInterval={60000}
+        />
+      </motion.div>
+
       {/* Stats Grid */}
       <div className="mb-12 grid grid-cols-1 gap-3 sm:gap-4 lg:gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <motion.div
@@ -842,10 +862,6 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="mt-6">
-        <RealTimeChart />
       </div>
 
       <div className="mt-6">
