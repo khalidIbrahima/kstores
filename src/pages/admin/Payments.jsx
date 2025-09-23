@@ -81,13 +81,13 @@ const Payments = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400';
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400';
       case 'failed':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-400';
     }
   };
 
@@ -129,8 +129,8 @@ const Payments = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
+      <div className="flex items-center justify-center py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500 dark:border-blue-400"></div>
       </div>
     );
   }
@@ -141,7 +141,7 @@ const Payments = () => {
         <title>{t('admin.payments.title')}</title>
       </Helmet>
 
-      <div className="space-y-6">
+      <div className="space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen p-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t('admin.payments.title')}</h1>
           <p className="text-gray-600 dark:text-gray-400">{t('admin.payments.description')}</p>
@@ -158,7 +158,7 @@ const Payments = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               />
-              <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
             </div>
           </div>
           
@@ -186,53 +186,53 @@ const Payments = () => {
         </div>
 
         {/* Payments Table */}
-        <div className="overflow-x-auto rounded-lg bg-white shadow-md">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="overflow-x-auto rounded-lg bg-white dark:bg-gray-800 shadow-md dark:shadow-lg">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {t('admin.payments.table.id')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {t('admin.payments.table.order')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {t('admin.payments.table.amount')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {t('admin.payments.table.provider')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {t('admin.payments.table.status')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {t('admin.payments.table.date')}
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
               {filteredPayments.map((payment) => (
                 <motion.tr
                   key={payment.id}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="hover:bg-gray-50"
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
-                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
                     {payment.provider_id}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {payment.orders?.customer_name || t('admin.payments.table.unknown_customer')}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
                       {payment.orders?.customer_email}
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
                     {formatPrice(payment.amount)}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
                     {payment.provider}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
@@ -240,12 +240,12 @@ const Payments = () => {
                       {t(`admin.payments.status.${payment.status}`)}
                     </span>
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {formatDate(payment.created_at)}
                   </td>
                   <td className="px-6 py-4">
                     <button
-                      className="text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 font-mono transition-colors duration-200"
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-mono transition-colors duration-200"
                       onClick={() => fetchOrderDetails(payment.orders?.id)}
                       disabled={!payment.orders?.id}
                     >
@@ -258,7 +258,7 @@ const Payments = () => {
           </table>
 
           {filteredPayments.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
               {t('admin.payments.no_payments')}
             </div>
           )}

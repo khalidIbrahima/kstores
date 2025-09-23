@@ -172,7 +172,7 @@ const Orders = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{t('orders.title')}</h1>
@@ -181,7 +181,7 @@ const Orders = () => {
         <div className="flex gap-4 items-center">
           <button
             onClick={() => navigate('/admin/create-order')}
-            className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors"
           >
             <Plus className="mr-2 h-5 w-5" />
             {t('orders.create_order') || 'Créer une commande'}
@@ -198,9 +198,9 @@ const Orders = () => {
             placeholder="Rechercher par ID ou client..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-md border border-gray-300 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           />
-          <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
         </div>
 
         {/* Date Filter */}
@@ -209,16 +209,16 @@ const Orders = () => {
             type="date"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="w-full rounded-md border border-gray-300 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           />
-          <Calendar className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+          <Calendar className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
         </div>
 
         {/* Status Filter */}
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+          className="w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
         >
           <option value="">Tous les statuts</option>
           <option value="pending">En attente</option>
@@ -231,7 +231,7 @@ const Orders = () => {
         {/* Sort Order */}
         <button
           onClick={toggleSortOrder}
-          className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-50 transition-colors"
+          className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         >
           {sortOrder === 'asc' ? <SortAsc className="h-5 w-5" /> : <SortDesc className="h-5 w-5" />}
           <span>Date {sortOrder === 'asc' ? '↑' : '↓'}</span>
@@ -240,16 +240,16 @@ const Orders = () => {
 
       {/* Active Filters Display */}
       {(statusFilter || dateFilter || searchQuery) && (
-        <div className="mb-6 flex flex-wrap items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <Filter className="h-5 w-5 text-blue-600" />
-          <span className="text-blue-800 font-medium">Filtres actifs :</span>
+        <div className="mb-6 flex flex-wrap items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <Filter className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          <span className="text-blue-800 dark:text-blue-200 font-medium">Filtres actifs :</span>
           
           {statusFilter && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+            <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">
               Statut: {statusFilter}
               <button
                 onClick={clearStatusFilter}
-                className="ml-1 hover:text-blue-600"
+                className="ml-1 hover:text-blue-600 dark:hover:text-blue-300"
               >
                 <XIcon className="h-3 w-3" />
               </button>
@@ -257,11 +257,11 @@ const Orders = () => {
           )}
           
           {dateFilter && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+            <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm">
               Date: {new Date(dateFilter).toLocaleDateString()}
               <button
                 onClick={clearDateFilter}
-                className="ml-1 hover:text-green-600"
+                className="ml-1 hover:text-green-600 dark:hover:text-green-300"
               >
                 <XIcon className="h-3 w-3" />
               </button>
@@ -269,11 +269,11 @@ const Orders = () => {
           )}
           
           {searchQuery && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+            <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full text-sm">
               Recherche: "{searchQuery}"
               <button
                 onClick={() => setSearchQuery('')}
-                className="ml-1 hover:text-purple-600"
+                className="ml-1 hover:text-purple-600 dark:hover:text-purple-300"
               >
                 <XIcon className="h-3 w-3" />
               </button>
@@ -282,7 +282,7 @@ const Orders = () => {
           
           <button
             onClick={clearAllFilters}
-            className="ml-auto flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors"
+            className="ml-auto flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
           >
             <XIcon className="h-4 w-4" />
             <span className="text-sm">Effacer tous les filtres</span>
@@ -295,26 +295,26 @@ const Orders = () => {
           <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg bg-white shadow-md">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="overflow-x-auto rounded-lg bg-white dark:bg-gray-800 shadow-md dark:shadow-lg">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {t('order_id')}
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {t('customer')}
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {t('date')}
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {t('total')}
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {t('status')}
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {t('actions')}
                 </th>
               </tr>
@@ -352,7 +352,7 @@ const Orders = () => {
                 </tr>
               </tbody>
             )}
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
               {filteredOrders.map((order) => (
                 <motion.tr
                   key={order.id}
@@ -360,28 +360,28 @@ const Orders = () => {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
                     {order.id}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {order.shipping_address?.name || 'Unknown Customer'}
                     </div>
                     {!order.user_id && (
-                      <div className="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-full inline-block mt-1">
+                      <div className="text-xs text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-full inline-block mt-1">
                         {t('orders.guest_order')}
                       </div>
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     <div className="flex flex-col">
                       <span>{new Date(order.created_at).toLocaleDateString()}</span>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-gray-400 dark:text-gray-500">
                         {new Date(order.created_at).toLocaleTimeString()}
                       </span>
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
                     {order.total.toFixed(2) } FCFA
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
@@ -393,7 +393,7 @@ const Orders = () => {
                       <select
                         value={order.status}
                         onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                        className="rounded-md border border-gray-300 bg-white px-2 py-1 text-xs shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                        className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-gray-100 px-2 py-1 text-xs shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                       >
                         <option value="pending">{t('pending')}</option>
                         <option value="processing">{t('processing')}</option>
@@ -406,14 +406,14 @@ const Orders = () => {
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium flex gap-2 items-center">
                     <button
                       onClick={() => navigate(`/admin/orders/${order.id}`)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                       title={t('orders.view_details')}
                     >
                       <Eye className="h-5 w-5" />
                     </button>
                     <button
                       onClick={() => handleDelete(order.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                       title={t('orders.delete')}
                     >
                       <Trash2 className="h-5 w-5" />

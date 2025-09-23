@@ -215,14 +215,14 @@ const Analytics = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
+      <div className="flex items-center justify-center py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500 dark:border-blue-400"></div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 lg:px-8">
+    <div className="space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       {/* Header */}
       <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
         <div>
@@ -233,13 +233,13 @@ const Analytics = () => {
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           >
             <option value="7">7 derniers jours</option>
             <option value="30">30 derniers jours</option>
             <option value="90">90 derniers jours</option>
           </select>
-          <button className="flex items-center justify-center space-x-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 sm:justify-start">
+          <button className="flex items-center justify-center space-x-2 rounded-lg bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-700 dark:hover:bg-blue-600 sm:justify-start">
             <Download className="h-4 w-4" />
             <span>Exporter</span>
           </button>

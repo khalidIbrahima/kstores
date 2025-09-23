@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import OrderNotificationHistory from '../../components/OrderNotificationHistory';
 import { ArrowLeft, Edit, Trash2, Bell, Mail, MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
+import QRCode from 'react-qr-code';
 
 const OrderDetailPage = () => {
   const { t, i18n } = useTranslation();
@@ -318,17 +319,25 @@ const OrderDetailPage = () => {
                             <p className="text-xs sm:text-sm text-gray-500">
                               Quantité: {item.quantity}
                             </p>
-                            {item.selected_color && (
-                              <div className="flex items-center space-x-1">
-                                <div
-                                  className="w-3 h-3 rounded-full border border-gray-300"
-                                  style={{ backgroundColor: JSON.parse(item.selected_color).hex }}
-                                />
-                                <span className="text-xs text-gray-500">
-                                  {JSON.parse(item.selected_color).name}
-                                </span>
-                              </div>
-                            )}
+                            {item.selected_color && (() => {
+                              try {
+                                const colorData = JSON.parse(item.selected_color);
+                                return (
+                                  <div className="flex items-center space-x-1">
+                                    <div
+                                      className="w-3 h-3 rounded-full border border-gray-300"
+                                      style={{ backgroundColor: colorData.hex }}
+                                    />
+                                    <span className="text-xs text-gray-500">
+                                      {colorData.name}
+                                    </span>
+                                  </div>
+                                );
+                              } catch (error) {
+                                console.error('Error parsing selected_color:', error);
+                                return null;
+                              }
+                            })()}
                           </div>
                         </div>
                       </div>
@@ -372,9 +381,20 @@ const OrderDetailPage = () => {
                 />
               </div>
               {order.userGeolocation && (
-                <p className="mt-2 text-xs text-gray-500 text-center break-all">
-                  Coordonnées: {order.userGeolocation.latitude?.toFixed(5)}, {order.userGeolocation.longitude?.toFixed(5)}
-                </p>
+                <>
+                  <p className="mt-2 text-xs text-gray-500 text-center break-all">
+                    Coordonnées: {order.userGeolocation.latitude?.toFixed(5)}, {order.userGeolocation.longitude?.toFixed(5)}
+                  </p>
+                  <div className="mt-4 flex flex-col items-center gap-2">
+                    <span className="text-xs text-gray-600 text-center">
+                      {t('orders.scan_to_open_in_google_maps')}
+                    </span>
+                    <QRCode 
+                      value={`https://www.google.com/maps/search/?api=1&query=${order.userGeolocation.latitude},${order.userGeolocation.longitude}`} 
+                      size={96} 
+                    />
+                  </div>
+                </>
               )}
             </motion.div>
 

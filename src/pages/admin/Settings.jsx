@@ -569,14 +569,14 @@ const Settings = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-900 min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400"></div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen p-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t('settings.title')}</h1>
         <p className="text-gray-600 dark:text-gray-400">{t('settings.subtitle')}</p>
@@ -586,8 +586,8 @@ const Settings = () => {
       {message.text && (
         <div className={`p-4 rounded-md flex items-center space-x-2 ${
           message.type === 'success' 
-            ? 'bg-green-50 text-green-800 border border-green-200' 
-            : 'bg-red-50 text-red-800 border border-red-200'
+            ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800' 
+            : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800'
         }`}>
           {message.type === 'success' ? (
             <CheckCircle className="h-5 w-5" />
@@ -599,15 +599,15 @@ const Settings = () => {
       )}
 
       {/* Settings Navigation */}
-      <div className="flex space-x-1 rounded-lg bg-gray-100 p-1">
+      <div className="flex space-x-1 rounded-lg bg-gray-100 dark:bg-gray-800 p-1">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center space-x-2 rounded-md px-4 py-2 text-sm font-medium ${
               activeTab === tab.id
-                ? 'bg-white text-blue-600 shadow'
-                : 'text-gray-600 hover:bg-white/50 hover:text-gray-900'
+                ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-100'
             }`}
           >
             <tab.icon className="h-4 w-4" />
@@ -622,7 +622,7 @@ const Settings = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="rounded-lg bg-white p-6 shadow-md"
+        className="rounded-lg bg-white dark:bg-gray-800 p-6 shadow-md dark:shadow-lg"
       >
         {renderTabContent()}
       </motion.div>
@@ -632,7 +632,7 @@ const Settings = () => {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+          className="inline-flex items-center rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
         >
           {saving ? (
             <>

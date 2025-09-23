@@ -214,18 +214,18 @@ const Store = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-16 w-16 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="h-16 w-16 animate-spin rounded-full border-b-2 border-t-2 border-blue-500 dark:border-blue-400"></div>
       </div>
     );
   }
 
   const statusColors = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    processing: 'bg-blue-100 text-blue-800',
-    shipped: 'bg-purple-100 text-purple-800',
-    delivered: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800'
+    pending: 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400',
+    processing: 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400',
+    shipped: 'bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-400',
+    delivered: 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400',
+    cancelled: 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400'
   };
 
   const statusIcons = {
@@ -237,7 +237,7 @@ const Store = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Vue d'ensemble de la boutique</h1>
