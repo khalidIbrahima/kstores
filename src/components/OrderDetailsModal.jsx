@@ -13,6 +13,15 @@ export default function OrderDetailsModal({ order, onClose }) {
     new Date(date).toLocaleString(i18n.language === 'fr' ? 'fr-FR' : 'en-US');
   const formatPrice = (amount) => `${Number(amount).toLocaleString()} FCFA`;
 
+  // Detect if device is mobile
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  // Function to open Google Maps
+  const openGoogleMaps = (latitude, longitude) => {
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+    window.open(mapsUrl, '_blank');
+  };
+
   let geo = order.userGeolocation;
   if (typeof geo === 'string') {
     try {
@@ -84,8 +93,20 @@ export default function OrderDetailsModal({ order, onClose }) {
                     <span>{t('orders.lat')}: {geo.latitude}, {t('orders.lng')}: {geo.longitude}</span>
                   </div>
                   <div className="mt-4 flex flex-col items-center gap-2">
-                    <span className="text-xs text-gray-700 dark:text-gray-300">{t('orders.scan_to_open_in_google_maps')}</span>
-                    <QRCode value={`https://www.google.com/maps/search/?api=1&query=${geo.latitude},${geo.longitude}`} size={96} />
+                    <span className="text-xs text-gray-700 dark:text-gray-300">
+                      {isMobile ? t('orders.tap_qr_to_open_google_maps') : t('orders.scan_to_open_in_google_maps')}
+                    </span>
+                    {isMobile ? (
+                      <button
+                        onClick={() => openGoogleMaps(geo.latitude, geo.longitude)}
+                        className="transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
+                        aria-label="Ouvrir dans Google Maps"
+                      >
+                        <QRCode value={`https://www.google.com/maps/search/?api=1&query=${geo.latitude},${geo.longitude}`} size={96} />
+                      </button>
+                    ) : (
+                      <QRCode value={`https://www.google.com/maps/search/?api=1&query=${geo.latitude},${geo.longitude}`} size={96} />
+                    )}
                   </div>
                 </>
               ) : (
