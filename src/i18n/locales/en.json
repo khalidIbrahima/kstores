@@ -362,6 +362,7 @@
     "lat": "Latitude",
     "lng": "Longitude",
     "scan_to_open_in_google_maps": "Scan to open in Google Maps",
+    "tap_qr_to_open_google_maps": "Tap QR code to open Google Maps",
     "no_geolocation_data_available": "No geolocation data available",
     "order_items": "Order Items",
     "product": "Product",

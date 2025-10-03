@@ -360,6 +360,7 @@
     "lat": "Latitude",
     "lng": "Longitude",
     "scan_to_open_in_google_maps": "Scanner pour ouvrir dans Google Maps",
+    "tap_qr_to_open_google_maps": "Appuyer sur le QR code pour ouvrir Google Maps",
     "no_geolocation_data_available": "Aucune donnée de géolocalisation disponible",
     "order_items": "Articles commandés",
     "product": "Produit",
