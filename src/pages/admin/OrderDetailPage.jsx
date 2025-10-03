@@ -344,9 +344,27 @@ const OrderDetailPage = () => {
                         </div>
                       </div>
                       <div className="text-left sm:text-right">
-                        <p className="font-medium text-gray-900 text-sm sm:text-base">
-                          {formatPrice(item.price * item.quantity)}
-                        </p>
+                        <div className="space-y-1">
+                          {/* Item subtotal */}
+                          <p className="font-medium text-gray-900 text-sm sm:text-base">
+                            {formatPrice(item.price * item.quantity)}
+                          </p>
+                          
+                          {/* Item discount */}
+                          {item.discount && item.discount > 0 && (
+                            <p className="text-xs sm:text-sm text-red-600 font-medium">
+                              Remise: -{formatPrice(item.discount)}
+                            </p>
+                          )}
+                          
+                          {/* Item total after discount */}
+                          {item.discount && item.discount > 0 && (
+                            <p className="font-semibold text-gray-900 text-sm sm:text-base">
+                              {formatPrice((item.price * item.quantity) - (item.discount || 0))}
+                            </p>
+                          )}
+                        </div>
+                        
                         <p className="text-xs sm:text-sm text-gray-500">
                           {formatPrice(item.price)} / unité
                         </p>
@@ -357,8 +375,27 @@ const OrderDetailPage = () => {
                   <p className="text-gray-500 italic text-sm">Aucun produit dans cette commande</p>
                 )}
               </div>
-              <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+                {/* Subtotal */}
                 <div className="flex justify-between items-center">
+                  <span className="text-sm sm:text-base text-gray-600">Sous-total</span>
+                  <span className="text-sm sm:text-base text-gray-900">
+                    {formatPrice(order.order_items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0)}
+                  </span>
+                </div>
+                
+                {/* Total Discount */}
+                {order.total_discount && order.total_discount > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm sm:text-base text-red-600">Remise totale</span>
+                    <span className="text-sm sm:text-base text-red-600 font-medium">
+                      -{formatPrice(order.total_discount)}
+                    </span>
+                  </div>
+                )}
+                
+                {/* Final Total */}
+                <div className="flex justify-between items-center pt-2 border-t border-gray-200">
                   <span className="text-base sm:text-lg font-semibold text-gray-900">Total</span>
                   <span className="text-xl sm:text-2xl font-bold text-gray-900">{formatPrice(order.total)}</span>
                 </div>

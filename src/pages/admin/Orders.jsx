@@ -361,7 +361,13 @@ const Orders = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {order.id}
+                    <button
+                      onClick={() => navigate(`/admin/orders/${order.id}`)}
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors"
+                      title={`View order ${order.id}`}
+                    >
+                      {order.id.length > 12 ? `${order.id.substring(0, 12)}...` : order.id}
+                    </button>
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
