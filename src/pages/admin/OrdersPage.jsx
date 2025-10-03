@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import OrderLocationMap from '../../components/OrderLocationMap';
 import { useParams, useNavigate } from 'react-router-dom';
-
+import QRCode from 'react-qr-code';
 import { notifyCustomerOrderStatusChange, ORDER_STATUS_CONFIG } from '../../services/notificationService';
 import toast from 'react-hot-toast';
 import OrderNotificationHistory from '../../components/OrderNotificationHistory';
@@ -147,8 +147,8 @@ const OrdersPage = () => {
               >
                 <option value="pending">{t('admin.orders.status.pending')}</option>
                 <option value="processing">{t('admin.orders.status.processing')}</option>
-                <option value="shipped">Expédiée</option>
-                <option value="delivered">Livrée</option>
+                <option value="shipped">{t('admin.orders.status.shipped')}</option>
+                <option value="delivered">{t('admin.orders.status.delivered')}</option>
                 <option value="cancelled">{t('admin.orders.status.cancelled')}</option>
               </select>
             </div>
@@ -178,9 +178,30 @@ const OrdersPage = () => {
               <div className="divide-y divide-gray-100 bg-gray-50 rounded-lg p-2">
                 {order.order_items?.length > 0 ? order.order_items.map((item) => (
                   <div key={item.id} className="flex justify-between py-2 text-sm items-center">
-                    <span>
-                      {item.products?.name || t('admin.orders.details.unknownProduct')} x {item.quantity}
-                    </span>
+                    <div className="flex flex-col">
+                      <span>
+                        {item.products?.name || t('admin.orders.details.unknownProduct')} x {item.quantity}
+                      </span>
+                      {item.selected_color && (() => {
+                        try {
+                          const colorData = JSON.parse(item.selected_color);
+                          return (
+                            <div className="flex items-center mt-1">
+                              <div
+                                className="w-3 h-3 rounded-full border border-gray-300 mr-1"
+                                style={{ backgroundColor: colorData.hex }}
+                              />
+                              <span className="text-xs text-gray-500">
+                                {colorData.name}
+                              </span>
+                            </div>
+                          );
+                        } catch (error) {
+                          console.error('Error parsing selected_color:', error);
+                          return null;
+                        }
+                      })()}
+                    </div>
                     <span>{formatPrice(item.price * item.quantity)}</span>
                   </div>
                 )) : (
@@ -205,6 +226,17 @@ const OrdersPage = () => {
                   userName={order.shipping_address?.name}
                 />
               </div>
+              {order.userGeolocation && order.userGeolocation.lat && order.userGeolocation.lng && (
+                <div className="mt-4 flex flex-col items-center gap-2">
+                  <span className="text-xs text-gray-600 text-center">
+                    {t('orders.scan_to_open_in_google_maps')}
+                  </span>
+                  <QRCode 
+                    value={`https://www.google.com/maps/search/?api=1&query=${order.userGeolocation.lat},${order.userGeolocation.lng}`} 
+                    size={96} 
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

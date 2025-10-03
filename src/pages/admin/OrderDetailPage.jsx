@@ -8,6 +8,8 @@ import toast from 'react-hot-toast';
 import OrderNotificationHistory from '../../components/OrderNotificationHistory';
 import { ArrowLeft, Edit, Trash2, Bell, Mail, MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
+import QRCode from 'react-qr-code';
+import { useStoreSettings } from '../../hooks/useStoreSettings';
 
 const OrderDetailPage = () => {
   const { t, i18n } = useTranslation();
@@ -16,6 +18,7 @@ const OrderDetailPage = () => {
   const [error, setError] = useState(null);
   const { id: orderId } = useParams();
   const navigate = useNavigate();
+  const { settings } = useStoreSettings();
 
   const fetchOrder = useCallback(async () => {
     setLoading(true);
@@ -303,7 +306,7 @@ const OrderDetailPage = () => {
                   order.order_items.map((item) => (
                     <div key={item.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-3 border-b border-gray-100 last:border-b-0 space-y-2 sm:space-y-0">
                       <div className="flex items-center space-x-3">
-                        {item.products?.image_url && (
+                        {settings?.display_order_images && item.products?.image_url && (
                           <img
                             src={item.products.image_url}
                             alt={item.products.name}
@@ -318,24 +321,50 @@ const OrderDetailPage = () => {
                             <p className="text-xs sm:text-sm text-gray-500">
                               Quantité: {item.quantity}
                             </p>
-                            {item.selected_color && (
-                              <div className="flex items-center space-x-1">
-                                <div
-                                  className="w-3 h-3 rounded-full border border-gray-300"
-                                  style={{ backgroundColor: JSON.parse(item.selected_color).hex }}
-                                />
-                                <span className="text-xs text-gray-500">
-                                  {JSON.parse(item.selected_color).name}
-                                </span>
-                              </div>
-                            )}
+                            {item.selected_color && (() => {
+                              try {
+                                const colorData = JSON.parse(item.selected_color);
+                                return (
+                                  <div className="flex items-center space-x-1">
+                                    <div
+                                      className="w-3 h-3 rounded-full border border-gray-300"
+                                      style={{ backgroundColor: colorData.hex }}
+                                    />
+                                    <span className="text-xs text-gray-500">
+                                      {colorData.name}
+                                    </span>
+                                  </div>
+                                );
+                              } catch (error) {
+                                console.error('Error parsing selected_color:', error);
+                                return null;
+                              }
+                            })()}
                           </div>
                         </div>
                       </div>
                       <div className="text-left sm:text-right">
-                        <p className="font-medium text-gray-900 text-sm sm:text-base">
-                          {formatPrice(item.price * item.quantity)}
-                        </p>
+                        <div className="space-y-1">
+                          {/* Item subtotal */}
+                          <p className="font-medium text-gray-900 text-sm sm:text-base">
+                            {formatPrice(item.price * item.quantity)}
+                          </p>
+                          
+                          {/* Item discount */}
+                          {item.discount && item.discount > 0 && (
+                            <p className="text-xs sm:text-sm text-red-600 font-medium">
+                              Remise: -{formatPrice(item.discount)}
+                            </p>
+                          )}
+                          
+                          {/* Item total after discount */}
+                          {item.discount && item.discount > 0 && (
+                            <p className="font-semibold text-gray-900 text-sm sm:text-base">
+                              {formatPrice((item.price * item.quantity) - (item.discount || 0))}
+                            </p>
+                          )}
+                        </div>
+                        
                         <p className="text-xs sm:text-sm text-gray-500">
                           {formatPrice(item.price)} / unité
                         </p>
@@ -346,8 +375,27 @@ const OrderDetailPage = () => {
                   <p className="text-gray-500 italic text-sm">Aucun produit dans cette commande</p>
                 )}
               </div>
-              <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+                {/* Subtotal */}
                 <div className="flex justify-between items-center">
+                  <span className="text-sm sm:text-base text-gray-600">Sous-total</span>
+                  <span className="text-sm sm:text-base text-gray-900">
+                    {formatPrice(order.order_items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0)}
+                  </span>
+                </div>
+                
+                {/* Total Discount */}
+                {order.total_discount && order.total_discount > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm sm:text-base text-red-600">Remise totale</span>
+                    <span className="text-sm sm:text-base text-red-600 font-medium">
+                      -{formatPrice(order.total_discount)}
+                    </span>
+                  </div>
+                )}
+                
+                {/* Final Total */}
+                <div className="flex justify-between items-center pt-2 border-t border-gray-200">
                   <span className="text-base sm:text-lg font-semibold text-gray-900">Total</span>
                   <span className="text-xl sm:text-2xl font-bold text-gray-900">{formatPrice(order.total)}</span>
                 </div>
@@ -372,9 +420,20 @@ const OrderDetailPage = () => {
                 />
               </div>
               {order.userGeolocation && (
-                <p className="mt-2 text-xs text-gray-500 text-center break-all">
-                  Coordonnées: {order.userGeolocation.latitude?.toFixed(5)}, {order.userGeolocation.longitude?.toFixed(5)}
-                </p>
+                <>
+                  <p className="mt-2 text-xs text-gray-500 text-center break-all">
+                    Coordonnées: {order.userGeolocation.latitude?.toFixed(5)}, {order.userGeolocation.longitude?.toFixed(5)}
+                  </p>
+                  <div className="mt-4 flex flex-col items-center gap-2">
+                    <span className="text-xs text-gray-600 text-center">
+                      {t('orders.scan_to_open_in_google_maps')}
+                    </span>
+                    <QRCode 
+                      value={`https://www.google.com/maps/search/?api=1&query=${order.userGeolocation.latitude},${order.userGeolocation.longitude}`} 
+                      size={96} 
+                    />
+                  </div>
+                </>
               )}
             </motion.div>
 

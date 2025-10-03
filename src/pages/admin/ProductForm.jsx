@@ -75,6 +75,7 @@ const ProductForm = ({ product, onClose, onSaved }) => {
       });
     } else {
       setFormData(initialState);
+      setCalculatedPrice('');
     }
   }, [product]);
 
@@ -157,6 +158,11 @@ const ProductForm = ({ product, onClose, onSaved }) => {
       }
       if (error) throw error;
       toast.success(product ? t('products.save_success') : t('products.create_success'));
+      
+      // Reset form state after successful save
+      setFormData(initialState);
+      setCalculatedPrice('');
+      
       if (onSaved) onSaved();
       if (onClose) onClose();
     } catch (err) {
@@ -167,35 +173,35 @@ const ProductForm = ({ product, onClose, onSaved }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white dark:bg-gray-800">
+    <div className="w-full p-4 sm:p-6 bg-white dark:bg-gray-800">
       <form onSubmit={handleSubmit} className="space-y-8">
         
         {/* Header */}
-        <div className="border-b border-gray-200 pb-4">
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Package className="h-6 w-6 text-blue-600" />
+        <div className="border-b border-gray-200 dark:border-gray-700 pb-3 sm:pb-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <Package className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 dark:text-blue-400" />
             {product ? 'Modifier le produit' : 'Nouveau produit'}
           </h2>
-          <p className="text-gray-600 mt-1">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
             {product ? 'Modifiez les informations de votre produit' : 'Ajoutez un nouveau produit à votre catalogue'}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
           
           {/* Left Column - Basic Info */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-3 space-y-4 sm:space-y-6">
             
             {/* Basic Information Section */}
-            <div className="bg-gray-50 rounded-lg p-6">
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 sm:p-6">
               <div className="flex items-center gap-2 mb-4">
-                <Info className="h-5 w-5 text-blue-600" />
-                <h3 className="text-lg font-semibold text-gray-900">Informations de base</h3>
+                <Info className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Informations de base</h3>
               </div>
               
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Nom du produit *
                   </label>
                   <input
@@ -204,13 +210,13 @@ const ProductForm = ({ product, onClose, onSaved }) => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Ex: T-shirt en coton bio"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 dark:placeholder-gray-400 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
                     required
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Description *
                   </label>
                   <textarea
@@ -219,20 +225,20 @@ const ProductForm = ({ product, onClose, onSaved }) => {
                     onChange={handleChange}
                     rows={4}
                     placeholder="Décrivez votre produit en détail..."
-                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors resize-none"
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 dark:placeholder-gray-400 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors resize-none"
                     required
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Catégorie *
                   </label>
                   <select
                     name="category_id"
                     value={formData.category_id}
                     onChange={handleChange}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
                     required
                   >
                     <option value="">Sélectionner une catégorie</option>
@@ -245,15 +251,15 @@ const ProductForm = ({ product, onClose, onSaved }) => {
             </div>
 
             {/* Pricing & Inventory Section */}
-            <div className="bg-gray-50 rounded-lg p-6">
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 sm:p-6">
               <div className="flex items-center gap-2 mb-4">
-                <DollarSign className="h-5 w-5 text-green-600" />
-                <h3 className="text-lg font-semibold text-gray-900">Prix et stock</h3>
+                <DollarSign className="h-5 w-5 text-green-600 dark:text-green-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Prix et stock</h3>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Prix (FCFA) *
                   </label>
                   <input
@@ -264,13 +270,13 @@ const ProductForm = ({ product, onClose, onSaved }) => {
                     min="0"
                     step="0.01"
                     placeholder="0.00"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors"
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 dark:placeholder-gray-400 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors"
                     required
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Stock disponible *
                   </label>
                   <input
@@ -280,7 +286,7 @@ const ProductForm = ({ product, onClose, onSaved }) => {
                     onChange={handleChange}
                     min="0"
                     placeholder="0"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors"
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 dark:placeholder-gray-400 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors"
                     required
                   />
                 </div>
@@ -300,29 +306,32 @@ const ProductForm = ({ product, onClose, onSaved }) => {
               </div>
             </div>
 
-            {/* Promotion Section */}
-            <div className="bg-orange-50 rounded-lg p-6 border border-orange-200">
-              <div className="flex items-center gap-2 mb-4">
-                <Percent className="h-5 w-5 text-orange-600" />
-                <h3 className="text-lg font-semibold text-gray-900">Promotion</h3>
-              </div>
+            {/* Promotion and Colors Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               
-              <div className="space-y-4">
+              {/* Promotion Section */}
+              <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4 sm:p-6 border border-orange-200 dark:border-orange-800">
+                <div className="flex items-center gap-2 mb-4">
+                  <Percent className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Promotion</h3>
+                </div>
+                
+                <div className="space-y-4">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     name="promotion_active"
                     checked={formData.promotion_active}
                     onChange={handleChange}
-                    className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-orange-600 focus:ring-orange-500"
                   />
-                  <span className="text-sm font-medium text-gray-700">Activer une promotion sur ce produit</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Activer une promotion sur ce produit</span>
                 </label>
 
                 {formData.promotion_active && (
-                  <div className="space-y-4 bg-white rounded-lg p-4 border border-orange-200">
+                  <div className="space-y-4 bg-white dark:bg-gray-600 rounded-lg p-4 border border-orange-200 dark:border-orange-800">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Réduction (%)
                       </label>
                       <input
@@ -333,7 +342,7 @@ const ProductForm = ({ product, onClose, onSaved }) => {
                         min="1"
                         max="99"
                         placeholder="20"
-                        className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-colors"
+                        className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-500 dark:text-gray-100 dark:placeholder-gray-400 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-colors"
                       />
                     </div>
 
@@ -347,7 +356,7 @@ const ProductForm = ({ product, onClose, onSaved }) => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           Date de début
                         </label>
                         <input
@@ -355,11 +364,11 @@ const ProductForm = ({ product, onClose, onSaved }) => {
                           name="promotion_start_date"
                           value={formData.promotion_start_date}
                           onChange={handleChange}
-                          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-colors"
+                          className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-500 dark:text-gray-100 px-4 py-3 text-gray-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-colors"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           Date de fin
                         </label>
                         <input
@@ -367,7 +376,7 @@ const ProductForm = ({ product, onClose, onSaved }) => {
                           name="promotion_end_date"
                           value={formData.promotion_end_date}
                           onChange={handleChange}
-                          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-colors"
+                          className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-500 dark:text-gray-100 px-4 py-3 text-gray-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-colors"
                         />
                       </div>
                     </div>
@@ -380,28 +389,28 @@ const ProductForm = ({ product, onClose, onSaved }) => {
               </div>
             </div>
 
-            {/* Colors Section */}
-            <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
-              <div className="flex items-center gap-2 mb-4">
-                <Palette className="h-5 w-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-gray-900">Couleurs disponibles</h3>
-              </div>
-              
-              <div className="space-y-3">
+              {/* Colors Section */}
+              <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 sm:p-6 border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center gap-2 mb-4">
+                  <Palette className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Couleurs disponibles</h3>
+                </div>
+                
+                <div className="space-y-3">
                 {formData.colors?.map((color, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 bg-white border border-purple-200 rounded-lg">
+                  <div key={index} className="flex items-center gap-3 p-3 bg-white dark:bg-gray-600 border border-purple-200 dark:border-purple-700 rounded-lg">
                     <input
                       type="color"
                       value={color.hex || '#000000'}
                       onChange={(e) => handleColorChange(index, 'hex', e.target.value)}
-                      className="w-12 h-12 rounded-lg border border-gray-300 cursor-pointer"
+                      className="w-12 h-12 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer"
                     />
                     <input
                       type="text"
                       placeholder="Nom de la couleur"
                       value={color.name || ''}
                       onChange={(e) => handleColorChange(index, 'name', e.target.value)}
-                      className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-colors"
+                      className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-500 dark:text-gray-100 dark:placeholder-gray-400 px-3 py-2 text-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-colors"
                     />
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -428,19 +437,65 @@ const ProductForm = ({ product, onClose, onSaved }) => {
                 >
                   + Ajouter une couleur
                 </button>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column - Images */}
-          <div className="space-y-6">
-            <div className="bg-blue-50 rounded-lg p-6 border border-blue-200 sticky top-4">
+          {/* Right Column - Images & Preview */}
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+            
+            {/* Product Preview */}
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-600">
               <div className="flex items-center gap-2 mb-4">
-                <ImageIcon className="h-5 w-5 text-blue-600" />
-                <h3 className="text-lg font-semibold text-gray-900">Images & Vidéos</h3>
+                <Package className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Aperçu du produit</h3>
               </div>
               
               <div className="space-y-4">
+                {formData.image_url && (
+                  <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-600">
+                    <img 
+                      src={formData.image_url} 
+                      alt="Aperçu du produit" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                    <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500" style={{display: 'none'}}>
+                      <Package className="h-12 w-12" />
+                    </div>
+                  </div>
+                )}
+                
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
+                    {formData.name || 'Nom du produit'}
+                  </h4>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-3">
+                    {formData.description || 'Description du produit...'}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-bold text-green-600 dark:text-green-400">
+                      {formData.price ? `${parseFloat(formData.price).toLocaleString('fr-FR')} FCFA` : 'Prix'}
+                    </span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Stock: {formData.inventory || '0'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 sm:p-6 border border-blue-200 dark:border-blue-800">
+              <div className="flex items-center gap-2 mb-4">
+                <ImageIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Images & Vidéos</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
                 <ProductImageInput value={formData.image_url} onChange={url => handleImageChange('image_url', url)} index={0} />
                 <ProductImageInput value={formData.image_url1} onChange={url => handleImageChange('image_url1', url)} index={1} />
                 <ProductImageInput value={formData.image_url2} onChange={url => handleImageChange('image_url2', url)} index={2} />
@@ -448,8 +503,8 @@ const ProductForm = ({ product, onClose, onSaved }) => {
                 <ProductImageInput value={formData.image_url4} onChange={url => handleImageChange('image_url4', url)} index={4} />
               </div>
               
-              <div className="mt-4 p-3 bg-blue-100 rounded-lg">
-                <p className="text-xs text-blue-800">
+              <div className="mt-4 p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+                <p className="text-xs text-blue-800 dark:text-blue-400">
                   💡 <strong>Conseil :</strong> Ajoutez plusieurs images pour montrer votre produit sous différents angles. Vous pouvez aussi ajouter des vidéos !
                 </p>
               </div>
@@ -458,11 +513,15 @@ const ProductForm = ({ product, onClose, onSaved }) => {
         </div>
 
         {/* Form Actions */}
-        <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
           <button 
             type="button" 
-            onClick={onClose} 
-            className="flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors font-medium"
+            onClick={() => {
+              setFormData(initialState);
+              setCalculatedPrice('');
+              if (onClose) onClose();
+            }} 
+            className="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-colors font-medium text-sm sm:text-base w-full sm:w-auto"
           >
             <X className="h-4 w-4" />
             Annuler
@@ -471,7 +530,7 @@ const ProductForm = ({ product, onClose, onSaved }) => {
           <button 
             type="submit" 
             disabled={loading} 
-            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium min-w-[140px] justify-center"
+            className="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base min-w-[120px] sm:min-w-[140px] justify-center w-full sm:w-auto"
           >
             {loading ? (
               <>

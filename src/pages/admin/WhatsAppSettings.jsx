@@ -100,13 +100,13 @@ const WhatsAppSettings = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen p-6">
       <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <MessageCircle className="h-6 w-6 text-green-600" />
+        <h1 className="text-2xl font-bold flex items-center gap-2 text-gray-900 dark:text-gray-100">
+          <MessageCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
           Configuration WhatsApp
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Configurez les notifications WhatsApp pour recevoir des alertes en temps réel
         </p>
       </div>
@@ -116,16 +116,16 @@ const WhatsAppSettings = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-lg shadow-md p-6"
+          className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg p-6"
         >
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Settings className="h-5 w-5 text-blue-600" />
+          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+            <Settings className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             Configuration Twilio
           </h2>
           
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Account SID
               </label>
               <input
@@ -133,13 +133,13 @@ const WhatsAppSettings = () => {
                 name="twilioAccountSid"
                 value={settings.twilioAccountSid}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Auth Token
               </label>
               <input
@@ -147,13 +147,13 @@ const WhatsAppSettings = () => {
                 name="twilioAuthToken"
                 value={settings.twilioAuthToken}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Votre token d'authentification"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Numéro WhatsApp Twilio
               </label>
               <input
@@ -161,7 +161,7 @@ const WhatsAppSettings = () => {
                 name="twilioWhatsAppNumber"
                 value={settings.twilioWhatsAppNumber}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="whatsapp:+1234567890"
               />
               <p className="text-xs text-gray-500 mt-1">
@@ -170,7 +170,7 @@ const WhatsAppSettings = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Numéro WhatsApp Admin
               </label>
               <input
@@ -178,7 +178,7 @@ const WhatsAppSettings = () => {
                 name="adminWhatsAppNumber"
                 value={settings.adminWhatsAppNumber}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="+221771234567"
               />
               <p className="text-xs text-gray-500 mt-1">
@@ -193,7 +193,7 @@ const WhatsAppSettings = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-lg shadow-md p-6"
+          className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg p-6"
         >
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <MessageCircle className="h-5 w-5 text-green-600" />

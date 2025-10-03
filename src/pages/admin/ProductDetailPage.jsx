@@ -53,19 +53,30 @@ const ProductDetailPage = () => {
     setShowEditModal(false);
   };
 
+  const handleProductSaved = async () => {
+    // Refetch the product data after saving
+    const { data } = await supabase
+      .from('products')
+      .select('*, categories(name)')
+      .eq('id', id)
+      .single();
+    setProduct(data);
+    setShowEditModal(false);
+  };
+
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-16 w-16 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="h-16 w-16 animate-spin rounded-full border-b-2 border-t-2 border-blue-500 dark:border-blue-400"></div>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="container mx-auto my-16 px-4 text-center">
-        <h2 className="mb-6 text-2xl font-bold">Produit introuvable</h2>
-        <Link to="/admin/products" className="rounded-md bg-blue-600 px-6 py-3 text-white hover:bg-blue-700 inline-flex items-center">
+      <div className="container mx-auto my-16 px-4 text-center bg-gray-50 dark:bg-gray-900 min-h-screen">
+        <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Produit introuvable</h2>
+        <Link to="/admin/products" className="rounded-md bg-blue-600 dark:bg-blue-500 px-6 py-3 text-white hover:bg-blue-700 dark:hover:bg-blue-600 inline-flex items-center">
           <ArrowLeft className="mr-2 h-5 w-5" /> Retour à la liste
         </Link>
       </div>
@@ -81,8 +92,8 @@ const ProductDetailPage = () => {
   ].filter(Boolean);
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-6xl">
-      <Link to="/admin/products" className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200">
+    <div className="container mx-auto px-4 py-12 max-w-6xl bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <Link to="/admin/products" className="mb-8 inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200">
         <ArrowLeft className="mr-2 h-5 w-5" /> Retour à la liste
       </Link>
       <div className="rounded-2xl bg-white dark:bg-gray-800 shadow-xl p-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-start border border-gray-200 dark:border-gray-700">
@@ -105,14 +116,14 @@ const ProductDetailPage = () => {
           <div className="flex gap-4 mt-8">
             <button
               onClick={handleEdit}
-              className="inline-flex items-center rounded-md bg-yellow-400 px-5 py-2 font-medium text-gray-900 hover:bg-yellow-300 transition"
+              className="inline-flex items-center rounded-md bg-yellow-400 dark:bg-yellow-500 px-5 py-2 font-medium text-gray-900 dark:text-gray-100 hover:bg-yellow-300 dark:hover:bg-yellow-400 transition"
             >
               <Edit className="mr-2 h-5 w-5" /> Modifier
             </button>
             <button
               onClick={handleDelete}
               disabled={deleting}
-              className="inline-flex items-center rounded-md bg-red-600 px-5 py-2 font-medium text-white hover:bg-red-700 transition disabled:opacity-50"
+              className="inline-flex items-center rounded-md bg-red-600 dark:bg-red-500 px-5 py-2 font-medium text-white hover:bg-red-700 dark:hover:bg-red-600 transition disabled:opacity-50"
             >
               <Trash2 className="mr-2 h-5 w-5" /> {deleting ? 'Suppression...' : 'Supprimer'}
             </button>
@@ -123,7 +134,7 @@ const ProductDetailPage = () => {
         <>
           <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="relative w-full max-w-4xl bg-white dark:bg-gray-800 rounded-lg shadow-xl max-h-[90vh] overflow-hidden border border-gray-200 dark:border-gray-700">
+            <div className="relative w-full max-w-[76vw] mx-4 bg-white dark:bg-gray-800 rounded-lg shadow-xl max-h-[95vh] overflow-hidden border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Modifier le produit</h2>
                 <button
@@ -134,7 +145,7 @@ const ProductDetailPage = () => {
                 </button>
               </div>
               <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
-                <ProductForm product={product} onClose={handleModalClose} />
+                <ProductForm product={product} onClose={handleModalClose} onSaved={handleProductSaved} />
               </div>
             </div>
           </div>

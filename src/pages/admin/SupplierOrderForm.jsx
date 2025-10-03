@@ -3,12 +3,14 @@ import { supabase } from '../../lib/supabase';
 import ShippingAgencyForm from './ShippingAgencyForm';
 import DeliveryForm from './DeliveryForm';
 
-const emptyItem = { product_name: '', unit_price_usd: '', quantity: '', unit_weight: '', image_url: '' };
+const emptyItem = { product_name: '', unit_price_usd: '', quantity: '', unit_weight: '', unit_cbm: '', image_url: '' };
 
 export default function SupplierOrderForm({ order, onClose }) {
   const isEdit = !!order;
   const [form, setForm] = useState({
     order_date: '',
+    title: '',
+    order_number: '',
     total_amount_usd: '',
     bank_fees_usd: '',
     shipping_fees_usd: '',
@@ -28,16 +30,33 @@ export default function SupplierOrderForm({ order, onClose }) {
     if (order) {
       setForm({
         order_date: order.order_date || '',
-        total_amount_usd: order.total_amount_usd || '',
-        bank_fees_usd: order.bank_fees_usd || '',
-        shipping_fees_usd: order.shipping_fees_usd || '',
-        usd_xof_value: order.usd_xof_value || '',
+        title: order.title || '',
+        order_number: order.order_number || '',
+        total_amount_usd: order.total_amount_usd ? order.total_amount_usd.toString() : '',
+        bank_fees_usd: order.bank_fees_usd ? order.bank_fees_usd.toString() : '',
+        shipping_fees_usd: order.shipping_fees_usd ? order.shipping_fees_usd.toString() : '',
+        usd_xof_value: order.usd_xof_value ? order.usd_xof_value.toString() : '',
         image_url: order.image_url || '',
         notes: order.notes || '',
         items: []
       });
       fetchItems(order.id);
       fetchDeliveries(order.id);
+    } else {
+      // Reset form when no order (new order)
+      setForm({
+        order_date: '',
+        title: '',
+        order_number: '',
+        total_amount_usd: '',
+        bank_fees_usd: '',
+        shipping_fees_usd: '',
+        usd_xof_value: '',
+        image_url: '',
+        notes: '',
+        items: [ { ...emptyItem } ]
+      });
+      setErrorMsg('');
     }
     // Trap focus in modal
     const focusableEls = modalRef.current?.querySelectorAll('input, button, textarea, select, [tabindex]:not([tabindex="-1"])');
@@ -49,7 +68,17 @@ export default function SupplierOrderForm({ order, onClose }) {
       .from('supplier_order_items')
       .select('*')
       .eq('supplier_order_id', orderId);
-    setForm(f => ({ ...f, items: data && data.length ? data : [ { ...emptyItem } ] }));
+    
+    // Convert numeric fields to strings for form inputs
+    const processedItems = data && data.length ? data.map(item => ({
+      ...item,
+              unit_price_usd: item.unit_price_usd ? item.unit_price_usd.toString() : '',
+        quantity: item.quantity ? item.quantity.toString() : '',
+        unit_weight: item.unit_weight ? item.unit_weight.toString() : '',
+        unit_cbm: item.unit_cbm ? item.unit_cbm.toString() : ''
+    })) : [ { ...emptyItem } ];
+    
+    setForm(f => ({ ...f, items: processedItems }));
   };
 
   const fetchDeliveries = async (orderId) => {
@@ -74,11 +103,11 @@ export default function SupplierOrderForm({ order, onClose }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     
-    // Handle numeric fields - convert empty strings to null
+    // Handle numeric fields - store as string for input, will be converted on submit
     if (['total_amount_usd', 'bank_fees_usd', 'shipping_fees_usd', 'usd_xof_value'].includes(name)) {
-      const numValue = value === '' ? '' : parseFloat(value);
-      if (value === '' || (!isNaN(numValue) && numValue >= 0)) {
-        setForm({ ...form, [name]: value === '' ? '' : numValue.toString() });
+      // Allow empty string or valid numbers
+      if (value === '' || (!isNaN(parseFloat(value)) && parseFloat(value) >= 0)) {
+        setForm({ ...form, [name]: value });
       }
     } else {
       setForm({ ...form, [name]: value });
@@ -89,17 +118,17 @@ export default function SupplierOrderForm({ order, onClose }) {
     const { name, value } = e.target;
     const items = [...form.items];
     
-    // Handle numeric fields in items
-    if (['unit_price_usd', 'quantity', 'unit_weight'].includes(name)) {
+    // Handle numeric fields in items - store as string for input
+    if (['unit_price_usd', 'quantity', 'unit_weight', 'unit_cbm'].includes(name)) {
       if (name === 'quantity') {
-        const intValue = value === '' ? '' : parseInt(value);
-        if (value === '' || (!isNaN(intValue) && intValue > 0)) {
-          items[idx][name] = value === '' ? '' : intValue.toString();
+        // Allow empty string or valid positive integers
+        if (value === '' || (!isNaN(parseInt(value)) && parseInt(value) > 0)) {
+          items[idx][name] = value;
         }
       } else {
-        const numValue = value === '' ? '' : parseFloat(value);
-        if (value === '' || (!isNaN(numValue) && numValue >= 0)) {
-          items[idx][name] = value === '' ? '' : numValue.toString();
+        // Allow empty string or valid positive numbers
+        if (value === '' || (!isNaN(parseFloat(value)) && parseFloat(value) >= 0)) {
+          items[idx][name] = value;
         }
       }
     } else {
@@ -147,15 +176,16 @@ export default function SupplierOrderForm({ order, onClose }) {
     // Clean and validate form data
     const cleanedForm = {
       ...form,
-      total_amount_usd: form.total_amount_usd ? parseFloat(form.total_amount_usd) : null,
-      bank_fees_usd: form.bank_fees_usd ? parseFloat(form.bank_fees_usd) : 0,
-      shipping_fees_usd: form.shipping_fees_usd ? parseFloat(form.shipping_fees_usd) : 0,
-      usd_xof_value: form.usd_xof_value ? parseFloat(form.usd_xof_value) : null,
+      total_amount_usd: (form.total_amount_usd && form.total_amount_usd !== '') ? parseFloat(form.total_amount_usd) : null,
+      bank_fees_usd: (form.bank_fees_usd && form.bank_fees_usd !== '') ? parseFloat(form.bank_fees_usd) : 0,
+      shipping_fees_usd: (form.shipping_fees_usd && form.shipping_fees_usd !== '') ? parseFloat(form.shipping_fees_usd) : 0,
+      usd_xof_value: (form.usd_xof_value && form.usd_xof_value !== '') ? parseFloat(form.usd_xof_value) : null,
       items: form.items.map(item => ({
         ...item,
-        unit_price_usd: item.unit_price_usd ? parseFloat(item.unit_price_usd) : null,
-        quantity: item.quantity ? parseInt(item.quantity) : null,
-        unit_weight: item.unit_weight ? parseFloat(item.unit_weight) : null
+        unit_price_usd: (item.unit_price_usd && item.unit_price_usd !== '') ? parseFloat(item.unit_price_usd) : null,
+        quantity: (item.quantity && item.quantity !== '') ? parseInt(item.quantity) : null,
+        unit_weight: (item.unit_weight && item.unit_weight !== '') ? parseFloat(item.unit_weight) : null,
+        unit_cbm: (item.unit_cbm && item.unit_cbm !== '') ? parseFloat(item.unit_cbm) : null
       }))
     };
     
@@ -232,6 +262,7 @@ export default function SupplierOrderForm({ order, onClose }) {
           unit_price_usd: item.unit_price_usd,
           quantity: item.quantity,
           unit_weight: item.unit_weight || null,
+          unit_cbm: item.unit_cbm || null,
           image_url: item.image_url || null
         });
         
@@ -239,6 +270,22 @@ export default function SupplierOrderForm({ order, onClose }) {
       }
       
       setLoading(false);
+      
+      // Reset form state after successful save
+      setForm({
+        order_date: '',
+        title: '',
+        order_number: '',
+        total_amount_usd: '',
+        bank_fees_usd: '',
+        shipping_fees_usd: '',
+        usd_xof_value: '',
+        image_url: '',
+        notes: '',
+        items: [ { ...emptyItem } ]
+      });
+      setErrorMsg('');
+      
       onClose(true);
     } catch (err) {
       console.error('Error saving order:', err);
@@ -248,58 +295,34 @@ export default function SupplierOrderForm({ order, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div
-        ref={modalRef}
-        className="w-full max-w-4xl max-h-[95vh] bg-white rounded-lg shadow-lg flex flex-col"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-        tabIndex={-1}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <div>
-            <h1 id="modal-title" className="text-lg font-semibold text-gray-900">
-              {isEdit ? 'Modifier' : 'Nouvelle'} Commande Fournisseur
-            </h1>
-            <p className="text-sm text-gray-600 mt-1">
-              {form.items.filter(i => i.product_name && i.unit_price_usd && i.quantity).length} produits valides
-            </p>
-          </div>
-          <button
-            onClick={() => onClose(false)}
-            className="p-2 text-gray-400 hover:text-gray-600 rounded-lg"
-            aria-label="Fermer"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
+    <div className="w-full bg-white dark:bg-gray-900">
         {/* Error Message */}
         {errorMsg && (
-          <div className="mx-4 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <div className="flex items-center gap-2">
-              <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="mx-4 sm:mx-6 mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <div className="flex items-center gap-3">
+            <svg className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span className="text-red-700 text-sm">{errorMsg}</span>
-            </div>
+            <span className="text-red-700 dark:text-red-400 text-sm sm:text-base">{errorMsg}</span>
+          </div>
           </div>
         )}
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4">
-          <form id="supplier-order-form" onSubmit={handleSubmit} className="space-y-6">
+      <div className="p-4 sm:p-6 lg:p-8">
+        <form id="supplier-order-form" onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
             
             {/* General Information */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h2 className="text-base font-medium text-gray-900 mb-4">Informations générales</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 sm:p-6 lg:p-8 border border-gray-200 dark:border-gray-700">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6 flex items-center gap-2">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Informations générales
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+              <div className="space-y-2">
+                <label className="block text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-300">
                     Date commande <span className="text-red-500">*</span>
                   </label>
                   <input 
@@ -307,23 +330,51 @@ export default function SupplierOrderForm({ order, onClose }) {
                     name="order_date" 
                     value={form.order_date} 
                     onChange={handleChange} 
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors" 
                     required 
                   />
                 </div>
                 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+              <div className="space-y-2">
+                <label className="block text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-300">
+                  Titre de la commande
+                </label>
+                <input 
+                  type="text" 
+                  name="title" 
+                  value={form.title} 
+                  onChange={handleChange} 
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors" 
+                  placeholder="Ex: Commande smartphones iPhone"
+                />
+              </div>
+                
+              <div className="space-y-2">
+                <label className="block text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-300">
+                  Numéro de commande Alibaba
+                </label>
+                <input 
+                  type="text" 
+                  name="order_number" 
+                  value={form.order_number} 
+                  onChange={handleChange} 
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors" 
+                  placeholder="Ex: 274578047001029792"
+                />
+              </div>
+                
+              <div className="space-y-2">
+                <label className="block text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-300">
                     Montant total (USD) <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</span>
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 text-sm sm:text-base">$</span>
                     <input 
                       type="number" 
                       name="total_amount_usd" 
                       value={form.total_amount_usd} 
                       onChange={handleChange} 
-                      className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full pl-8 pr-3 sm:px-4 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors"
                       min="0.01" 
                       step="0.01"
                       placeholder="0.00"
@@ -332,203 +383,251 @@ export default function SupplierOrderForm({ order, onClose }) {
                   </div>
                 </div>
                 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Frais bancaires (USD)
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</span>
-                    <input 
-                      type="number" 
-                      name="bank_fees_usd" 
-                      value={form.bank_fees_usd} 
-                      onChange={handleChange} 
-                      className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                      min="0" 
-                      step="0.01"
-                      placeholder="0.00"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Frais de livraison (USD)
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</span>
-                    <input 
-                      type="number" 
-                      name="shipping_fees_usd" 
-                      value={form.shipping_fees_usd} 
-                      onChange={handleChange} 
-                      className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                      min="0" 
-                      step="0.01"
-                      placeholder="0.00"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Taux USD → CFA <span className="text-red-500">*</span>
-                  </label>
+              <div className="space-y-2">
+                <label className="block text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-300">
+                  Frais bancaires (USD)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 text-sm sm:text-base">$</span>
                   <input 
                     type="number" 
-                    name="usd_xof_value" 
-                    value={form.usd_xof_value} 
+                    name="bank_fees_usd" 
+                    value={form.bank_fees_usd} 
                     onChange={handleChange} 
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    min="0.01" 
-                    step="0.01" 
-                    placeholder="620" 
-                    required 
+                    className="w-full pl-8 pr-3 sm:px-4 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors" 
+                    min="0" 
+                    step="0.01"
+                    placeholder="0.00"
                   />
                 </div>
+              </div>
                 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Image (URL)
-                  </label>
+              <div className="space-y-2">
+                <label className="block text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-300">
+                  Frais de livraison (USD)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 text-sm sm:text-base">$</span>
                   <input 
-                    type="url" 
-                    name="image_url" 
-                    value={form.image_url} 
+                    type="number" 
+                    name="shipping_fees_usd" 
+                    value={form.shipping_fees_usd} 
                     onChange={handleChange} 
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                    placeholder="https://exemple.com/image.jpg"
+                    className="w-full pl-8 pr-3 sm:px-4 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors" 
+                    min="0" 
+                    step="0.01"
+                    placeholder="0.00"
                   />
                 </div>
+              </div>
                 
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Notes
-                  </label>
-                  <textarea 
-                    name="notes" 
-                    value={form.notes} 
-                    onChange={handleChange} 
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none" 
-                    rows="3"
-                    placeholder="Notes sur cette commande..."
-                  />
-                </div>
+              <div className="space-y-2">
+                <label className="block text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-300">
+                  Taux USD → CFA <span className="text-red-500">*</span>
+                </label>
+                <input 
+                  type="number" 
+                  name="usd_xof_value" 
+                  value={form.usd_xof_value} 
+                  onChange={handleChange} 
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors"
+                  min="0.01" 
+                  step="0.01" 
+                  placeholder="620" 
+                  required 
+                />
+              </div>
+                
+              <div className="space-y-2">
+                <label className="block text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-300">
+                  Image (URL)
+                </label>
+                <input 
+                  type="url" 
+                  name="image_url" 
+                  value={form.image_url} 
+                  onChange={handleChange} 
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors" 
+                  placeholder="https://exemple.com/image.jpg"
+                />
+              </div>
+                
+              <div className="space-y-2 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+                <label className="block text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-300">
+                  Notes
+                </label>
+                <textarea 
+                  name="notes" 
+                  value={form.notes} 
+                  onChange={handleChange} 
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors resize-none" 
+                  rows="3"
+                  placeholder="Notes sur cette commande..."
+                />
+              </div>
               </div>
             </div>
 
             {/* Products */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-medium text-gray-900">
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 sm:p-6 lg:p-8 border border-gray-200 dark:border-gray-700">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
                   Produits ({form.items.filter(i => i.product_name).length})
                 </h2>
                 <button 
                   type="button" 
                   onClick={addItem} 
-                  className="px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
-                >
-                  + Ajouter
+                className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 text-white text-sm sm:text-base rounded-lg hover:from-blue-700 hover:to-blue-800 dark:hover:from-blue-600 dark:hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 w-full sm:w-auto flex items-center justify-center gap-2 font-medium"
+              >
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                <span className="hidden sm:inline">Ajouter un produit</span>
+                <span className="sm:hidden">Ajouter</span>
                 </button>
               </div>
               
-              <div className="space-y-4">
+            <div className="space-y-4 sm:space-y-6">
                 {form.items.map((item, idx) => (
-                  <div key={idx} className="bg-white rounded-lg border border-gray-200 p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+                <div key={idx} className="bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 p-4 sm:p-6 shadow-sm dark:shadow-md">
+                  <div className="space-y-4 sm:space-y-6">
+                    {/* Product Header */}
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100">
+                        Produit #{idx + 1}
+                      </h3>
+                      <div className="flex gap-2">
+                        <button 
+                          type="button" 
+                          onClick={() => addItem()} 
+                          className="px-3 py-1.5 bg-green-600 dark:bg-green-500 text-white text-xs sm:text-sm rounded-md hover:bg-green-700 dark:hover:bg-green-600 transition-colors flex items-center gap-1"
+                          title="Ajouter un produit"
+                        >
+                          <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                          </svg>
+                          <span className="hidden sm:inline">Ajouter</span>
+                        </button>
+                        <button 
+                          type="button" 
+                          onClick={() => removeItem(idx)} 
+                          className="px-3 py-1.5 bg-red-600 dark:bg-red-500 text-white text-xs sm:text-sm rounded-md hover:bg-red-700 dark:hover:bg-red-600 transition-colors flex items-center gap-1"
+                          title="Supprimer ce produit"
+                          disabled={form.items.length === 1}
+                        >
+                          <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          <span className="hidden sm:inline">Supprimer</span>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Product Details Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                       {/* Product Name */}
-                      <div className="md:col-span-4">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Nom du produit</label>
+                      <div className="sm:col-span-2 lg:col-span-2">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                          Nom du produit
+                        </label>
                         <input 
                           type="text" 
                           name="product_name" 
                           placeholder="Nom du produit" 
                           value={item.product_name} 
                           onChange={e => handleItemChange(idx, e)} 
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" 
+                          className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors" 
                         />
                       </div>
                       
                       {/* Price */}
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Prix USD</label>
+                      <div className="sm:col-span-1">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                          Prix USD
+                        </label>
                         <div className="relative">
-                          <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">$</span>
+                          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 text-sm">$</span>
                           <input 
                             type="number" 
                             name="unit_price_usd" 
                             placeholder="0.00" 
                             value={item.unit_price_usd} 
                             onChange={e => handleItemChange(idx, e)} 
-                            className="w-full pl-6 pr-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                            min="0.01" 
+                            className="w-full pl-8 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors"
+                            min="0" 
                             step="0.01" 
                           />
                         </div>
                       </div>
                       
                       {/* Quantity */}
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Quantité</label>
+                      <div className="sm:col-span-1">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                          Quantité
+                        </label>
                         <input 
                           type="number" 
                           name="quantity" 
                           placeholder="1" 
                           value={item.quantity} 
                           onChange={e => handleItemChange(idx, e)} 
-                          className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                          className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors"
                           min="1" 
                         />
                       </div>
                       
                       {/* Weight */}
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Poids (kg)</label>
+                      <div className="sm:col-span-1">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                          Poids (kg)
+                        </label>
                         <input 
                           type="number" 
                           name="unit_weight" 
                           placeholder="0.5" 
                           value={item.unit_weight} 
                           onChange={e => handleItemChange(idx, e)} 
-                          className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" 
+                          className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors" 
                           min="0" 
                           step="0.01"
                         />
                       </div>
                       
-                      {/* Actions */}
-                      <div className="md:col-span-2 flex items-end gap-2">
-                        <button 
-                          type="button" 
-                          onClick={() => addItem()} 
-                          className="px-2 py-2 bg-green-600 text-white text-xs rounded-md hover:bg-green-700"
-                          title="Ajouter un produit"
-                        >
-                          +
-                        </button>
-                        <button 
-                          type="button" 
-                          onClick={() => removeItem(idx)} 
-                          className="px-2 py-2 bg-red-600 text-white text-xs rounded-md hover:bg-red-700"
-                          title="Supprimer ce produit"
-                          disabled={form.items.length === 1}
-                        >
-                          ×
-                        </button>
+                      {/* CBM */}
+                      <div className="sm:col-span-1">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                          Volume (CBM)
+                        </label>
+                        <input 
+                          type="number" 
+                          name="unit_cbm" 
+                          placeholder="0.1" 
+                          value={item.unit_cbm} 
+                          onChange={e => handleItemChange(idx, e)} 
+                          className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors" 
+                          min="0" 
+                          step="0.01"
+                        />
                       </div>
                     </div>
                     
                     {/* Image URL */}
-                    <div className="mt-3">
-                      <label className="block text-xs font-medium text-gray-700 mb-1">Image (URL)</label>
+                    <div className="sm:col-span-2 lg:col-span-3">
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Image (URL)
+                      </label>
                       <input 
                         type="url" 
                         name="image_url" 
-                        placeholder="https://exemple.com/image.jpg" 
+                        placeholder="https://example.com/image.jpg" 
                         value={item.image_url} 
                         onChange={e => handleItemChange(idx, e)} 
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" 
+                        className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors" 
                       />
+                    </div>
                     </div>
                   </div>
                 ))}
@@ -537,42 +636,42 @@ export default function SupplierOrderForm({ order, onClose }) {
 
             {/* Deliveries */}
             {order?.id && (
-              <div className="bg-gray-50 rounded-lg p-4">
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-base font-medium text-gray-900">
+                  <h2 className="text-base font-medium text-gray-900 dark:text-gray-100">
                     Livraisons ({deliveries.length})
                   </h2>
                   <button 
                     type="button" 
                     onClick={() => { setEditDelivery(null); setShowDeliveryModal(true); }}
-                    className="px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
+                    className="px-3 py-1 bg-blue-600 dark:bg-blue-500 text-white text-sm rounded-md hover:bg-blue-700 dark:hover:bg-blue-600"
                   >
                     + Ajouter
                   </button>
                 </div>
                 
                 {deliveries.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                     <p>Aucune livraison</p>
                     <button 
                       type="button" 
                       onClick={() => { setEditDelivery(null); setShowDeliveryModal(true); }}
-                      className="mt-2 px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
+                      className="mt-2 px-3 py-1 bg-blue-600 dark:bg-blue-500 text-white text-sm rounded-md hover:bg-blue-700 dark:hover:bg-blue-600"
                     >
                       Ajouter la première livraison
                     </button>
                   </div>
                 ) : (
-                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                  <div className="bg-white dark:bg-gray-600 rounded-lg border border-gray-200 dark:border-gray-500 overflow-hidden">
                     <div className="overflow-x-auto max-h-60 overflow-y-auto">
                       <table className="min-w-full">
-                        <thead className="bg-gray-50 sticky top-0">
+                        <thead className="bg-gray-50 dark:bg-gray-700 sticky top-0">
                           <tr>
-                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-700">Agence</th>
-                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-700">Type</th>
-                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-700">Statut</th>
-                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-700">Coût</th>
-                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-700">Actions</th>
+                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300">Agence</th>
+                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300">Type</th>
+                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300">Statut</th>
+                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300">Coût</th>
+                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
@@ -648,28 +747,61 @@ export default function SupplierOrderForm({ order, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="border-t border-gray-200 p-4 bg-white">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <div className="text-xs text-gray-500">
+      <div className="border-t border-gray-200 dark:border-gray-700 p-4 sm:p-6 bg-gray-50 dark:bg-gray-800">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6">
+          <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
               <span className="text-red-500">*</span> Champs obligatoires • {form.items.filter(i => i.product_name && i.unit_price_usd && i.quantity).length} produits valides
             </div>
-            <div className="flex gap-3 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <button 
                 type="button" 
-                onClick={() => onClose(false)}
-                className="flex-1 sm:flex-none px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                onClick={() => {
+                  // Reset form state when canceling
+                  setForm({
+                    order_date: '',
+                    title: '',
+                    order_number: '',
+                    total_amount_usd: '',
+                    bank_fees_usd: '',
+                    shipping_fees_usd: '',
+                    usd_xof_value: '',
+                    image_url: '',
+                    notes: '',
+                    items: [ { ...emptyItem } ]
+                  });
+                  setErrorMsg('');
+                  onClose(false);
+                }}
+              className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 dark:bg-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors flex items-center justify-center gap-2 font-medium"
               >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
                 Annuler
               </button>
               <button 
                 type="submit" 
                 form="supplier-order-form"
                 disabled={loading}
-                className="flex-1 sm:flex-none px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-              >
-                {loading ? 'Enregistrement...' : (isEdit ? 'Modifier' : 'Créer')}
+              className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 font-medium"
+            >
+              {loading ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Enregistrement...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  {isEdit ? 'Modifier' : 'Créer'}
+                </>
+              )}
               </button>
-            </div>
           </div>
         </div>
       </div>
