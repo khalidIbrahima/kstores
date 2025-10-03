@@ -9,6 +9,7 @@ import OrderNotificationHistory from '../../components/OrderNotificationHistory'
 import { ArrowLeft, Edit, Trash2, Bell, Mail, MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 import QRCode from 'react-qr-code';
+import { useStoreSettings } from '../../hooks/useStoreSettings';
 
 const OrderDetailPage = () => {
   const { t, i18n } = useTranslation();
@@ -17,6 +18,7 @@ const OrderDetailPage = () => {
   const [error, setError] = useState(null);
   const { id: orderId } = useParams();
   const navigate = useNavigate();
+  const { settings } = useStoreSettings();
 
   const fetchOrder = useCallback(async () => {
     setLoading(true);
@@ -304,7 +306,7 @@ const OrderDetailPage = () => {
                   order.order_items.map((item) => (
                     <div key={item.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-3 border-b border-gray-100 last:border-b-0 space-y-2 sm:space-y-0">
                       <div className="flex items-center space-x-3">
-                        {item.products?.image_url && (
+                        {settings?.display_order_images && item.products?.image_url && (
                           <img
                             src={item.products.image_url}
                             alt={item.products.name}

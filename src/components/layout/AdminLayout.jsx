@@ -87,6 +87,7 @@ const AdminLayout = () => {
         { path: '/admin/categories', icon: Tags, label: 'Categories' },
         { path: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
         { path: '/admin/supplier-orders', icon: ShoppingBag, label: 'Commandes Fournisseur' },
+        { path: '/admin/supplier-products', icon: Package, label: 'Produits Fournisseur' },
         { path: '/admin/shipping-agencies', icon: Package, label: 'Agences d\'Expédition' },
         { path: '/admin/inventory', icon: Boxes, label: 'Inventory' },
         { path: '/admin/iptv-plans', icon: Tv, label: 'IPTV Plans' }

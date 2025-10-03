@@ -23,7 +23,8 @@ const CreateOrderPage = () => {
     customerState: '',
     customerZipCode: '',
     status: 'pending',
-    notes: ''
+    notes: '',
+    totalDiscount: 0
   });
   const [productSearch, setProductSearch] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -103,7 +104,8 @@ const CreateOrderPage = () => {
         name: product.name,
         price: product.price,
         quantity: quantity,
-        image_url: product.image_url
+        image_url: product.image_url,
+        discount: 0
       }]);
     }
 
@@ -137,8 +139,28 @@ const CreateOrderPage = () => {
     );
   };
 
+  const updateProductDiscount = (productId, newDiscount) => {
+    const discount = Math.max(0, parseFloat(newDiscount) || 0);
+    
+    setSelectedProducts(prev => 
+      prev.map(item => 
+        item.id === productId 
+          ? { ...item, discount: discount }
+          : item
+      )
+    );
+  };
+
   const calculateTotal = () => {
     return selectedProducts.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
+  const calculateTotalDiscount = () => {
+    return selectedProducts.reduce((total, item) => total + (item.discount || 0), 0);
+  };
+
+  const calculateFinalTotal = () => {
+    return calculateTotal() - calculateTotalDiscount();
   };
 
   const handleSubmit = async (e) => {
@@ -161,15 +183,16 @@ const CreateOrderPage = () => {
       // Create order
       const orderToCreate = {
         user_id: null, // Manual order
-        total: calculateTotal(),
+        total: calculateFinalTotal(),
+        TotalDiscount: calculateTotalDiscount(),
         status: orderData.status,
         shipping_address: {
           name: orderData.customerName,
           email: orderData.customerEmail,
           phone: orderData.customerPhone,
           address: orderData.customerAddress,
-          city: orderData.customerCity,
-          state: orderData.customerState        },
+        },
+        notes: orderData.notes
       };
 
       const { data: order, error: orderError } = await supabase
@@ -181,7 +204,7 @@ const CreateOrderPage = () => {
       if (orderError) throw orderError;
 
       // Envoyer les notifications WhatsApp
-      try {
+      /* try {
         // Notification à l'admin
         await sendOrderWhatsappNotificationToAdmin(order);
         
@@ -192,14 +215,15 @@ const CreateOrderPage = () => {
       } catch (error) {
         console.error('Error sending WhatsApp notifications:', error);
         // Ne pas bloquer le processus de commande si les notifications échouent
-      }
+      } */
 
       // Create order items
       const orderItems = selectedProducts.map(item => ({
         order_id: order.id,
         product_id: item.id,
         quantity: item.quantity,
-        price: item.price
+        price: item.price,
+        discount: item.discount || 0
       }));
 
       const { error: itemsError } = await supabase
@@ -228,9 +252,9 @@ const CreateOrderPage = () => {
         customerEmail: '',
         customerPhone: '',
         customerAddress: '',
-        customerCity: '',
-        customerState: '',
-        status: 'pending',
+        status: 'Delivered',
+        notes: '',
+        totalDiscount: 0
       });
       setSelectedProducts([]);
       setProductSearch('');
@@ -331,32 +355,7 @@ const CreateOrderPage = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    name="customerCity"
-                    value={orderData.customerCity}
-                    onChange={handleInputChange}
-                    className="w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 px-3 py-3 sm:py-2 focus:border-blue-500 focus:outline-none text-base"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    State
-                  </label>
-                  <input
-                    type="text"
-                    name="customerState"
-                    value={orderData.customerState}
-                    onChange={handleInputChange}
-                    className="w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 px-3 py-3 sm:py-2 focus:border-blue-500 focus:outline-none text-base"
-                  />
-                </div>
-              </div>
+              
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -374,6 +373,20 @@ const CreateOrderPage = () => {
                   <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Notes
+                </label>
+                <textarea
+                  name="notes"
+                  value={orderData.notes}
+                  onChange={handleInputChange}
+                  rows={3}
+                  className="w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 px-3 py-3 sm:py-2 focus:border-blue-500 focus:outline-none text-base"
+                  placeholder="Order notes..."
+                />
               </div>
 
               
@@ -465,15 +478,29 @@ const CreateOrderPage = () => {
                         <h3 className="font-medium text-sm sm:text-base truncate text-gray-900 dark:text-gray-100">{item.name}</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400">{item.price.toLocaleString()} FCFA</p>
                       </div>
-                      <div className="flex items-center space-x-2 w-full sm:w-auto">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 sm:hidden">Qty:</label>
-                        <input
-                          type="number"
-                          min="1"
-                          value={item.quantity}
-                          onChange={(e) => updateProductQuantity(item.id, parseInt(e.target.value))}
-                          className="w-20 sm:w-16 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 px-2 py-1 text-center"
-                        />
+                      <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+                        <div className="flex items-center space-x-2">
+                          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Qty:</label>
+                          <input
+                            type="number"
+                            min="1"
+                            value={item.quantity}
+                            onChange={(e) => updateProductQuantity(item.id, parseInt(e.target.value))}
+                            className="w-16 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 px-2 py-1 text-center"
+                          />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Discount:</label>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={item.discount || 0}
+                            onChange={(e) => updateProductDiscount(item.id, e.target.value)}
+                            className="w-20 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 px-2 py-1 text-center"
+                            placeholder="0"
+                          />
+                        </div>
                         <button
                           onClick={() => removeProductFromOrder(item.id)}
                           className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-1"
@@ -488,25 +515,45 @@ const CreateOrderPage = () => {
 
               {/* Order Summary */}
               {selectedProducts.length > 0 && (
-                                  <div className="mt-6 pt-4 border-t dark:border-gray-600">
+                <div className="mt-6 pt-4 border-t dark:border-gray-600">
                   <div className="space-y-2 mb-4">
                     {selectedProducts.map((item) => (
-                      <div key={item.id} className="flex justify-between text-sm text-gray-900 dark:text-gray-100">
-                        <span className="truncate flex-1 mr-2">{item.name} x {item.quantity}</span>
-                        <span className="flex-shrink-0">{(item.price * item.quantity).toLocaleString()} FCFA</span>
+                      <div key={item.id} className="space-y-1">
+                        <div className="flex justify-between text-sm text-gray-900 dark:text-gray-100">
+                          <span className="truncate flex-1 mr-2">{item.name} x {item.quantity}</span>
+                          <span className="flex-shrink-0">{(item.price * item.quantity).toLocaleString()} FCFA</span>
+                        </div>
+                        {(item.discount || 0) > 0 && (
+                          <div className="flex justify-between text-xs text-red-600 dark:text-red-400 ml-4">
+                            <span>Discount:</span>
+                            <span>-{(item.discount || 0).toLocaleString()} FCFA</span>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
-                  <div className="flex justify-between items-center border-t dark:border-gray-600 pt-2">
-                    <span className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Total:</span>
-                    <span className="text-base sm:text-lg font-semibold text-green-600 dark:text-green-400">{calculateTotal().toLocaleString()} FCFA</span>
+                  <div className="space-y-2 border-t dark:border-gray-600 pt-2">
+                    <div className="flex justify-between text-sm text-gray-900 dark:text-gray-100">
+                      <span>Subtotal:</span>
+                      <span>{calculateTotal().toLocaleString()} FCFA</span>
+                    </div>
+                    {calculateTotalDiscount() > 0 && (
+                      <div className="flex justify-between text-sm text-red-600 dark:text-red-400">
+                        <span>Total Discount:</span>
+                        <span>-{calculateTotalDiscount().toLocaleString()} FCFA</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center border-t dark:border-gray-600 pt-2">
+                      <span className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Total:</span>
+                      <span className="text-base sm:text-lg font-semibold text-green-600 dark:text-green-400">{calculateFinalTotal().toLocaleString()} FCFA</span>
+                    </div>
                   </div>
                   
                   <button
                     type="submit"
                     onClick={handleSubmit}
                     disabled={isLoading}
-                    className="w-full mt-4 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 text-sm sm:text-base sm:hidden"
+                    className="w-full mt-4 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 text-sm sm:text-base hidden sm:flex"
                   >
                     {isLoading ? (
                       <>
@@ -532,7 +579,7 @@ const CreateOrderPage = () => {
         <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 z-50 sm:hidden">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-medium text-gray-900 dark:text-gray-100">Total:</span>
-            <span className="text-lg font-semibold text-green-600 dark:text-green-400">{calculateTotal().toLocaleString()} FCFA</span>
+            <span className="text-lg font-semibold text-green-600 dark:text-green-400">{calculateFinalTotal().toLocaleString()} FCFA</span>
           </div>
           <button
             type="submit"
