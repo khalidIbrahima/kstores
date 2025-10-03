@@ -495,6 +495,8 @@
         "pending": "Pending",
         "processing": "Processing",
         "completed": "Completed",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
         "cancelled": "Cancelled"
       },
       "details": {
@@ -506,7 +508,19 @@
         "date": "Order Date",
         "total": "Total Amount",
         "items": "Items",
-        "status": "Order Status"
+        "status": "Order Status",
+        "status_select": "Select order status",
+        "status_select_placeholder": "Select order status",
+        
+        "status_select_options": {
+          "pending": "Pending",
+          "processing": "Processing",
+          "shipped": "Shipped",
+          "delivered": "Delivered",
+          "cancelled": "Cancelled"
+        },
+        "status_description": "Order status",
+        "unknownCustomer": "Unknown customer"
       }
     },
     "dashboard": {

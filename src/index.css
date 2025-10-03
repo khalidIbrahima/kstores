@@ -106,6 +106,11 @@
   max-width: 32rem !important;
 }
 
+.dark .modal-content {
+  background-color: #1f2937 !important; /* gray-800 */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
 .modal-content-large {
   background-color: white !important;
   border-radius: 0.5rem !important;
@@ -117,7 +122,12 @@
   max-width: 56rem !important;
 }
 
-/* Force les couleurs pour les modales */
+.dark .modal-content-large {
+  background-color: #1f2937 !important; /* gray-800 */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Force les couleurs pour les modales - Mode sombre compatible */
 .modal-overlay *,
 .modal-content *,
 .modal-content-large * {
@@ -137,7 +147,7 @@
 .modal-content-large p,
 .modal-content-large label,
 .modal-content-large span {
-  color: #1f2937 !important; /* gray-800 */
+  color: inherit !important;
 }
 
 /* S'assurer que les inputs restent visibles */
@@ -147,23 +157,23 @@
 .modal-content-large input,
 .modal-content-large select,
 .modal-content-large textarea {
-  background-color: white !important;
-  color: #1f2937 !important;
-  border-color: #d1d5db !important; /* gray-300 */
+  background-color: inherit !important;
+  color: inherit !important;
+  border-color: inherit !important;
 }
 
 /* S'assurer que les boutons restent visibles */
 .modal-content button,
 .modal-content-large button {
-  background-color: #3b82f6 !important; /* blue-500 */
-  color: white !important;
+  background-color: inherit !important;
+  color: inherit !important;
 }
 
 .modal-content button.btn-outline,
 .modal-content-large button.btn-outline {
-  background-color: transparent !important;
-  color: #3b82f6 !important;
-  border-color: #3b82f6 !important;
+  background-color: inherit !important;
+  color: inherit !important;
+  border-color: inherit !important;
 }
 
 /* Styles pour les messages de calcul */

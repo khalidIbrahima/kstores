@@ -116,17 +116,25 @@ export default function OrderDetailsModal({ order, onClose }) {
                       )}
                       <div className="flex flex-col">
                         <span className="text-text">{item.products?.name}</span>
-                        {item.selected_color && (
-                          <div className="flex items-center mt-1">
-                            <div
-                              className="w-3 h-3 rounded-full border border-gray-300 mr-1"
-                              style={{ backgroundColor: JSON.parse(item.selected_color).hex }}
-                            />
-                            <span className="text-xs text-text-light">
-                              {JSON.parse(item.selected_color).name}
-                            </span>
-                          </div>
-                        )}
+                        {item.selected_color && (() => {
+                          try {
+                            const colorData = JSON.parse(item.selected_color);
+                            return (
+                              <div className="flex items-center mt-1">
+                                <div
+                                  className="w-3 h-3 rounded-full border border-gray-300 mr-1"
+                                  style={{ backgroundColor: colorData.hex }}
+                                />
+                                <span className="text-xs text-text-light">
+                                  {colorData.name}
+                                </span>
+                              </div>
+                            );
+                          } catch (error) {
+                            console.error('Error parsing selected_color:', error);
+                            return null;
+                          }
+                        })()}
                       </div>
                     </td>
                     <td className="px-4 py-2 text-text">{item.price ? `${item.price.toLocaleString()} FCFA` : ''}</td>

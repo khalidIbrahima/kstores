@@ -493,6 +493,8 @@
         "pending": "En attente",
         "processing": "En cours",
         "completed": "Terminée",
+        "shipped": "Expédiée",
+        "delivered": "Livrée",
         "cancelled": "Annulée"
       },
       "details": {
@@ -504,7 +506,18 @@
         "date": "Date de commande",
         "total": "Montant total",
         "items": "Articles",
-        "status": "Statut de la commande"
+        "status": "Statut de la commande",
+        "status_select": "Sélectionnez le statut de la commande",
+        "status_select_placeholder": "Sélectionnez le statut de la commande",
+        "status_select_options": {
+          "pending": "En attente",
+          "processing": "En cours", 
+          "shipped": "Expédiée",
+          "delivered": "Livrée",
+          "cancelled": "Annulée"
+        },
+        "status_description": "Statut de la commande",
+        "unknownCustomer": "Client inconnu"
       }
     },
     "products": {

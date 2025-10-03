@@ -104,38 +104,38 @@ export default function AdminInventory() {
   }
 
   const getStockStatus = (inventory) => {
-    if (inventory === 0) return { status: 'Out of Stock', color: 'bg-red-100 text-red-800', icon: XCircle };
-    if (inventory <= 10) return { status: 'Low Stock', color: 'bg-yellow-100 text-yellow-800', icon: AlertTriangle };
-    return { status: 'In Stock', color: 'bg-green-100 text-green-800', icon: CheckCircle };
+    if (inventory === 0) return { status: 'Out of Stock', color: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400', icon: XCircle };
+    if (inventory <= 10) return { status: 'Low Stock', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400', icon: AlertTriangle };
+    return { status: 'In Stock', color: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400', icon: CheckCircle };
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-4 bg-red-50 rounded-lg">
+      <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
         <div className="flex items-center">
-          <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
-          <p className="text-red-700">{error}</p>
+          <AlertCircle className="h-5 w-5 text-red-500 dark:text-red-400 mr-2" />
+          <p className="text-red-700 dark:text-red-400">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
           <Package className="h-6 w-6" />
           Inventory Management
         </h1>
-        <p className="mt-2 text-gray-600">
+        <p className="mt-2 text-gray-600 dark:text-gray-400">
           Monitor and manage your product inventory levels
         </p>
       </div>
@@ -145,15 +145,15 @@ export default function AdminInventory() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-lg shadow p-4"
+          className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-lg p-4"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Products</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Total Products</p>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.totalProducts}</h3>
             </div>
-            <div className="rounded-full bg-blue-100 p-3">
-              <Package className="h-6 w-6 text-blue-600" />
+            <div className="rounded-full bg-blue-100 dark:bg-blue-900/20 p-3">
+              <Package className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
         </motion.div>
@@ -162,15 +162,15 @@ export default function AdminInventory() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-lg shadow p-4"
+          className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-lg p-4"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Stock Value</p>
-              <h3 className="text-2xl font-bold">{stats.totalStockValue.toFixed(2)} {t('common.currency')}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Stock Value</p>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.totalStockValue.toFixed(2)} {t('common.currency')}</h3>
             </div>
-            <div className="rounded-full bg-green-100 p-3">
-              <TrendingUp className="h-6 w-6 text-green-600" />
+            <div className="rounded-full bg-green-100 dark:bg-green-900/20 p-3">
+              <TrendingUp className="h-6 w-6 text-green-600 dark:text-green-400" />
             </div>
           </div>
         </motion.div>
@@ -179,15 +179,15 @@ export default function AdminInventory() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-lg shadow p-4"
+          className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-lg p-4"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Low Stock Items</p>
-              <h3 className="text-2xl font-bold text-yellow-600">{stats.lowStockItems}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Low Stock Items</p>
+              <h3 className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{stats.lowStockItems}</h3>
             </div>
-            <div className="rounded-full bg-yellow-100 p-3">
-              <AlertTriangle className="h-6 w-6 text-yellow-600" />
+            <div className="rounded-full bg-yellow-100 dark:bg-yellow-900/20 p-3">
+              <AlertTriangle className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
             </div>
           </div>
         </motion.div>
@@ -196,15 +196,15 @@ export default function AdminInventory() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-lg shadow p-4"
+          className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-lg p-4"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Out of Stock</p>
-              <h3 className="text-2xl font-bold text-red-600">{stats.outOfStockItems}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Out of Stock</p>
+              <h3 className="text-2xl font-bold text-red-600 dark:text-red-400">{stats.outOfStockItems}</h3>
             </div>
-            <div className="rounded-full bg-red-100 p-3">
-              <XCircle className="h-6 w-6 text-red-600" />
+            <div className="rounded-full bg-red-100 dark:bg-red-900/20 p-3">
+              <XCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
             </div>
           </div>
         </motion.div>
@@ -213,15 +213,15 @@ export default function AdminInventory() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white rounded-lg shadow p-4"
+          className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-lg p-4"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Avg Stock Level</p>
-              <h3 className="text-2xl font-bold">{stats.averageStockLevel}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Avg Stock Level</p>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.averageStockLevel}</h3>
             </div>
-            <div className="rounded-full bg-purple-100 p-3">
-              <Package className="h-6 w-6 text-purple-600" />
+            <div className="rounded-full bg-purple-100 dark:bg-purple-900/20 p-3">
+              <Package className="h-6 w-6 text-purple-600 dark:text-purple-400" />
             </div>
           </div>
         </motion.div>
@@ -229,8 +229,8 @@ export default function AdminInventory() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold mb-4">Stock Levels by Product</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-lg p-6">
+          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Stock Levels by Product</h3>
           <div className="h-64">
             <Bar
               data={{
@@ -277,8 +277,8 @@ export default function AdminInventory() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold mb-4">Category Distribution</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-lg p-6">
+          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Category Distribution</h3>
           <div className="h-64">
             <Bar
               data={{
@@ -319,42 +319,42 @@ export default function AdminInventory() {
       </div>
 
       {/* Inventory Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold">Product Inventory</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-lg overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Product Inventory</h2>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Product
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Category
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Stock Level
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Unit Price
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Stock Value
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Status
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {products.map((product) => {
                 const stockStatus = getStockStatus(product.inventory);
                 const StockIcon = stockStatus.icon;
                 const stockValue = product.inventory * product.price;
                 
                 return (
-                  <tr key={product.id} className="hover:bg-gray-50">
+                  <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-10 w-10 flex-shrink-0">
@@ -368,14 +368,14 @@ export default function AdminInventory() {
                           />
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                             {product.name}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
+                      <div className="text-sm text-gray-900 dark:text-gray-100">
                         {product.categories?.name || 'Uncategorized'}
                       </div>
                     </td>
@@ -385,12 +385,12 @@ export default function AdminInventory() {
                     </div>
                   </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
+                      <div className="text-sm text-gray-900 dark:text-gray-100">
                         {product.price} {t('common.currency')}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
+                      <div className="text-sm text-gray-900 dark:text-gray-100">
                         {stockValue} {t('common.currency')}
                       </div>
                     </td>

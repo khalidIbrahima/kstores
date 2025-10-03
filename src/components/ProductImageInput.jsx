@@ -124,47 +124,48 @@ const ProductImageInput = ({ value, onChange, index }) => {
       </div>
 
       {/* Method Selector */}
-      <div className="flex space-x-2 bg-gray-50 p-1 rounded-lg">
+      <div className="flex space-x-1 sm:space-x-2 bg-gray-50 p-1 rounded-lg">
         <button
           type="button"
           onClick={() => setInputMethod('url')}
-          className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+          className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
             inputMethod === 'url'
               ? 'bg-white text-blue-600 shadow-sm'
               : 'text-gray-600 hover:text-gray-900'
           }`}
         >
-          <Link className="h-4 w-4" />
-          URL
+          <Link className="h-3 w-3 sm:h-4 sm:w-4" />
+          <span className="hidden xs:inline">URL</span>
+          <span className="xs:hidden">Lien</span>
         </button>
         <button
           type="button"
           onClick={() => setInputMethod('upload')}
-          className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+          className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
             inputMethod === 'upload'
               ? 'bg-white text-blue-600 shadow-sm'
               : 'text-gray-600 hover:text-gray-900'
           }`}
         >
-          <Upload className="h-4 w-4" />
+          <Upload className="h-3 w-3 sm:h-4 sm:w-4" />
           Upload
         </button>
       </div>
 
       {/* Input Area */}
-      <div className="flex gap-3">
-        <div className="flex-1">
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex-1 min-w-0">
           {inputMethod === 'url' ? (
             <input
               type="url"
               value={value}
               onChange={handleUrlChange}
               placeholder="https://exemple.com/media.jpg ou .mp4"
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 truncate"
             />
           ) : (
             <div
-              className={`relative border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+              className={`relative border-2 border-dashed rounded-lg p-3 sm:p-4 text-center transition-colors min-h-[120px] ${
                 isUploading
                   ? 'border-blue-300 bg-blue-50'
                   : 'border-gray-300 hover:border-gray-400'
@@ -188,13 +189,16 @@ const ProductImageInput = ({ value, onChange, index }) => {
                   </>
                 ) : (
                   <>
-                    <ImageIcon className="h-8 w-8 text-gray-400" />
-                    <p className="mt-2 text-sm text-gray-600">
+                    <ImageIcon className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
+                    <p className="mt-2 text-xs sm:text-sm text-gray-600">
                       Cliquez ou glissez un fichier
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 hidden sm:block">
                       Images: PNG, JPG, WebP, GIF<br/>
                       Vidéos: MP4, WebM, OGG (max 50MB)
+                    </p>
+                    <p className="text-xs text-gray-500 sm:hidden">
+                      Images & Vidéos acceptés
                     </p>
                   </>
                 )}
@@ -208,7 +212,7 @@ const ProductImageInput = ({ value, onChange, index }) => {
         </div>
         
         {preview && (
-          <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-50">
+          <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-50 self-start">
             {mediaType === 'video' ? (
               <video
                 src={preview}
