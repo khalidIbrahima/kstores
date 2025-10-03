@@ -177,37 +177,37 @@ const AdvancedMetrics = () => {
 
   const getAlertColor = (type) => {
     switch (type) {
-      case 'error': return 'bg-red-50 border-red-200 text-red-800';
-      case 'warning': return 'bg-yellow-50 border-yellow-200 text-yellow-800';
-      case 'success': return 'bg-green-50 border-green-200 text-green-800';
-      default: return 'bg-blue-50 border-blue-200 text-blue-800';
+      case 'error': return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200';
+      case 'warning': return 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200';
+      case 'success': return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200';
+      default: return 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200';
     }
   };
 
   const getInsightColor = (type) => {
     switch (type) {
-      case 'positive': return 'text-green-600';
-      case 'negative': return 'text-red-600';
-      case 'warning': return 'text-yellow-600';
-      default: return 'text-blue-600';
+      case 'positive': return 'text-green-600 dark:text-green-400';
+      case 'negative': return 'text-red-600 dark:text-red-400';
+      case 'warning': return 'text-yellow-600 dark:text-yellow-400';
+      default: return 'text-blue-600 dark:text-blue-400';
     }
   };
 
   return (
     <div className="space-y-8">
       {/* Advanced Metrics Grid */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white"
+          className="rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 p-4 sm:p-6 text-white shadow-lg"
         >
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-blue-100">Taux de conversion</p>
-              <p className="text-3xl font-bold">{metrics.conversionRate.toFixed(1)}%</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-blue-100 text-sm sm:text-base">Taux de conversion</p>
+              <p className="text-xl sm:text-3xl font-bold truncate">{metrics.conversionRate.toFixed(1)}%</p>
             </div>
-            <Target className="h-8 w-8 text-blue-200" />
+            <Target className="h-6 w-6 sm:h-8 sm:w-8 text-blue-200 flex-shrink-0" />
           </div>
           <div className="mt-4">
             <div className="flex items-center space-x-2">
@@ -226,14 +226,14 @@ const AdvancedMetrics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="rounded-xl bg-gradient-to-br from-green-500 to-green-600 p-6 text-white"
+          className="rounded-xl bg-gradient-to-br from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 p-4 sm:p-6 text-white shadow-lg"
         >
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-green-100">Valeur moyenne commande</p>
-              <p className="text-3xl font-bold">{formatCurrency(metrics.avgOrderValue)}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-green-100 text-sm sm:text-base">Valeur moyenne commande</p>
+              <p className="text-xl sm:text-3xl font-bold truncate">{formatCurrency(metrics.avgOrderValue)}</p>
             </div>
-            <ShoppingBag className="h-8 w-8 text-green-200" />
+            <ShoppingBag className="h-6 w-6 sm:h-8 sm:w-8 text-green-200 flex-shrink-0" />
           </div>
           <div className="mt-4">
             <div className="flex items-center space-x-2">
@@ -247,14 +247,14 @@ const AdvancedMetrics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 p-6 text-white"
+          className="rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 p-4 sm:p-6 text-white shadow-lg"
         >
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-purple-100">Valeur vie client</p>
-              <p className="text-3xl font-bold">{formatCurrency(metrics.customerLifetimeValue)}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-purple-100 text-sm sm:text-base">Valeur vie client</p>
+              <p className="text-xl sm:text-3xl font-bold truncate">{formatCurrency(metrics.customerLifetimeValue)}</p>
             </div>
-            <Users className="h-8 w-8 text-purple-200" />
+            <Users className="h-6 w-6 sm:h-8 sm:w-8 text-purple-200 flex-shrink-0" />
           </div>
           <div className="mt-4">
             <div className="flex items-center space-x-2">
@@ -268,14 +268,14 @@ const AdvancedMetrics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 p-6 text-white"
+          className="rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 p-4 sm:p-6 text-white shadow-lg"
         >
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-orange-100">Taux de rétention</p>
-              <p className="text-3xl font-bold">{metrics.retentionRate.toFixed(1)}%</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-orange-100 text-sm sm:text-base">Taux de rétention</p>
+              <p className="text-xl sm:text-3xl font-bold truncate">{metrics.retentionRate.toFixed(1)}%</p>
             </div>
-            <BarChart3 className="h-8 w-8 text-orange-200" />
+            <BarChart3 className="h-6 w-6 sm:h-8 sm:w-8 text-orange-200 flex-shrink-0" />
           </div>
           <div className="mt-4">
             <div className="flex items-center space-x-2">
@@ -289,14 +289,14 @@ const AdvancedMetrics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="rounded-xl bg-gradient-to-br from-red-500 to-red-600 p-6 text-white"
+          className="rounded-xl bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 p-4 sm:p-6 text-white shadow-lg"
         >
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-red-100">Taux de rebond</p>
-              <p className="text-3xl font-bold">{metrics.bounceRate.toFixed(1)}%</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-red-100 text-sm sm:text-base">Taux de rebond</p>
+              <p className="text-xl sm:text-3xl font-bold truncate">{metrics.bounceRate.toFixed(1)}%</p>
             </div>
-            <Eye className="h-8 w-8 text-red-200" />
+            <Eye className="h-6 w-6 sm:h-8 sm:w-8 text-red-200 flex-shrink-0" />
           </div>
           <div className="mt-4">
             <div className="flex items-center space-x-2">
@@ -310,14 +310,14 @@ const AdvancedMetrics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 p-6 text-white"
+          className="rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 dark:from-indigo-600 dark:to-indigo-700 p-4 sm:p-6 text-white shadow-lg"
         >
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-indigo-100">Temps de chargement</p>
-              <p className="text-3xl font-bold">{metrics.pageLoadTime.toFixed(1)}s</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-indigo-100 text-sm sm:text-base">Temps de chargement</p>
+              <p className="text-xl sm:text-3xl font-bold truncate">{metrics.pageLoadTime.toFixed(1)}s</p>
             </div>
-            <Clock className="h-8 w-8 text-indigo-200" />
+            <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-200 flex-shrink-0" />
           </div>
           <div className="mt-4">
             <div className="flex items-center space-x-2">
@@ -329,14 +329,14 @@ const AdvancedMetrics = () => {
       </div>
 
       {/* Alerts and Insights */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-2">
         {/* Alerts */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="rounded-xl bg-white p-6 shadow-lg border border-gray-100"
+          className="rounded-xl bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-lg border border-gray-100 dark:border-gray-700"
         >
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">Alertes</h3>
+          <h3 className="mb-4 text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Alertes</h3>
           <div className="space-y-4">
             <AnimatePresence>
               {alerts.map((alert, index) => (
@@ -359,8 +359,8 @@ const AdvancedMetrics = () => {
               ))}
             </AnimatePresence>
             {alerts.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-500" />
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-500 dark:text-green-400" />
                 <p>Aucune alerte en cours</p>
               </div>
             )}
@@ -371,9 +371,9 @@ const AdvancedMetrics = () => {
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="rounded-xl bg-white p-6 shadow-lg border border-gray-100"
+          className="rounded-xl bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-lg border border-gray-100 dark:border-gray-700"
         >
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">Insights</h3>
+          <h3 className="mb-4 text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Insights</h3>
           <div className="space-y-4">
             {insights.map((insight, index) => (
               <motion.div
@@ -381,16 +381,16 @@ const AdvancedMetrics = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="flex items-center space-x-4 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
               >
-                <div className={`p-2 rounded-full bg-white shadow-sm`}>
-                  <insight.icon className={`h-5 w-5 ${getInsightColor(insight.type)}`} />
+                <div className={`p-2 rounded-full bg-white dark:bg-gray-600 shadow-sm flex-shrink-0`}>
+                  <insight.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${getInsightColor(insight.type)}`} />
                 </div>
-                <div className="flex-1">
-                  <h4 className="font-medium text-gray-900">{insight.title}</h4>
-                  <p className="text-sm text-gray-600">{insight.description}</p>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base truncate">{insight.title}</h4>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">{insight.description}</p>
                 </div>
-                <div className={`text-lg font-bold ${getInsightColor(insight.type)}`}>
+                <div className={`text-sm sm:text-lg font-bold ${getInsightColor(insight.type)} flex-shrink-0`}>
                   {insight.value}
                 </div>
               </motion.div>
