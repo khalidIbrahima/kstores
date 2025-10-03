@@ -120,7 +120,7 @@ const Notifications = () => {
               }`}
               onClick={() => {
                 if (notification.type === 'order_received' && notification.data?.orderId) {
-                  navigate(`/admin/orders-page/${notification.data.orderId}`);
+                  navigate(`/admin/orders/${notification.data.orderId}`);
                 }
                 // Ajoute d'autres types ici si besoin
               }}

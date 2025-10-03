@@ -143,7 +143,7 @@ const OrdersPage = () => {
               <select
                 value={order.status}
                 onChange={e => handleStatusChange(e.target.value)}
-                className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+                className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 text-sm focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none"
               >
                 <option value="pending">{t('admin.orders.status.pending')}</option>
                 <option value="processing">{t('admin.orders.status.processing')}</option>

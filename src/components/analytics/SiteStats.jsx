@@ -85,7 +85,7 @@ const SiteStats = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-blue-500 dark:border-blue-400"></div>
       </div>
     );
   }
@@ -96,92 +96,92 @@ const SiteStats = () => {
       value: stats.totalUsers.toLocaleString(),
       icon: Users,
       color: 'blue',
-      bgColor: 'bg-blue-50',
-      textColor: 'text-blue-900',
-      iconColor: 'text-blue-600'
+      bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+      textColor: 'text-blue-900 dark:text-blue-100',
+      iconColor: 'text-blue-600 dark:text-blue-400'
     },
     {
       title: 'Commandes totales',
       value: stats.totalOrders.toLocaleString(),
       icon: ShoppingCart,
       color: 'purple',
-      bgColor: 'bg-purple-50',
-      textColor: 'text-purple-900',
-      iconColor: 'text-purple-600'
+      bgColor: 'bg-purple-50 dark:bg-purple-900/20',
+      textColor: 'text-purple-900 dark:text-purple-100',
+      iconColor: 'text-purple-600 dark:text-purple-400'
     },
     {
       title: 'Revenus totaux',
       value: formatCurrency(stats.totalRevenue),
       icon: TrendingUp,
       color: 'green',
-      bgColor: 'bg-green-50',
-      textColor: 'text-green-900',
-      iconColor: 'text-green-600'
+      bgColor: 'bg-green-50 dark:bg-green-900/20',
+      textColor: 'text-green-900 dark:text-green-100',
+      iconColor: 'text-green-600 dark:text-green-400'
     },
     {
       title: 'Vues de pages',
       value: stats.totalViews.toLocaleString(),
       icon: Eye,
       color: 'orange',
-      bgColor: 'bg-orange-50',
-      textColor: 'text-orange-900',
-      iconColor: 'text-orange-600'
+      bgColor: 'bg-orange-50 dark:bg-orange-900/20',
+      textColor: 'text-orange-900 dark:text-orange-100',
+      iconColor: 'text-orange-600 dark:text-orange-400'
     },
     {
       title: 'Vues de produits',
       value: stats.totalProductViews.toLocaleString(),
       icon: Star,
       color: 'indigo',
-      bgColor: 'bg-indigo-50',
-      textColor: 'text-indigo-900',
-      iconColor: 'text-indigo-600'
+      bgColor: 'bg-indigo-50 dark:bg-indigo-900/20',
+      textColor: 'text-indigo-900 dark:text-indigo-100',
+      iconColor: 'text-indigo-600 dark:text-indigo-400'
     },
     {
       title: 'Valeur moyenne commande',
       value: formatCurrency(stats.avgOrderValue),
       icon: Target,
       color: 'pink',
-      bgColor: 'bg-pink-50',
-      textColor: 'text-pink-900',
-      iconColor: 'text-pink-600'
+      bgColor: 'bg-pink-50 dark:bg-pink-900/20',
+      textColor: 'text-pink-900 dark:text-pink-100',
+      iconColor: 'text-pink-600 dark:text-pink-400'
     },
     {
       title: 'Taux de conversion',
       value: `${stats.conversionRate.toFixed(2)}%`,
       icon: Globe,
       color: 'teal',
-      bgColor: 'bg-teal-50',
-      textColor: 'text-teal-900',
-      iconColor: 'text-teal-600'
+      bgColor: 'bg-teal-50 dark:bg-teal-900/20',
+      textColor: 'text-teal-900 dark:text-teal-100',
+      iconColor: 'text-teal-600 dark:text-teal-400'
     },
     {
       title: 'Produits actifs',
       value: stats.activeProducts.toString(),
       icon: Clock,
       color: 'yellow',
-      bgColor: 'bg-yellow-50',
-      textColor: 'text-yellow-900',
-      iconColor: 'text-yellow-600'
+      bgColor: 'bg-yellow-50 dark:bg-yellow-900/20',
+      textColor: 'text-yellow-900 dark:text-yellow-100',
+      iconColor: 'text-yellow-600 dark:text-yellow-400'
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {statCards.map((card, index) => (
         <motion.div
           key={card.title}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className={`rounded-lg p-6 shadow-md ${card.bgColor}`}
+          className={`rounded-lg p-4 sm:p-6 shadow-md border border-gray-200 dark:border-gray-700 ${card.bgColor}`}
         >
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{card.title}</p>
-              <p className={`mt-2 text-2xl font-bold ${card.textColor}`}>{card.value}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 truncate">{card.title}</p>
+              <p className={`mt-1 sm:mt-2 text-lg sm:text-2xl font-bold ${card.textColor} truncate`}>{card.value}</p>
             </div>
-            <div className={`rounded-full p-3 ${card.bgColor.replace('50', '100')}`}>
-              <card.icon className={`h-6 w-6 ${card.iconColor}`} />
+            <div className={`rounded-full p-2 sm:p-3 flex-shrink-0 ${card.bgColor.replace('50', '100').replace('dark:bg-', 'dark:bg-').replace('/20', '/40')}`}>
+              <card.icon className={`h-4 w-4 sm:h-6 sm:w-6 ${card.iconColor}`} />
             </div>
           </div>
         </motion.div>

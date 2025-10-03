@@ -850,12 +850,12 @@ const Dashboard = () => {
           <SiteStats />
           <div className="rounded-lg bg-white dark:bg-gray-800 p-4 sm:p-6 shadow-md border border-gray-200 dark:border-gray-700">
             <h3 className="mb-4 text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Statistiques globales</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="text-center p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20">
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Produits actifs</p>
                 <p className="text-lg sm:text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.totalProducts}</p>
               </div>
-              <div className="text-center">
+              <div className="text-center p-3 rounded-lg bg-green-50 dark:bg-green-900/20">
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Clients totaux</p>
                 <p className="text-lg sm:text-2xl font-bold text-green-600 dark:text-green-400">{stats.totalCustomers}</p>
               </div>
