@@ -103,6 +103,11 @@ export default function DeliveryForm({ supplierOrderId, delivery, onSaved, onClo
     if (name === 'shipping_agency_id') {
       const agency = agencies.find(ag => ag.id === value);
       setSelectedAgency(agency);
+      
+      // Réinitialiser l'option express si l'agence ne le supporte pas
+      if (!agency?.express_cost_per_kg) {
+        newForm.is_express = false;
+      }
     }
     
     setForm(newForm);
@@ -139,50 +144,48 @@ export default function DeliveryForm({ supplierOrderId, delivery, onSaved, onClo
     }
     
     // Vérifier si on a les données nécessaires pour le calcul
-    const hasWeight = formData.weight_kg && parseFloat(formData.weight_kg) > 0;
-    const hasCbm = formData.cbm && parseFloat(formData.cbm) > 0;
+    const weight = parseFloat(formData.weight_kg || 0);
+    const cbm = parseFloat(formData.cbm || 0);
+    const hasWeight = weight > 0;
+    const hasCbm = cbm > 0;
     
-    // Calculer les frais selon le type de transport
-    if (formData.type === 'air' && hasWeight) {
-      const weight = parseFloat(formData.weight_kg);
+    const expressPrice = parseFloat(agency.express_cost_per_kg || 0);
+    const useExpress = !!formData.is_express && expressPrice > 0;
+    
+    if (useExpress) {
+      if (hasWeight) {
+        calculatedFees = weight * expressPrice;
+        calculationMessage = `${weight} kg × ${expressPrice} F CFA/kg (Express) = ${calculatedFees.toFixed(2)} F CFA`;
+      } else {
+        calculationMessage = `Prix express: ${expressPrice} F CFA/kg - Saisissez le poids pour calculer`;
+      }
+    } else if (formData.type === 'air' && hasWeight) {
       const pricePerKg = parseFloat(agency.air_price_per_kg || 0);
       calculatedFees = weight * pricePerKg;
       calculationMessage = `${weight} kg × ${pricePerKg} F CFA/kg = ${calculatedFees.toFixed(2)} F CFA`;
     } else if (formData.type === 'sea' && hasCbm) {
-      const cbm = parseFloat(formData.cbm);
       const pricePerCbm = parseFloat(agency.sea_price_per_cbm || 0);
       calculatedFees = cbm * pricePerCbm;
       calculationMessage = `${cbm} CBM × ${pricePerCbm} F CFA/CBM = ${calculatedFees.toFixed(2)} F CFA`;
     } else if (formData.type === 'express' && hasWeight) {
-      const weight = parseFloat(formData.weight_kg);
-      const expressPrice = agency.express_cost_per_kg || (agency.air_price_per_kg * 1.5);
-      calculatedFees = weight * parseFloat(expressPrice || 0);
-      calculationMessage = `${weight} kg × ${expressPrice} F CFA/kg = ${calculatedFees.toFixed(2)} F CFA`;
+      const pricePerKg = expressPrice || parseFloat(agency.air_price_per_kg || 0);
+      calculatedFees = weight * pricePerKg;
+      calculationMessage = `${weight} kg × ${pricePerKg} F CFA/kg (Express) = ${calculatedFees.toFixed(2)} F CFA`;
     } else if (formData.type === 'air' && !hasWeight) {
-      // Afficher le prix par kg pour guider l'utilisateur
       const pricePerKg = parseFloat(agency.air_price_per_kg || 0);
       calculationMessage = `Prix: ${pricePerKg} F CFA/kg - Saisissez le poids pour calculer`;
     } else if (formData.type === 'sea' && !hasCbm) {
-      // Afficher le prix par CBM pour guider l'utilisateur
       const pricePerCbm = parseFloat(agency.sea_price_per_cbm || 0);
       calculationMessage = `Prix: ${pricePerCbm} F CFA/CBM - Saisissez le CBM pour calculer`;
     } else if (formData.type === 'express' && !hasWeight) {
-      // Afficher le prix express pour guider l'utilisateur
-      const expressPrice = agency.express_cost_per_kg || (agency.air_price_per_kg * 1.5);
-      calculationMessage = `Prix: ${expressPrice} F CFA/kg - Saisissez le poids pour calculer`;
-    }
-    
-    // Appliquer le supplément express si activé et que ce n'est pas déjà un type express
-    if (formData.is_express && formData.type !== 'express' && calculatedFees > 0) {
-      const originalFees = calculatedFees;
-      calculatedFees *= 1.3; // 30% supplement for express
-      calculationMessage += ` + 30% express = ${calculatedFees.toFixed(2)} F CFA`;
+      const pricePerKg = expressPrice || (parseFloat(agency.air_price_per_kg || 0) * 1.5);
+      calculationMessage = `Prix express: ${pricePerKg} F CFA/kg - Saisissez le poids pour calculer`;
     }
     
     setForm(prev => ({
       ...prev,
       shipping_fees_xof: calculatedFees > 0 ? calculatedFees.toFixed(2) : '',
-      calculationMessage: calculationMessage
+      calculationMessage
     }));
   };
 
@@ -299,10 +302,21 @@ export default function DeliveryForm({ supplierOrderId, delivery, onSaved, onClo
                   <option value="express">Express</option>
                 </select>
               </div>
-              <div className="flex items-center gap-2">
-                <input type="checkbox" name="is_express" checked={form.is_express} onChange={handleChange} id="is_express" className="mr-2" />
-                <label htmlFor="is_express" className="font-medium text-sm lg:text-base">Livraison express (+30%)</label>
-              </div>
+              {selectedAgency?.express_cost_per_kg ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    name="is_express"
+                    checked={form.is_express}
+                    onChange={handleChange}
+                    id="is_express"
+                    className="mr-2"
+                  />
+                  <label htmlFor="is_express" className="font-medium text-sm lg:text-base">
+                    Livraison express (tarif agence)
+                  </label>
+                </div>
+              ) : null}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-medium mb-1 text-sm lg:text-base">Poids (kg)</label>

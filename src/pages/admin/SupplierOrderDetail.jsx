@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import SupplierOrderForm from './SupplierOrderForm';
 import DeliveryForm from './DeliveryForm';
@@ -116,45 +116,36 @@ export default function SupplierOrderDetail() {
   const getUnitCostPrice = (item) => {
     if (getUsdToCfaRate() === 0) return 0;
     
-    // Prix d'achat = prix unitaire × quantité
-    const unitPriceCFA = parseFloat(item.unit_price_usd) * getUsdToCfaRate();
     const quantity = parseInt(item.quantity) || 0;
-    const totalPurchasePrice = unitPriceCFA * quantity;
+    if (quantity === 0) return 0;
     
-    // Coût de livraison direct pour cette ligne
-    const shippingFees = getLineShippingCost(item);
+    // Prix article (CFA) = prix unitaire en USD × taux CFA
+    const unitPriceCFA = parseFloat(item.unit_price_usd) * getUsdToCfaRate();
     
-    // Part des frais bancaires et de livraison pour cette ligne
-    const feesPerProduct = getFeesPerProduct();
-    const totalFeesPerLine = feesPerProduct * quantity;
+    // Coût livraison/article = coût de livraison total de la ligne / quantité
+    const shippingCostPerUnit = getLineShippingCostPerUnit(item);
     
-    // Prix de revient total = prix d'achat + frais de livraison + part des frais
-    const totalCostPrice = totalPurchasePrice + shippingFees + totalFeesPerLine;
+    // Part frais/article = part des frais par ligne / quantité
+    const feesPerLine = getFeesPerLine();
+    const feesPerUnit = feesPerLine / quantity;
     
-    // Prix de revient unitaire = prix de revient total ÷ quantité
-    return totalCostPrice / quantity;
+    // Prix de revient unitaire = Prix article (CFA) + Coût livraison/article + Part frais/article
+    return unitPriceCFA + shippingCostPerUnit + feesPerUnit;
   };
 
   const getLineCostPrice = (item) => {
     if (getUsdToCfaRate() === 0) return 0;
     
-    // Prix d'achat = prix unitaire × quantité
-    const unitPriceCFA = parseFloat(item.unit_price_usd) * getUsdToCfaRate();
     const quantity = parseInt(item.quantity) || 0;
-    const totalPurchasePrice = unitPriceCFA * quantity;
     
-    // Coût de livraison direct pour cette ligne
-    const shippingFees = getLineShippingCost(item);
-    
-    // Part des frais bancaires et de livraison pour cette ligne
-    const feesPerProduct = getFeesPerProduct();
-    const totalFeesPerLine = feesPerProduct * quantity;
-    
-    // Prix de revient total de la ligne = prix d'achat + frais de livraison + part des frais
-    return totalPurchasePrice + shippingFees + totalFeesPerLine;
+    // Prix de revient total de la ligne = prix de revient unitaire × quantité
+    return getUnitCostPrice(item) * quantity;
   };
 
-  const getLineShippingCost = (item) => {
+  // Coût de livraison total pour une ligne
+  // Pour le maritime: basé sur CBM × prix CBM
+  // Pour l'aérien/express: basé sur poids (kg) × prix par kg
+  const getLineShippingCostTotal = (item) => {
     const unitWeight = parseFloat(item.unit_weight) || 0;
     const unitCbm = parseFloat(item.unit_cbm) || 0;
     const quantity = parseInt(item.quantity) || 0;
@@ -162,31 +153,56 @@ export default function SupplierOrderDetail() {
     // Prendre le premier prix disponible des agences de livraison
     if (deliveries.length > 0 && deliveries[0].shipping_agencies) {
       const agency = deliveries[0].shipping_agencies;
+      const deliveryType = deliveries[0].type;
       
-      // Déterminer le prix selon le type de livraison
-      if (deliveries[0].type === 'air' && agency.air_price_per_kg) {
-        const totalWeight = unitWeight * quantity;
-        if (totalWeight === 0) return 0;
-        const pricePerKg = parseFloat(agency.air_price_per_kg);
-        return totalWeight * pricePerKg;
-      } else if (deliveries[0].type === 'sea' && agency.sea_price_per_cbm) {
+      // Calcul selon le type de transport
+      if (deliveryType === 'sea' && unitCbm > 0 && agency.sea_price_per_cbm) {
+        // Transport maritime: utiliser CBM × prix CBM
         const totalCbm = unitCbm * quantity;
-        if (totalCbm === 0) return 0;
         const pricePerCbm = parseFloat(agency.sea_price_per_cbm);
         return totalCbm * pricePerCbm;
-      } else if (agency.express_cost_per_kg) {
+      } else if (deliveryType === 'air' && unitWeight > 0 && agency.air_price_per_kg) {
+        // Transport aérien: utiliser poids (kg) × prix par kg
         const totalWeight = unitWeight * quantity;
-        if (totalWeight === 0) return 0;
-        const pricePerKg = parseFloat(agency.express_cost_per_kg);
+        const pricePerKg = parseFloat(agency.air_price_per_kg);
         return totalWeight * pricePerKg;
+      } else if (deliveryType === 'express' && unitWeight > 0) {
+        // Transport express: utiliser poids (kg) × prix par kg
+        const totalWeight = unitWeight * quantity;
+        const expressPrice = agency.express_cost_per_kg || (agency.air_price_per_kg ? parseFloat(agency.air_price_per_kg) * 1.5 : 0);
+        if (expressPrice > 0) {
+          return totalWeight * expressPrice;
+        }
+      } else if (deliveryType === 'sea' && unitCbm === 0 && unitWeight > 0 && agency.sea_price_per_cbm) {
+        // Fallback: si pas de CBM mais poids disponible pour maritime, convertir poids en CBM
+        // Approximation: 1 CBM ≈ 167 kg (poids volumétrique)
+        const totalWeight = unitWeight * quantity;
+        const totalCbm = totalWeight / 167;
+        const pricePerCbm = parseFloat(agency.sea_price_per_cbm);
+        return totalCbm * pricePerCbm;
       }
     }
     
     return 0;
   };
+  
+  // Coût de livraison par article pour une ligne
+  const getLineShippingCostPerUnit = (item) => {
+    const quantity = parseInt(item.quantity) || 0;
+    if (quantity === 0) return 0;
+    
+    const totalShippingCost = getLineShippingCostTotal(item);
+    return totalShippingCost / quantity;
+  };
+  
+  // Coût de livraison total pour une ligne (ancienne fonction pour compatibilité)
+  const getLineShippingCost = (item) => {
+    return getLineShippingCostTotal(item);
+  };
 
-  // Part des frais bancaires et de livraison par produit
-  const getFeesPerProduct = () => {
+  // Part des frais (bancaires + livraison USD) par ligne de produit
+  // Distribue les frais bancaires et shipping_fees_usd par nombre de lignes
+  const getFeesPerLine = () => {
     if (items.length === 0) return 0;
     
     const bankFees = parseFloat(order.bank_fees_usd || 0);
@@ -195,10 +211,31 @@ export default function SupplierOrderDetail() {
     
     // Convertir en CFA si le taux est disponible
     if (getUsdToCfaRate() > 0) {
+      // Distribuer les frais par nombre de lignes de produits
       return (totalFees * getUsdToCfaRate()) / items.length;
     }
     
     return 0;
+  };
+  
+  // Part des frais de livraison par ligne de produit
+  const getShippingFeesPerLine = () => {
+    if (items.length === 0) return 0;
+    
+    const shippingFees = parseFloat(order.shipping_fees_usd || 0);
+    
+    // Convertir en CFA si le taux est disponible
+    if (getUsdToCfaRate() > 0) {
+      // Distribuer les frais de livraison par nombre de lignes de produits
+      return (shippingFees * getUsdToCfaRate()) / items.length;
+    }
+    
+    return 0;
+  };
+  
+  // Part des frais bancaires par ligne de produit
+  const getBankFeesPerLine = () => {
+    return getFeesPerLine() - getShippingFeesPerLine();
   };
 
   const getTotalCostPrice = () => {
@@ -281,16 +318,19 @@ export default function SupplierOrderDetail() {
   };
 
   // Calcul du total d'une ligne produit en CFA
+  // Inclut : prix de l'article en dollar × nombre d'articles converti en CFA + coût livraison de la ligne + part des frais bancaires
   const getItemTotalCFA = (item) => {
-    const usdTotal = parseFloat(item.unit_price_usd) * parseInt(item.quantity);
-    const rate = getUsdToCfaRate();
-    return usdTotal * rate;
+    // Utiliser la même logique que getLineCostPrice qui inclut déjà tous les éléments
+    return getLineCostPrice(item);
   };
 
-  // Total de tous les produits en CFA (sans frais bancaires)
+  // Total de tous les produits en CFA (incluant livraison et frais bancaires)
+  // Ce total devrait correspondre approximativement à : (valeur produits USD + shipping_fees_usd + bank_fees_usd) × taux
+  // Mais utilise les coûts de livraison réels calculés par poids/CBM au lieu de shipping_fees_usd converti
   const getTotalProductsCFA = () => {
     if (getUsdToCfaRate() === 0) return 0;
-    return items.reduce((total, item) => total + getItemTotalCFA(item), 0);
+    // Utiliser getLineCostPrice qui inclut prix + livraison réelle + frais bancaires
+    return items.reduce((total, item) => total + getLineCostPrice(item), 0);
   };
 
   if (loading) {
@@ -474,7 +514,7 @@ export default function SupplierOrderDetail() {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-xs text-gray-600 dark:text-gray-400">Poids total:</span>
-              <span className="font-medium text-gray-900 dark:text-gray-100">{getTotalWeight().toFixed(1)} kg</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{getTotalWeight()} kg</span>
             </div>
             <div className="pt-2 border-t border-gray-200 dark:border-gray-600">
               <div className="flex justify-between items-center">
@@ -495,12 +535,11 @@ export default function SupplierOrderDetail() {
             {getUsdToCfaRate() > 0 && (
               <div className="pt-2 border-t border-gray-200 dark:border-gray-600">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-600 dark:text-gray-400">Valeur en CFA:</span>
+                  <span className="text-xs text-gray-600 dark:text-gray-400">Total coût produits (CFA):</span>
                   <span className="font-medium text-gray-900 dark:text-gray-100">{getTotalProductsCFA().toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F</span>
                 </div>
                 <div className="flex justify-between items-center mt-1">
-                  <span className="text-xs text-gray-600 dark:text-gray-400">Total avec frais en CFA:</span>
-                  <span className="font-medium text-gray-900 dark:text-gray-100">{(getTotalValueWithFees() * getUsdToCfaRate()).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F</span>
+                  <span className="text-xs text-gray-600 dark:text-gray-400">Note: Inclut prix, livraison et frais</span>
                 </div>
               </div>
             )}
@@ -542,7 +581,7 @@ export default function SupplierOrderDetail() {
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-xs text-gray-600 dark:text-gray-400">Poids total:</span>
-              <span className="font-medium text-gray-900 dark:text-gray-100">{getTotalWeight().toFixed(1)} kg</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{getTotalWeight()} kg</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-xs text-gray-600 dark:text-gray-400">Prix par kg:</span>
@@ -622,7 +661,7 @@ export default function SupplierOrderDetail() {
             <div>
               <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Produits commandés</h2>
               <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                Prix unitaire, Quantité, Poids, Coût livraison, Part des frais, Prix de revient
+                Quantité, Prix article, Poids, Part des frais, Prix de revient
               </p>
             </div>
             <button 
@@ -641,13 +680,12 @@ export default function SupplierOrderDetail() {
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Produit</th>
-                <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Prix unitaire</th>
                 <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Quantité</th>
+                <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Prix article (CFA)</th>
                 <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Poids/Volume</th>
-                <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Coût livraison</th>
                 <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Part des frais</th>
+                <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Part frais/article</th>
                 <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Prix revient/art</th>
-                <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Prix revient ligne</th>
                 <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Total CFA</th>
                 <th className="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
               </tr>
@@ -655,7 +693,7 @@ export default function SupplierOrderDetail() {
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {items.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="px-3 lg:px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                  <td colSpan={9} className="px-3 lg:px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                     Aucun produit dans cette commande
                   </td>
                 </tr>
@@ -671,32 +709,36 @@ export default function SupplierOrderDetail() {
                       </div>
                     </td>
                     <td className="px-3 lg:px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
-                      ${parseFloat(item.unit_price_usd).toFixed(2)}
+                      {item.quantity}
                     </td>
                     <td className="px-3 lg:px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
-                      {item.quantity}
+                      {getUsdToCfaRate() > 0 ? (
+                        `${(parseFloat(item.unit_price_usd) * getUsdToCfaRate()).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
+                      ) : (
+                        <span className="text-gray-400 dark:text-gray-500 text-xs">Taux non défini</span>
+                      )}
                     </td>
                     <td className="px-3 lg:px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
                       <div className="space-y-1">
                         {item.unit_weight && (
-                          <div>{`${(parseFloat(item.unit_weight) * parseInt(item.quantity)).toFixed(1)} kg`}</div>
+                          <div>{`${(parseFloat(item.unit_weight) * parseInt(item.quantity))} kg`}</div>
                         )}
                         {item.unit_cbm && (
-                          <div className="text-blue-600 dark:text-blue-400">{`${(parseFloat(item.unit_cbm) * parseInt(item.quantity)).toFixed(3)} CBM`}</div>
+                          <div className="text-blue-600 dark:text-blue-400">{`${(parseFloat(item.unit_cbm) * parseInt(item.quantity))} CBM`}</div>
                         )}
                         {!item.unit_weight && !item.unit_cbm && '-'}
                       </div>
                     </td>
                     <td className="px-3 lg:px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
                       {getUsdToCfaRate() > 0 ? (
-                        `${getLineShippingCost(item).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
+                        `${getFeesPerLine().toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
                       ) : (
                         <span className="text-gray-400 dark:text-gray-500 text-xs">Taux non défini</span>
                       )}
                     </td>
                     <td className="px-3 lg:px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
                       {getUsdToCfaRate() > 0 ? (
-                        `${getFeesPerProduct().toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
+                        `${(getFeesPerLine() / parseInt(item.quantity || 1)).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
                       ) : (
                         <span className="text-gray-400 dark:text-gray-500 text-xs">Taux non défini</span>
                       )}
@@ -704,13 +746,6 @@ export default function SupplierOrderDetail() {
                     <td className="px-3 lg:px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
                       {getUsdToCfaRate() > 0 ? (
                         `${getUnitCostPrice(item).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
-                      ) : (
-                        <span className="text-gray-400 dark:text-gray-500 text-xs">Taux non défini</span>
-                      )}
-                    </td>
-                    <td className="px-3 lg:px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
-                      {getUsdToCfaRate() > 0 ? (
-                        `${getLineCostPrice(item).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
                       ) : (
                         <span className="text-gray-400 dark:text-gray-500 text-xs">Taux non défini</span>
                       )}
@@ -723,49 +758,61 @@ export default function SupplierOrderDetail() {
                       )}
                     </td>
                     <td className="px-3 lg:px-6 py-4">
-                      <button
-                        onClick={() => handleDeleteItem(item.id)}
-                        className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 text-sm"
-                      >
-                        Supprimer
-                      </button>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                        <Link
+                          to={`/admin/supplier-order-items/${item.id}`}
+                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+                        >
+                          Détails
+                        </Link>
+                        <button
+                          onClick={() => handleDeleteItem(item.id)}
+                          className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 text-sm"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
               )}
               {items.length > 0 && (
                 <tr className="bg-gray-50 dark:bg-gray-700 border-t-2 border-gray-300 dark:border-gray-600">
-                  <td className="px-3 lg:px-6 py-4 text-sm font-bold text-gray-900 dark:text-gray-100" colSpan={2}>
+                  <td className="px-3 lg:px-6 py-4 text-sm font-bold text-gray-900 dark:text-gray-100">
                     Total Produits
                   </td>
                   <td className="px-3 lg:px-6 py-4 text-sm font-bold text-gray-900 dark:text-gray-100">
                     {getTotalItems()}
                   </td>
                   <td className="px-3 lg:px-6 py-4 text-sm font-bold text-gray-900 dark:text-gray-100">
-                    {getTotalWeight().toFixed(1)} kg
+                    {getUsdToCfaRate() > 0 ? (
+                      `${getTotalOrderValueCFA().toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
+                    ) : (
+                      <span className="text-gray-400 dark:text-gray-500 text-xs">Taux non défini</span>
+                    )}
                   </td>
-                  <td className="px-3 lg:px-6 py-4 text-sm font-bold text-indigo-700 dark:text-indigo-400">
-                    {getTotalShippingCostByWeight().toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F
+                  <td className="px-3 lg:px-6 py-4 text-sm font-bold text-gray-900 dark:text-gray-100">
+                    {getTotalWeight()} kg
                   </td>
                   <td className="px-3 lg:px-6 py-4 text-sm font-bold text-blue-700 dark:text-blue-400">
                     {getUsdToCfaRate() > 0 ? (
-                      `${(getFeesPerProduct() * getTotalItems()).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
+                      `${(getFeesPerLine() * items.length).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
+                    ) : (
+                      <span className="text-gray-400 dark:text-gray-500 text-xs">Taux non défini</span>
+                    )}
+                  </td>
+                  <td className="px-3 lg:px-6 py-4 text-sm font-bold text-blue-700 dark:text-blue-400">
+                    {getUsdToCfaRate() > 0 && getTotalItems() > 0 ? (
+                      `${((getFeesPerLine() * items.length) / getTotalItems()).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
                     ) : (
                       <span className="text-gray-400 dark:text-gray-500 text-xs">Taux non défini</span>
                     )}
                   </td>
                   <td className="px-3 lg:px-6 py-4 text-sm font-bold text-purple-700 dark:text-purple-400">
-                    {getUsdToCfaRate() > 0 ? (
+                    {getUsdToCfaRate() > 0 && getTotalItems() > 0 ? (
                       `${(getTotalCostPrice() / getTotalItems()).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
                     ) : (
                       <span className="text-gray-400 dark:text-gray-500 text-xs">Taux non défini</span>
-                    )}
-                  </td>
-                  <td className="px-3 lg:px-6 py-4 text-sm font-bold text-purple-700 dark:text-purple-400">
-                    {getUsdToCfaRate() > 0 ? (
-                      `${getTotalCostPrice().toLocaleString('fr-FR', { maximumFractionDigits: 0 })} F`
-                    ) : (
-                      <span className="text-gray-400 text-xs">Taux non défini</span>
                     )}
                   </td>
                   <td className="px-3 lg:px-6 py-4 text-sm font-bold text-green-700 dark:text-green-400">

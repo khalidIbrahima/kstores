@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const ProductImageCarousel = ({ images }) => {
+const ProductImageCarousel = ({ images, wrapperClassName = '', mediaContainerClassName = '' }) => {
   const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [mediaTypes, setMediaTypes] = useState({});
@@ -64,8 +64,8 @@ const ProductImageCarousel = ({ images }) => {
   const currentMediaType = mediaTypes[currentUrl] || 'image';
 
   return (
-    <div className="relative">
-      <div className="relative aspect-square w-full bg-background-light rounded-lg overflow-hidden">
+    <div className={`relative ${wrapperClassName}`}>
+      <div className={`relative aspect-square w-full bg-background-light rounded-lg overflow-hidden ${mediaContainerClassName}`}>
         {currentMediaType === 'video' ? (
           <video
             src={currentUrl}
