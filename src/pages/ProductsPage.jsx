@@ -46,20 +46,33 @@ const ProductsPage = () => {
         
         if (productsError) throw productsError;
         
-        // Fetch views count for each product
-        const productsWithViews = await Promise.all(
-          products?.map(async (product) => {
-            const { data: viewsCount } = await supabase
-              .rpc('get_product_views_count', { p_product_id: product.id });
-            return {
-              ...product,
-              views_count: viewsCount || 0
-            };
-          }) || []
-        );
-        
-        if (productsError) throw productsError;
-        
+        // Fetch variant counts
+        const { data: variantsList, error: variantsError } = await supabase
+          .from('product_variants')
+          .select('id, product_id');
+
+        if (variantsError) throw variantsError;
+
+        const variantProductMap = (variantsList || []).reduce((acc, variant) => {
+          if (variant?.id && variant?.product_id) {
+            acc[variant.id] = variant.product_id;
+          }
+          return acc;
+        }, {});
+
+        const { data: optionsList, error: optionsError } = await supabase
+          .from('product_variant_options')
+          .select('id, variant_id');
+
+        if (optionsError) throw optionsError;
+
+        const optionCountByProduct = (optionsList || []).reduce((acc, option) => {
+          const productId = option?.variant_id ? variantProductMap[option.variant_id] : null;
+          if (!productId) return acc;
+          acc[productId] = (acc[productId] || 0) + 1;
+          return acc;
+        }, {});
+
         // Fetch categories
         const { data: categories, error: categoriesError } = await supabase
           .from('categories')
@@ -69,12 +82,13 @@ const ProductsPage = () => {
         if (categoriesError) throw categoriesError;
         
         // Calculer la moyenne des notes pour chaque produit
-        const productsWithStats = productsWithViews?.map(product => {
+        const productsWithStats = (products || []).map(product => {
           const avgRating = product.reviews?.length > 0 
             ? product.reviews.reduce((acc, review) => acc + review.rate, 0) / product.reviews.length 
             : 0;
           return {
             ...product,
+            optionCount: optionCountByProduct[product.id] || 0,
             reviews: {
               count: product.reviews?.length || 0,
               avg: avgRating
@@ -119,13 +133,13 @@ const ProductsPage = () => {
       e.preventDefault();
     }
     if (product.inventory > 0) {
-      const selectedColor = selectedColorForProduct[product.id];
+      let selectedColor = selectedColorForProduct[product.id];
+      if (!selectedColor && product.colors && product.colors.length > 0) {
+        selectedColor = product.colors.find((color) => color.available !== false) || product.colors[0];
+      }
       
       // Vérifier si une couleur est requise mais non sélectionnée
-      if (product.colors && product.colors.length > 0 && !selectedColor) {
-        toast.error(t('product.colorRequired'));
-        return;
-      }
+      // (Affichage des couleurs retiré, sélectionner la première couleur disponible par défaut)
       
       addItem(product, 1, selectedColor);
       // Réinitialiser la couleur sélectionnée pour ce produit
@@ -596,31 +610,33 @@ const ProductsPage = () => {
                       aria-label={`Voir les détails de ${product.name}`}
                     >
                       <div className="relative overflow-hidden rounded-t-xl bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-700 dark:via-gray-750 dark:to-gray-800">
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/30 pointer-events-none"></div>
-                        <img
-                          src={product.image_url || productImages[0]}
-                          alt={`${product.name} - ${product.categories?.name || 'Produit'}`}
-                          className="w-full object-contain transition-transform duration-300 group-hover:scale-[1.04] h-48 xs:h-40 sm:h-56 md:h-64 lg:h-72 xl:h-80"
-                          itemProp="image"
-                          loading="lazy"
-                          decoding="async"
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                            const fallback = e.target.nextSibling;
-                            if (fallback) fallback.style.display = 'flex';
-                          }}
-                        />
-                        <div 
-                          className="h-full w-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm"
-                          style={{ display: 'none' }}
-                        >
-                          <div className="text-center">
-                            <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mb-2">
-                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                              </svg>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/25 pointer-events-none"></div>
+                        <div className="relative aspect-[3/4] w-full flex items-center justify-center p-4">
+                          <img
+                            src={product.image_url || productImages[0]}
+                            alt={`${product.name} - ${product.categories?.name || 'Produit'}`}
+                            className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-[1.04]"
+                            itemProp="image"
+                            loading="lazy"
+                            decoding="async"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                              const fallback = e.currentTarget.nextSibling;
+                              if (fallback) fallback.style.display = 'flex';
+                            }}
+                          />
+                          <div 
+                            className="absolute inset-0 hidden items-center justify-center text-gray-500 text-sm"
+                            style={{ display: 'none' }}
+                          >
+                            <div className="text-center">
+                              <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mb-2">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                              </div>
+                              <span>Image non disponible</span>
                             </div>
-                            <span>Image non disponible</span>
                           </div>
                         </div>
                         {product.inventory === 0 && (
@@ -631,22 +647,18 @@ const ProductsPage = () => {
                           </div>
                         )}
                         <PromotionBadge product={product} size="sm" showEndDate={false} className="top-3 left-3" />
-                        {productImages.length > 1 && (
-                          <div className="absolute top-3 right-3 rounded-full bg-white/90 dark:bg-gray-900/80 px-2 py-1 text-[11px] font-medium text-gray-600 dark:text-gray-300 shadow-sm">
-                            +{productImages.length - 1} vues
-                          </div>
-                        )}
+                        
                       </div>
                       <div className="flex flex-col gap-2 px-4 py-3 sm:py-4">
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
                             {product.categories?.name || 'Collection'}
                           </span>
-                          {product.views_count ? (
-                            <span className="text-[11px] text-gray-400 dark:text-gray-500">
-                              {product.views_count} vues
+                          {product.optionCount > 0 && (
+                            <span className="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-1 text-[11px] font-medium text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                              {product.optionCount} {product.optionCount > 1 ? 'options' : 'option'}
                             </span>
-                          ) : null}
+                          )}
                         </div>
                         <h3 className="text-sm xs:text-xs sm:text-sm md:text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-primary dark:group-hover:text-blue-400 transition-colors duration-200 leading-tight" itemProp="name">
                           {product.name}
@@ -686,43 +698,9 @@ const ProductsPage = () => {
                     </Link>
 
                     <div className="flex flex-col gap-3 px-4 pb-4 pt-0" itemProp="offers" itemScope itemType="https://schema.org/Offer">
-                      {product.colors && product.colors.length > 0 && (
-                        <div>
-                          <div className="flex items-center gap-1.5">
-                            {product.colors
-                              .filter(color => color.available !== false)
-                              .slice(0, 4)
-                              .map((color, index) => (
-                                <button
-                                  key={index}
-                                  type="button"
-                                  className={`h-5 w-5 xs:h-4 xs:w-4 sm:h-5 sm:w-5 rounded-full border transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/60 ${
-                                    selectedColorForProduct[product.id]?.name === color.name 
-                                      ? 'border-primary ring-1 ring-primary' 
-                                      : 'border-gray-300 hover:border-primary'
-                                  }`}
-                                  style={{ backgroundColor: color.hex }}
-                                  title={color.name}
-                                  aria-label={`Sélectionner la couleur ${color.name}`}
-                                  onClick={() => {
-                                    setSelectedColorForProduct(prev => ({
-                                      ...prev,
-                                      [product.id]: color
-                                    }));
-                                  }}
-                                />
-                              ))}
-                            {product.colors.filter(color => color.available !== false).length > 4 && (
-                              <span className="text-xs text-gray-500">
-                                +{product.colors.filter(color => color.available !== false).length - 4}
-                              </span>
-                            )}
-                          </div>
-                          {selectedColorForProduct[product.id] && (
-                            <p className="text-xs text-primary font-medium mt-1.5">
-                              {selectedColorForProduct[product.id].name}
-                            </p>
-                          )}
+                      {product.optionCount > 0 && (
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          {product.optionCount} {product.optionCount > 1 ? 'options disponibles' : 'option disponible'}
                         </div>
                       )}
 
