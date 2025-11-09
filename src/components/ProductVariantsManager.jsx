@@ -8,7 +8,8 @@ const createEmptyOption = (order = 0) => ({
   name: '',
   image_url: '',
   display_order: order,
-  stock: ''
+  stock: '',
+  hexColor: '#000000'
 });
 
 const ProductVariantsManager = ({ productId, variants = [], onVariantsChange }) => {
@@ -35,7 +36,8 @@ const ProductVariantsManager = ({ productId, variants = [], onVariantsChange }) 
         ...variant,
         options: (variant.options || variant.product_variant_options || []).map(option => ({
           ...option,
-          stock: option?.stock ?? ''
+          stock: option?.stock ?? '',
+          hexColor: option?.hexColor || (typeof option?.image_url === 'string' && option.image_url.startsWith('#') ? option.image_url : '#000000')
         }))
       }));
       setLocalVariants(transformedVariants);
@@ -129,6 +131,11 @@ const ProductVariantsManager = ({ productId, variants = [], onVariantsChange }) 
       }
       return v;
     }));
+  };
+
+  const isColorVariant = (variantName = '') => {
+    const lower = variantName.toLowerCase();
+    return lower.includes('couleur') || lower.includes('color') || lower.includes('colour');
   };
 
   const getVariantIcon = (variantName) => {
@@ -310,17 +317,36 @@ const ProductVariantsManager = ({ productId, variants = [], onVariantsChange }) 
                               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
                                 Nom de l'option
                               </label>
-                              <input
-                                type="text"
-                                value={option.name}
-                                onChange={(e) => updateOption(variant.id, option.id, 'name', e.target.value)}
-                                placeholder={variant.name === 'Couleur' ? 'Ex: Rouge, Bleu, Vert' : variant.name === 'Taille' ? 'Ex: S, M, L, XL' : 'Ex: Motif 1, Motif 2, Motif 3'}
-                                className={`w-full rounded-lg px-4 py-2.5 text-sm dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 focus:ring-2 ${
-                                  optionNameEmpty
-                                    ? 'border-red-400 focus:border-red-500 focus:ring-red-200 dark:border-red-500 dark:focus:ring-red-500'
-                                    : 'border border-gray-300 dark:border-gray-500 focus:border-purple-500 focus:ring-purple-200 dark:focus:ring-purple-900'
-                                }`}
-                              />
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="text"
+                          value={option.name}
+                          onChange={(e) => updateOption(variant.id, option.id, 'name', e.target.value)}
+                          placeholder={isColorVariant(variant.name) ? 'Ex: Rouge, Bleu, Vert' : variant.name === 'Taille' ? 'Ex: S, M, L, XL' : 'Ex: Motif 1, Motif 2, Motif 3'}
+                          className={`w-full rounded-lg px-4 py-2.5 text-sm dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 focus:ring-2 ${
+                            optionNameEmpty
+                              ? 'border-red-400 focus:border-red-500 focus:ring-red-200 dark:border-red-500 dark:focus:ring-red-500'
+                              : 'border border-gray-300 dark:border-gray-500 focus:border-purple-500 focus:ring-purple-200 dark:focus:ring-purple-900'
+                          }`}
+                        />
+                        {isColorVariant(variant.name) && (
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="color"
+                              value={
+                                option.hexColor ||
+                                (option.image_url && option.image_url.startsWith('#') ? option.image_url : '#000000')
+                              }
+                              onChange={(e) => {
+                                updateOption(variant.id, option.id, 'hexColor', e.target.value);
+                                updateOption(variant.id, option.id, 'image_url', e.target.value);
+                              }}
+                              className="h-10 w-10 rounded border border-gray-300 dark:border-gray-500 cursor-pointer bg-white dark:bg-gray-700"
+                              title="Choisir une couleur"
+                            />
+                          </div>
+                        )}
+                      </div>
                               {optionNameEmpty && (
                                 <p className="mt-1 text-xs text-red-500">Nom d'option requis</p>
                               )}
@@ -339,18 +365,20 @@ const ProductVariantsManager = ({ productId, variants = [], onVariantsChange }) 
                           </div>
                           
                           <div className="space-y-3">
-                            <div className="space-y-2">
-                              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400">
-                                Image de l'option (optionnel)
-                              </label>
-                              <div className="w-full">
-                                <ProductImageInput
-                                  value={option.image_url || ''}
-                                  onChange={(url) => updateOption(variant.id, option.id, 'image_url', url)}
-                                  index={`${variantIndex}-${optionIndex}`}
-                                />
+                            {!isColorVariant(variant.name) && (
+                              <div className="space-y-2">
+                                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400">
+                                  Image de l'option (optionnel)
+                                </label>
+                                <div className="w-full">
+                                  <ProductImageInput
+                                    value={option.image_url || ''}
+                                    onChange={(url) => updateOption(variant.id, option.id, 'image_url', url)}
+                                    index={`${variantIndex}-${optionIndex}`}
+                                  />
+                                </div>
                               </div>
-                            </div>
+                            )}
                             <div>
                               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
                                 Stock disponible
