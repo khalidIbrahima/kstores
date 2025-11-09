@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
+import { useStoreSettings } from '../hooks/useStoreSettings';
+import GoogleLoginButton from '../components/GoogleLoginButton';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -12,12 +13,25 @@ const LoginPage = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signIn } = useAuth();
+  const { signIn, signInWithGoogle, user, isLoading: authLoading } = useAuth();
+  const { settings } = useStoreSettings();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
   
   const from = location.state?.from?.pathname || '/';
+
+  // Rediriger les utilisateurs connectés
+  useEffect(() => {
+    if (!authLoading && user) {
+      // Si l'utilisateur est connecté, le rediriger
+      if (user.user_metadata?.is_admin || user.is_admin) {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
+    }
+  }, [user, authLoading, navigate, from]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,8 +44,11 @@ const LoginPage = () => {
     
     try {
       setIsLoading(true);
-      await signIn(email, password);
-      navigate(from, { replace: true });
+      const result = await signIn(email, password);
+      
+      if (!result.success) {
+        setError(result.message);
+      }
     } catch (error) {
       setError(error.message || t('auth.loginError'));
     } finally {
@@ -39,39 +56,49 @@ const LoginPage = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      setIsLoading(true);
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-          redirectTo: `${window.location.origin}/auth/callback`
-        }
-      });
-      
-      if (error) throw error;
-    } catch (error) {
-      console.error('Google sign in error:', error);
-      setError(t('auth.googleSignInError'));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
+
+  // Afficher un loader pendant la vérification de l'authentification
+  if (authLoading) {
+    return (
+      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">{t('common.loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Si l'utilisateur est connecté, ne pas afficher la page
+  if (user) {
+    return null;
+  }
 
   return (
-    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gray-50 py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg"
+        className="w-full max-w-md space-y-6 sm:space-y-8 rounded-lg bg-white p-6 sm:p-8 shadow-lg"
       >
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">{t('auth.login')}</h2>
+          {settings?.logo_url ? (
+            <div className="flex justify-center mb-6">
+              <img 
+                src={settings.logo_url} 
+                alt="Store Logo" 
+                className="h-20 w-auto max-w-64 object-contain"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            </div>
+          ) : null}
+          <h2 className="mt-6 text-2xl sm:text-3xl font-extrabold text-gray-900">
+            {t('auth.login')}
+          </h2>
           <p className="mt-2 text-sm text-gray-600">
             {t('auth.noAccount')}{' '}
             <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
@@ -91,14 +118,7 @@ const LoginPage = () => {
           </div>
         )}
 
-        <button
-          onClick={handleGoogleSignIn}
-          disabled={isLoading}
-          className="flex w-full items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          <img src="https://www.google.com/favicon.ico" alt="Google" className="h-5 w-5" />
-          {t('auth.googleSignIn')}
-        </button>
+        <GoogleLoginButton />
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
@@ -127,7 +147,7 @@ const LoginPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-base"
                   placeholder={t('auth.email')}
                 />
               </div>
@@ -149,7 +169,7 @@ const LoginPage = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="block w-full rounded-md border border-gray-300 py-3 pl-10 pr-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-base"
                   placeholder={t('auth.password')}
                 />
               </div>
@@ -180,7 +200,7 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70"
+              className="group relative flex w-full justify-center rounded-full bg-primary px-6 py-3 text-base font-semibold text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition"
             >
               {isLoading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>

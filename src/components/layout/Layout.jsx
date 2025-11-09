@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { useEffect } from 'react';
 import Header from './Header';
 import Footer from './Footer';
+import ScrollToTop from '../ScrollToTop';
 
 const Layout = () => {
   // Scroll to top on route change
@@ -16,6 +17,9 @@ const Layout = () => {
         <Outlet />
       </main>
       <Footer />
+      
+      {/* Scroll to top button */}
+      <ScrollToTop />
     </div>
   );
 };

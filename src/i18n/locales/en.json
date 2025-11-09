@@ -8,7 +8,7 @@
     "orders": "Orders",
     "admin": "Admin",
     "loading": "Loading...",
-    "currency": "CFA",
+    "currency": "FCFA",
     "error": "Error",
     "success": "Success",
     "submit": "Submit",
@@ -23,7 +23,6 @@
     "total": "Total",
     "status": "Status",
     "actions": "Actions",
-    "shopNow": "Shop Now",
     "confirm": "Confirm",
     "create": "Create",
     "update": "Update",
@@ -67,51 +66,6 @@
       "subscribe": "Subscribe"
     }
   },
-  "about": {
-    "title": "About Kapital Stores",
-    "subtitle": "Your trusted destination for quality products and exceptional shopping experience",
-    "story": {
-      "title": "Our Story",
-      "content1": "Founded in 2022, Kapital Stores has grown from a small local shop to a leading online marketplace. Our mission is to provide customers with high-quality products at competitive prices while delivering exceptional customer service.",
-      "content2": "We carefully curate our product selection to ensure that we offer only the best items across various categories. Our team works tirelessly to source products from reliable manufacturers and brands that share our commitment to quality and sustainability."
-    },
-    "values": {
-      "title": "Our Values",
-      "quality": {
-        "title": "Quality First",
-        "description": "We never compromise on quality, ensuring every product meets our high standards"
-      },
-      "delivery": {
-        "title": "Fast Delivery",
-        "description": "We ensure quick and reliable delivery to get your products to you on time"
-      },
-      "security": {
-        "title": "Secure Shopping",
-        "description": "Your security is our priority with safe payment and data protection"
-      },
-      "customer": {
-        "title": "Customer Focus",
-        "description": "We put our customers first with dedicated support and service"
-      }
-    },
-    "team": {
-      "title": "Our Team",
-      "members": {
-        "ceo": {
-          "name": "Khalidou Sow BA",
-          "role": "PDG & Fondateur"
-        },
-        "operations": {
-          "name": "Khalidou Sow BA",
-          "role": "Directeur des Opérations"
-        },
-        "service": {
-          "name": "Mariama Ndiaye",
-          "role": "Responsable Service Client"
-        }
-      }
-    }
-  },
   "contact": {
     "title": "Contact Us",
     "subtitle": "We're here to help! Send us a message and we'll get back to you as soon as possible.",
@@ -129,8 +83,8 @@
       "title": "Get in Touch",
       "email": {
         "title": "Email",
-        "support": "support@kapitalstores.shop",
-        "sales": "sales@kapitalstores.shop"
+        "support": "support@kapital-stores.com",
+        "sales": "sales@kapital-stores.com"
       },
       "phone": {
         "title": "Phone",
@@ -149,7 +103,6 @@
     "home": "Home",
     "categories": "Categories",
     "allProducts": "All Products",
-    "about": "About",
     "contact": "Contact",
     "viewStore": "View Store",
     "dashboard": "Dashboard"
@@ -158,6 +111,10 @@
     "title": "Categories",
     "name": "Category Name",
     "slug": "Slug",
+    "cover_image": "Cover Image",
+    "cover_image_url": "Cover Image URL",
+    "cover_image_placeholder": "https://example.com/image.jpg",
+    "cover_image_preview": "Cover Image Preview",
     "created_at": "Created At",
     "actions": "Actions",
     "add": "Add Category",
@@ -175,7 +132,8 @@
     "beauty": "Beauty",
     "all": "All Categories",
     "notFound": "Category not found",
-    "notFoundDesc": "The category you're looking for doesn't exist or has been removed"
+    "notFoundDesc": "The category you're looking for doesn't exist or has been removed",
+    "browseProducts": "Browse Products"
   },
   "product": {
     "addToCart": "Add to Cart",
@@ -185,7 +143,7 @@
     "description": "Description",
     "quantity": "Quantity",
     "price": "Price",
-    "reviews": "reviews",
+    "reviews": "Reviews",
     "freeShipping": "Free Shipping",
     "freeShippingDesc": "Free shipping on orders over 25,000 CFA",
     "securePayment": "Secure Payment",
@@ -204,10 +162,32 @@
     "images": "Product Images",
     "addImage": "Add Image",
     "noImage": "No Image",
-    "error": "Error saving product"
+    "error": "Error saving product",
+    "allProducts": "All Products",
+    "browseDescription": "Browse our wide selection of products across popular categories",
+    "browse": "Browse",
+    "onlyLeft": "Only left",
+    "adjustFilters": "Adjust Filters",
+    "orders": "Order(s)",
+    "visits": "Visits",
+    "topViewedProducts": "Top Viewed Products",
+    "recentActivity": "Recent Activity",
+    "productStats": "Product Stats",
+    "totalProducts": "Total Products",
+    "totalCustomers": "Total Customers",
+    "views": "views",
+    "selectColor": "Select a color",
+    "colorRequired": "Please select a color",
+    "selectedColor": "Selected color"
   },
   "cart": {
-    "empty": "Your Cart is Empty",
+    "yourCartIsEmpty": "Your Cart is Empty",
+    "looksLikeYouHaveNotAddedAnythingToYourCartYet": "Looks like you haven't added anything to your cart yet.",
+    "yourCart": "Your Cart",
+    "clearYourCart": "Clear Your Cart",
+    "areYouSureYouWantToRemoveAllItemsFromYourCart": "Are you sure you want to remove all items from your cart?",
+    "clearCart": "Clear Cart",
+    "calculatedAtCheckout": "Calculated at checkout",
     "continueShopping": "Continue Shopping",
     "subtotal": "Subtotal",
     "shipping": "Shipping",
@@ -221,7 +201,12 @@
     "orderSummary": "Order Summary",
     "itemCount": "items in cart",
     "remove": "Remove",
-    "update": "Update"
+    "update": "Update",
+    "proceedToCheckout": "Proceed to Checkout",
+    "product": "Product",
+    "price": "Price",
+    "quantity": "Quantity",
+    "actions": "Actions"
   },
   "auth": {
     "login": "Login",
@@ -239,7 +224,19 @@
     "termsAgree": "I agree to the Terms of Service and Privacy Policy",
     "registrationSuccess": "Registration successful! Please sign in.",
     "registrationError": "Failed to create account",
-    "googleSignUpError": "Failed to sign up with Google"
+    "googleSignUpError": "Failed to sign up with Google",
+    "noAccount": "No account ?",
+    "signUp": "Create an account",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters long"
+  },
+  "popup": {
+    "welcome": "Welcome to KStores!",
+    "description": "Sign in quickly with your Google account for a personalized experience",
+    "benefit1": "Quick and secure access",
+    "benefit2": "Sync your favorites and orders",
+    "benefit3": "Personalized notifications",
+    "skip": "Continue without signing in"
   },
   "iptv": {
     "title": "IPTV Services",
@@ -282,7 +279,17 @@
       "duration": {
         "monthly": "month",
         "yearly": "year"
-      }
+      },
+      "planDetails": {
+        "title": "Plan Details",
+        "duration": "Duration",
+        "price": "Price",
+        "paymentMethod": "Payment Method",
+        "total": "Total"
+      },
+      "unavailable": "Plan unavailable",
+      "choose": "Choose this plan",
+      "unavailable": "Unavailable"
     },
     "faq": {
       "title": "Frequently Asked Questions",
@@ -305,20 +312,31 @@
       }
     },
     "checkout": {
+      "complete_order": "Complete Your IPTV Order",
+      "contact_information": "Contact Information",
+      "email": "Email",
+      "processing": "Processing...",
+      "pay": "Pay",
       "title": "Complete Your IPTV Order",
       "planDetails": "Plan Details",
       "duration": "Duration",
       "price": "Price",
       "paymentMethod": "Payment Method",
       "confirmOrder": "Confirm Order",
-      "terms": "I agree to the IPTV service terms and conditions"
+      "terms": "I agree to the IPTV service terms and conditions",
+      "order_summary": "Order Summary",
+      "plan": "Plan",
+      "subtotal": "Subtotal",
+      "tax": "Tax",
+      "total": "Total",
+      "secure_payment_processing": "Secure payment processing",
+      "your_payment_information_is_encrypted_and_secure": "Your payment information is encrypted and secure. We never store your full card details."
     }
   },
   "orders": {
     "title": "Orders",
     "manage_customer_orders": "Manage customer orders",
     "search_orders": "Search orders...",
-    "order_id": "Order ID",
     "customer": "Customer",
     "date": "Date",
     "total": "Total",
@@ -329,6 +347,7 @@
     "shipped": "Shipped",
     "delivered": "Delivered",
     "cancelled": "Cancelled",
+    "guest_order": "Guest Order",
     "order_details": "Order Details",
     "customer_information": "Customer Information",
     "name": "Name",
@@ -343,6 +362,7 @@
     "lat": "Latitude",
     "lng": "Longitude",
     "scan_to_open_in_google_maps": "Scan to open in Google Maps",
+    "tap_qr_to_open_google_maps": "Tap QR code to open Google Maps",
     "no_geolocation_data_available": "No geolocation data available",
     "order_items": "Order Items",
     "product": "Product",
@@ -350,7 +370,16 @@
     "quantity": "Quantity",
     "fetch_error": "Failed to fetch orders",
     "update_success": "Order status updated successfully",
-    "update_error": "Failed to update order status"
+    "update_error": "Failed to update order status",
+    "order_summary": "Order Summary",
+    "no_orders_yet": "No Orders Yet",
+    "start_shopping_to_see_your_order_history_here": "Start shopping to see your order history here",
+    "order_placed": "Order Placed",
+    "order_id": "Order Ref",
+    "your_orders": "Your Orders",
+    "confirm_delete_order": "Are you sure you want to delete this order?",
+    "view_invoice": "View Invoice",
+    "create_order": "Create Order"
   },
   "errors": {
     "general": "An error occurred",
@@ -372,6 +401,9 @@
   },
   "checkout": {
     "title": "Checkout",
+    "guest": {
+      "message": "You can complete your order as a guest. Your order will be processed normally."
+    },
     "contact": {
       "title": "Contact Information",
       "email": "Email",
@@ -394,7 +426,7 @@
     },
     "location": {
       "title": "Select your location",
-      "instructions": "Click on the map to select your delivery location",
+      "instructions": "Click on the map to select your delivery location or use your current location",
       "currentLocation": "Use my current location",
       "error": "Unable to get your location",
       "required": "Please select a delivery location",
@@ -410,8 +442,28 @@
       "total": "Total",
       "placeOrder": "Place Order",
       "processing": "Processing...",
-      "success": "Order placed successfully!",
+      "success": "Order placed successfully! We will contact you very soon.",
       "error": "Failed to process payment. Please try again."
+    },
+    "confirmation": {
+      "title": "Order Confirmation",
+      "whatHappensNext": "What happens next?",
+      "weWillCallYou": "We'll call you soon",
+      "callDescription": "To confirm your order and discuss delivery details",
+      "emailConfirmation": "Email confirmation",
+      "emailDescription": "You'll receive a detailed confirmation email",
+      "fastDelivery": "Fast delivery",
+      "deliveryDescription": "We'll process and ship your order quickly",
+      "orderItems": "Order Items",
+      "customerInformation": "Customer Information",
+      "contactDetails": "Contact Details",
+      "deliveryAddress": "Delivery Address",
+      "orderSummary": "Order Summary",
+      "total": "Total",
+      "status": "Status",
+      "thankYouMessage": "Thank you for your order! We'll contact you very soon to confirm the details.",
+      "continueShopping": "Continue Shopping",
+      "contactSupport": "Contact Support"
     }
   },
   "admin": {
@@ -444,6 +496,8 @@
         "pending": "Pending",
         "processing": "Processing",
         "completed": "Completed",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
         "cancelled": "Cancelled"
       },
       "details": {
@@ -455,7 +509,19 @@
         "date": "Order Date",
         "total": "Total Amount",
         "items": "Items",
-        "status": "Order Status"
+        "status": "Order Status",
+        "status_select": "Select order status",
+        "status_select_placeholder": "Select order status",
+        
+        "status_select_options": {
+          "pending": "Pending",
+          "processing": "Processing",
+          "shipped": "Shipped",
+          "delivered": "Delivered",
+          "cancelled": "Cancelled"
+        },
+        "status_description": "Order status",
+        "unknownCustomer": "Unknown customer"
       }
     },
     "dashboard": {
@@ -530,6 +596,36 @@
       "system": "System",
       "notifications": "Notifications",
       "settings": "Settings"
+    },
+    "payments": {
+      "title": "Payments",
+      "manage_payments": "Manage payments",
+      "search_payments": "Search payments...",
+      "no_payments": "No payments yet",
+      "filters": {
+        "all": "All",
+        "pending": "Pending",
+        "completed": "Completed",
+        "failed": "Failed",
+        "cancelled": "Cancelled"
+      },
+      "table": {
+        "id": "ID",
+        "order": "Order",
+        "amount": "Amount",
+        "provider": "Provider",
+        "status": "Status",
+        "date": "Date",
+        "actions": "Actions",
+        "mode": "Mode",
+        "order_details": "View order details"
+      },
+      "status": {
+        "pending": "Pending",
+        "completed": "Completed",
+        "failed": "Failed",
+        "cancelled": "Cancelled"
+      }
     }
   },
   "store": {
@@ -563,9 +659,18 @@
     "total_revenue": "Total Revenue",
     "total_customers": "Total Customers",
     "total_products": "Total Products",
+    "total_views": "Total Views",
+    "total_visits": "Total Visits",
     "from_last_month": "from last month",
     "low_stock": "items low in stock",
     "sales_overview": "Sales Overview",
+    "analytics_overview": "Analytics Overview",
+    "views_trend": "Views Trend",
+    "visits_trend": "Visits Trend",
+    "views": "Views",
+    "visits": "Visits",
+    "most_viewed_products": "Most Viewed Products",
+    "advanced_analytics": "Advanced Analytics",
     "last_7_days": "Last 7 Days",
     "last_30_days": "Last 30 Days",
     "last_90_days": "Last 90 Days",
@@ -613,7 +718,8 @@
     "image_url1": "Image 1 URL",
     "image_url2": "Image 2 URL",
     "image_url3": "Image 3 URL",
-    "image_url4": "Image 4 URL"
+    "image_url4": "Image 4 URL",
+    "views": "Views"
   },
   "users": {
     "management": {
@@ -671,6 +777,144 @@
     },
     "no_notifications": "No notifications",
     "all_caught_up": "You have all notifications read",
-    "clear_all": "Clear All"
+    "clear_all": "Clear All",
+    "marked_read": "Notification updated",
+    "error_delete": "Error while updating.",
+    "deleted": "Notification deleted"
+  },
+  "whatsapp": {
+    "title": "WhatsApp Configuration",
+    "description": "Configure WhatsApp notifications to receive real-time alerts",
+    "settings": {
+      "saved": "Settings saved successfully",
+      "save_error": "Error saving settings"
+    },
+    "test": {
+      "success": "Connection test successful!",
+      "error": "Connection test failed"
+    },
+    "notifications": {
+      "new_order": "New order received",
+      "status_update": "Status update",
+      "low_stock": "Low stock alert",
+      "payment_failed": "Payment failed"
+    }
+  },
+  "payment": {
+    "choose_wallet": "Choose your mobile wallet",
+    "phone": "Phone number",
+    "phone_placeholder": "e.g. 77 123 45 67"
+  },
+  "reviews": {
+      "title": "Customer Reviews",
+      "no_reviews": "No reviews for this product yet",
+      "anonymous": "Anonymous customer",
+      "write_review": "Write a review",
+      "your_rating": "Your rating",
+      "your_review": "Your review",
+      "submit": "Submit",
+      "success": "Thank you for your review!",
+      "error": "An error occurred while submitting your review",
+      "review": "Review",
+      "reviews": "Reviews",
+      "count": "reviews"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your store settings and preferences",
+    "tabs": {
+      "general": "General",
+      "payments": "Payments",
+      "notifications": "Notifications",
+      "security": "Security",
+      "team": "Team",
+      "appearance": "Appearance",
+      "email": "Email",
+      "email_config": "Email Configuration",
+      "emailDiagnostic": "Email Diagnostic"
+    },
+    "general": {
+      "title": "Store Information",
+      "subtitle": "Update your store details and preferences",
+      "storeName": "Store Name",
+      "storeUrl": "Store URL",
+      "contactEmail": "Contact Email",
+      "supportPhone": "Support Phone",
+      "storeDescription": "Store Description",
+      "businessHours": "Business Hours",
+      "days": {
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday"
+      },
+      "closed": "Closed"
+    },
+    "payments": {
+      "title": "Payment Methods",
+      "subtitle": "Configure which payment methods are available",
+      "methods": {
+        "wave": "Wave Money payment gateway",
+        "credit_card": "Credit and debit card payments",
+        "paypal": "PayPal online payments",
+        "bank_transfer": "Direct bank transfer"
+      },
+      "shipping": {
+        "title": "Shipping Options",
+        "subtitle": "Configure shipping costs and options",
+        "freeShippingThreshold": "Free Shipping Threshold ($)",
+        "standardShippingCost": "Standard Shipping Cost ($)",
+        "expressShippingCost": "Express Shipping Cost ($)",
+        "localPickup": "Enable Local Pickup",
+        "taxRate": "Tax Rate (%)"
+      }
+    },
+    "appearance": {
+      "title": "Appearance Settings",
+      "subtitle": "Customize your store's appearance",
+      "logoUrl": "Logo URL",
+      "faviconUrl": "Favicon URL",
+      "currency": "Currency",
+      "timezone": "Timezone",
+      "socialMedia": {
+        "title": "Social Media Links",
+        "subtitle": "Add your social media profiles",
+        "facebook": "Facebook",
+        "twitter": "Twitter",
+        "instagram": "Instagram",
+        "linkedin": "LinkedIn",
+        "youtube": "YouTube"
+      },
+      "currencies": {
+        "USD": "USD - US Dollar",
+        "EUR": "EUR - Euro",
+        "GBP": "GBP - British Pound",
+        "XOF": "XOF - West African CFA Franc",
+        "XAF": "XAF - Central African CFA Franc"
+      },
+      "timezones": {
+        "UTC": "UTC",
+        "Africa/Dakar": "Africa/Dakar",
+        "Africa/Lagos": "Africa/Lagos",
+        "Europe/Paris": "Europe/Paris",
+        "America/New_York": "America/New_York"
+      }
+    },
+    "security": {
+      "title": "Security Settings",
+      "subtitle": "Configure security and maintenance options",
+      "maintenanceMode": "Maintenance Mode",
+      "maintenanceModeDesc": "Enable maintenance mode to temporarily disable the store for visitors"
+    },
+    "actions": {
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "success": "Settings saved successfully!",
+      "error": "Error saving settings",
+      "loadError": "Error loading settings"
+    }
   }
 }

@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ProductForm from './ProductForm';
+import ProductPrice from '../../components/ProductPrice';
 
 // Toggle Switch Component
 function ToggleSwitch({ checked, onChange, id, label }) {
@@ -202,11 +203,11 @@ const Products = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">{t('products.title')}</h1>
-          <p className="text-gray-600">{t('products.manage_inventory')}</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{t('products.title')}</h1>
+          <p className="text-gray-600 dark:text-gray-400">{t('products.manage_inventory')}</p>
         </div>
         
         <div className="flex flex-wrap items-center gap-4">
@@ -216,9 +217,9 @@ const Products = () => {
               placeholder={t('products.search_placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 rounded-md border border-gray-300 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              className="w-64 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             />
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
           </div>
           
           <button
@@ -239,7 +240,7 @@ const Products = () => {
               });
               setShowModal(true);
             }}
-            className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            className="inline-flex items-center rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 dark:hover:bg-blue-600"
           >
             <Plus className="mr-2 h-5 w-5" />
             {t('products.add_product')}
@@ -249,53 +250,92 @@ const Products = () => {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500 dark:border-blue-400"></div>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg bg-white shadow-md">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="overflow-x-auto rounded-lg bg-white dark:bg-gray-800 shadow-md dark:shadow-lg">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  Image
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Product
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Category
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Price
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  Promotion
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Inventory
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Active
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
               {filteredProducts.map((product) => (
                 <tr
                   key={product.id}
-                  className="cursor-pointer hover:bg-blue-50 transition"
+                  className="cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-700 transition"
                   onClick={() => window.location.href = `/admin/products/${product.id}`}
                 >
-                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    {product.image_url ? (
+                      <img 
+                        src={product.image_url} 
+                        alt={product.name}
+                        className="h-12 w-12 rounded-lg object-cover"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : (
+                      <div className="h-12 w-12 rounded-lg bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
+                        <span className="text-gray-400 dark:text-gray-500 text-xs">No img</span>
+                      </div>
+                    )}
+                  </td>
+                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
                     <span>{product.name}</span>
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {product.categories?.name || '-'}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                    {formatPrice(product.price)}
+                    <ProductPrice product={product} size="base" showPercentage={false} showEndDate={false} />
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                    {product.promotion_active && product.promotion_percentage ? (
+                      <div className="flex flex-col">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 w-fit">
+                          -{product.promotion_percentage}%
+                        </span>
+                        {product.promotion_end_date && (
+                          <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Jusqu'au {new Date(product.promotion_end_date).toLocaleDateString('fr-FR')}
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400 dark:text-gray-500">-</span>
+                    )}
+                  </td>
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {product.inventory}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {product.isActive ? 'Yes' : 'No'}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
@@ -304,7 +344,7 @@ const Products = () => {
                         e.stopPropagation();
                         handleEdit(product);
                       }}
-                      className="mr-3 text-blue-600 hover:text-blue-900"
+                      className="mr-3 text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
                     >
                       <Edit className="h-5 w-5" />
                     </button>
@@ -313,7 +353,7 @@ const Products = () => {
                         e.stopPropagation();
                         handleDelete(product.id);
                       }}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
                     >
                       <Trash2 className="h-5 w-5" />
                     </button>
@@ -329,18 +369,36 @@ const Products = () => {
       {showModal && (
         <>
           <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className="relative w-full max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-12">
-              <button
-                onClick={() => setShowModal(false)}
-                className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-6 w-6" />
-              </button>
-              <h2 className="mb-6 text-2xl font-bold text-center">
-                {selectedProduct ? 'Modifier le produit' : 'Ajouter un produit'}
-              </h2>
-              <ProductForm product={selectedProduct} onClose={() => setShowModal(false)} onSaved={fetchProducts} />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="relative w-full max-w-[76vw] mx-4 bg-white dark:bg-gray-800 rounded-lg shadow-xl dark:shadow-2xl max-h-[95vh] overflow-hidden">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                  {selectedProduct ? 'Modifier le produit' : 'Ajouter un produit'}
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    setSelectedProduct(null);
+                  }}
+                  className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+                <ProductForm 
+                  product={selectedProduct} 
+                  onClose={() => {
+                    setShowModal(false);
+                    setSelectedProduct(null);
+                  }} 
+                  onSaved={() => {
+                    fetchProducts();
+                    setShowModal(false);
+                    setSelectedProduct(null);
+                  }} 
+                />
+              </div>
             </div>
           </div>
         </>

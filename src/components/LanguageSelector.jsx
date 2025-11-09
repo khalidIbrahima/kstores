@@ -19,7 +19,7 @@ const LanguageSelector = () => {
       <select
         value={i18n.language}
         onChange={(e) => handleLanguageChange(e.target.value)}
-        className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+        className="input bg-background text-text-dark"
       >
         {languages.map((lang) => (
           <option key={lang.code} value={lang.code}>

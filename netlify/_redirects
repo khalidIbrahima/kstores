@@ -1,0 +1,6 @@
+# Redirections pour les pages de produits avec métadonnées dynamiques
+/product/* /product-meta/:splat 200
+/category/* /category-meta/:splat 200
+
+# Fallback pour toutes les autres routes SPA
+/* /index.html 200

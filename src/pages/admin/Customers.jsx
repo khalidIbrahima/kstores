@@ -26,6 +26,7 @@ const Customers = () => {
             created_at
           )
         `)
+        .eq('is_admin', false)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -53,11 +54,11 @@ const Customers = () => {
   );
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Customers</h1>
-          <p className="text-gray-600">Manage your customer base</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Customers</h1>
+          <p className="text-gray-600 dark:text-gray-400">Manage your customer base</p>
         </div>
         
         <div className="relative">
@@ -66,15 +67,15 @@ const Customers = () => {
             placeholder="Search customers..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-64 rounded-md border border-gray-300 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="w-64 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           />
-          <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
         </div>
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500 dark:border-blue-400"></div>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -84,11 +85,11 @@ const Customers = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="overflow-hidden rounded-lg bg-white shadow-md"
+              className="overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow-md dark:shadow-lg"
             >
               <div className="p-6">
                 <div className="flex items-center">
-                  <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-gray-200">
+                  <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-600">
                     {customer.avatar_url ? (
                       <img
                         src={customer.avatar_url}
@@ -96,42 +97,42 @@ const Customers = () => {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-blue-100 text-blue-600">
+                      <div className="flex h-full w-full items-center justify-center bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
                         {customer.full_name.charAt(0).toUpperCase()}
                       </div>
                     )}
                   </div>
                   <div className="ml-4">
-                    <h2 className="text-lg font-medium text-gray-900">{customer.full_name}</h2>
-                    <div className="flex items-center text-sm text-gray-500">
+                    <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">{customer.full_name}</h2>
+                    <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                       <Mail className="mr-1 h-4 w-4" />
                       {customer.email}
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-6 grid grid-cols-2 gap-4 border-t border-gray-200 pt-4">
+                <div className="mt-6 grid grid-cols-2 gap-4 border-t border-gray-200 dark:border-gray-700 pt-4">
                   <div>
-                    <p className="text-sm text-gray-500">Total Orders</p>
-                    <p className="text-lg font-medium text-gray-900">{customer.orders.length}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Total Orders</p>
+                    <p className="text-lg font-medium text-gray-900 dark:text-gray-100">{customer.orders.length}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Total Spent</p>
-                    <p className="text-lg font-medium text-gray-900">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Total Spent</p>
+                    <p className="text-lg font-medium text-gray-900 dark:text-gray-100">
                       ${calculateTotalSpent(customer.orders).toFixed(2)}
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-4 border-t border-gray-200 pt-4">
-                  <p className="text-sm text-gray-500">Last Order</p>
-                  <p className="text-base text-gray-900">
+                <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Last Order</p>
+                  <p className="text-base text-gray-900 dark:text-gray-100">
                     {getLastOrderDate(customer.orders) || 'No orders yet'}
                   </p>
                 </div>
 
                 <div className="mt-6">
-                  <button className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+                  <button className="w-full rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600">
                     View Details
                   </button>
                 </div>

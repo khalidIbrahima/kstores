@@ -30,7 +30,7 @@ const ImageCarousel = ({ images, onImageChange }) => {
 
   return (
     <div className="relative">
-      <div className="relative h-64 bg-gray-100 rounded-lg overflow-hidden">
+      <div className="relative h-64 bg-background-light rounded-lg overflow-hidden">
         {images[currentIndex] ? (
           <img
             src={images[currentIndex]}
@@ -38,7 +38,7 @@ const ImageCarousel = ({ images, onImageChange }) => {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
+          <div className="w-full h-full flex items-center justify-center text-text-light">
             {t('products.noImage')}
           </div>
         )}
@@ -48,13 +48,13 @@ const ImageCarousel = ({ images, onImageChange }) => {
         <>
           <button
             onClick={handlePrevious}
-            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70"
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 text-text-dark p-2 rounded-full hover:bg-background transition-colors"
           >
             ←
           </button>
           <button
             onClick={handleNext}
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 text-text-dark p-2 rounded-full hover:bg-background transition-colors"
           >
             →
           </button>
@@ -64,7 +64,7 @@ const ImageCarousel = ({ images, onImageChange }) => {
       <div className="mt-4 grid grid-cols-5 gap-2">
         {images.map((image, index) => (
           <div key={index} className="relative">
-            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+            <div className="aspect-square bg-background-light rounded-lg overflow-hidden">
               {image ? (
                 <img
                   src={image}
@@ -72,7 +72,7 @@ const ImageCarousel = ({ images, onImageChange }) => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                <div className="w-full h-full flex items-center justify-center text-text-light text-xs">
                   {t('products.addImage')}
                 </div>
               )}

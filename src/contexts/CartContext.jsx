@@ -27,7 +27,7 @@ export function CartProvider({ children }) {
     }
   }, [items]);
 
-  const addItem = (product, quantity = 1) => {
+  const addItem = (product, quantity = 1, selectedColor = null, selectedProperties = {}) => {
     if (!product) return;
 
     const parsedQuantity = parseInt(quantity);
@@ -37,7 +37,21 @@ export function CartProvider({ children }) {
     }
 
     setItems(currentItems => {
-      const existingItem = currentItems.find(item => item.id === product.id);
+      // Create unique key based on product ID, color, and properties
+      const propertiesKey = Object.keys(selectedProperties).length > 0 
+        ? JSON.stringify(selectedProperties) 
+        : '';
+      const colorKey = selectedColor ? selectedColor.name : '';
+      const itemKey = `${product.id}-${colorKey}-${propertiesKey}`;
+      
+      const existingItem = currentItems.find(item => {
+        const existingPropertiesKey = item.selectedProperties && Object.keys(item.selectedProperties).length > 0 
+          ? JSON.stringify(item.selectedProperties) 
+          : '';
+        const existingColorKey = item.selectedColor ? item.selectedColor.name : '';
+        const existingKey = `${item.id}-${existingColorKey}-${existingPropertiesKey}`;
+        return existingKey === itemKey;
+      });
       
       if (existingItem) {
         const newQuantity = existingItem.quantity + parsedQuantity;
@@ -47,12 +61,27 @@ export function CartProvider({ children }) {
           return currentItems;
         }
 
-        const updatedItems = currentItems.map(item =>
-          item.id === product.id
+        const updatedItems = currentItems.map(item => {
+          const existingPropertiesKey = item.selectedProperties && Object.keys(item.selectedProperties).length > 0 
+            ? JSON.stringify(item.selectedProperties) 
+            : '';
+          const existingColorKey = item.selectedColor ? item.selectedColor.name : '';
+          const existingKey = `${item.id}-${existingColorKey}-${existingPropertiesKey}`;
+          return existingKey === itemKey
             ? { ...item, quantity: newQuantity }
-            : item
-        );
-        toast.success(`Updated ${product.name} quantity in cart`);
+            : item;
+        });
+        
+        // Create display text for toast
+        const displayText = [
+          product.name,
+          selectedColor ? `(${selectedColor.name})` : '',
+          Object.keys(selectedProperties).length > 0 
+            ? `[${Object.entries(selectedProperties).map(([key, value]) => `${key}: ${value}`).join(', ')}]`
+            : ''
+        ].filter(Boolean).join(' ');
+        
+        toast.success(`Updated ${displayText} quantity in cart`);
         return updatedItems;
       } else {
         if (product.inventory && parsedQuantity > product.inventory) {
@@ -60,14 +89,25 @@ export function CartProvider({ children }) {
           return currentItems;
         }
 
-        toast.success(`Added ${product.name} to cart`);
+        // Create display text for toast
+        const displayText = [
+          product.name,
+          selectedColor ? `(${selectedColor.name})` : '',
+          Object.keys(selectedProperties).length > 0 
+            ? `[${Object.entries(selectedProperties).map(([key, value]) => `${key}: ${value}`).join(', ')}]`
+            : ''
+        ].filter(Boolean).join(' ');
+
+        toast.success(`Added ${displayText} to cart`);
         return [...currentItems, { 
           id: product.id,
           name: product.name,
           price: product.price,
           image_url: product.image_url,
           inventory: product.inventory,
-          quantity: parsedQuantity
+          quantity: parsedQuantity,
+          selectedColor: selectedColor,
+          selectedProperties: selectedProperties
         }];
       }
     });

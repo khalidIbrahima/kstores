@@ -29,10 +29,10 @@ const Support = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen p-6">
       <div>
-        <h1 className="text-2xl font-bold">Support Center</h1>
-        <p className="text-gray-600">Get help and learn more about using the platform</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Support Center</h1>
+        <p className="text-gray-600 dark:text-gray-400">Get help and learn more about using the platform</p>
       </div>
 
       {/* Search */}
@@ -42,9 +42,9 @@ const Support = () => {
           placeholder="Search help articles..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+          className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
         />
-        <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
       </div>
 
       {/* Quick Links */}
@@ -59,16 +59,16 @@ const Support = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="rounded-lg bg-white p-6 shadow-md"
+            className="rounded-lg bg-white dark:bg-gray-800 p-6 shadow-md dark:shadow-lg"
           >
             <div className={`mb-4 inline-flex rounded-full bg-${item.color}-100 p-3`}>
               <item.icon className={`h-6 w-6 text-${item.color}-600`} />
             </div>
-            <h3 className="mb-2 text-lg font-medium">{item.title}</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">{item.title}</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Get help from our support team
             </p>
-            <button className="mt-4 text-sm font-medium text-blue-600 hover:text-blue-500">
+            <button className="mt-4 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">
               Learn More →
             </button>
           </motion.div>
@@ -77,7 +77,7 @@ const Support = () => {
 
       {/* Help Articles */}
       <div className="rounded-lg bg-white p-6 shadow-md">
-        <h2 className="mb-4 text-lg font-medium">Popular Articles</h2>
+        <h2 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Popular Articles</h2>
         <div className="space-y-4">
           {helpArticles.map((article, index) => (
             <motion.div
@@ -85,14 +85,14 @@ const Support = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
+              className="rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:bg-gray-50 dark:hover:bg-gray-700"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-medium text-gray-900">{article.title}</h3>
-                  <p className="mt-1 text-sm text-gray-600">{article.description}</p>
+                  <h3 className="font-medium text-gray-900 dark:text-gray-100">{article.title}</h3>
+                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{article.description}</p>
                 </div>
-                <span className="inline-flex rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+                <span className="inline-flex rounded-full bg-gray-100 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-400">
                   {article.category}
                 </span>
               </div>

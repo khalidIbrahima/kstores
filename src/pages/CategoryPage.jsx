@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
 import { formatPrice } from '../utils/currency';
-import { Helmet } from 'react-helmet';
+import DynamicSocialMetaTags from '../components/DynamicSocialMetaTags';
+import { urlUtils } from '../utils/slugUtils';
 
 const CategoryPage = () => {
   const { slug } = useParams();
@@ -37,15 +38,9 @@ const CategoryPage = () => {
         
         setCategory(categoryData);
         
-        // Fetch hero images if gaming category
-        if (slug === 'gaming') {
-          const { data: heroImagesData } = await supabase
-            .from('category_hero_images')
-            .select('*')
-            .eq('category_id', categoryData.id)
-            .eq('is_active', true);
-          
-          setHeroImages(heroImagesData || []);
+        // Use cover image if available
+        if (categoryData.cover_image_url) {
+          setHeroImages([{ url: categoryData.cover_image_url }]);
         }
         
         // Fetch products with their images
@@ -53,10 +48,9 @@ const CategoryPage = () => {
           .from('products')
           .select(`
             *,
-            product_images (
-              id,
-              url,
-              is_primary
+            categories(*),
+            reviews(
+              rate
             )
           `)
           .eq('category_id', categoryData.id)
@@ -64,14 +58,21 @@ const CategoryPage = () => {
         
         if (productsError) throw productsError;
         
-        // Process products to set primary image
-        const processedProducts = productsData.map(product => ({
-          ...product,
-          image_url: product.product_images.find(img => img.is_primary)?.url || product.product_images[0]?.url || product.image_url,
-          additional_images: product.product_images.filter(img => !img.is_primary).map(img => img.url)
-        }));
+        // Calculer la moyenne des notes pour chaque produit
+        const productsWithStats = productsData?.map(product => {
+          const avgRating = product.reviews?.length > 0 
+            ? product.reviews.reduce((acc, review) => acc + review.rate, 0) / product.reviews.length 
+            : 0;
+          return {
+            ...product,
+            reviews: {
+              count: product.reviews?.length || 0,
+              avg: avgRating
+            }
+          };
+        }) || [];
         
-        setProducts(processedProducts || []);
+        setProducts(productsWithStats);
       } catch (error) {
         console.error('Error fetching category:', error);
       } finally {
@@ -80,10 +81,12 @@ const CategoryPage = () => {
     };
     
     fetchCategory();
+  }, [slug]);
 
-    // Start hero image rotation for gaming category
+  // Separate useEffect for hero image rotation
+  useEffect(() => {
     let interval;
-    if (isGamingCategory) {
+    if (isGamingCategory && heroImages.length > 1) {
       interval = setInterval(() => {
         setCurrentHeroImage(current => 
           current === heroImages.length - 1 ? 0 : current + 1
@@ -94,7 +97,7 @@ const CategoryPage = () => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [slug, isGamingCategory, heroImages.length]);
+  }, [isGamingCategory, heroImages.length]);
 
   const nextHeroImage = () => {
     setCurrentHeroImage(current => 
@@ -106,6 +109,13 @@ const CategoryPage = () => {
     setCurrentHeroImage(current => 
       current === 0 ? heroImages.length - 1 : current - 1
     );
+  };
+
+  const handleAddToCart = (e, product) => {
+    e.preventDefault();
+    if (product.inventory > 0) {
+      addItem(product);
+    }
   };
 
   if (isLoading) {
@@ -131,17 +141,12 @@ const CategoryPage = () => {
 
   return (
     <div>
-      <Helmet>
-        <title>{category?.name ? `${category.name} - KStores` : 'Catégorie - KStores'}</title>
-        <meta name="description" content={category?.description?.slice(0, 160) || 'Catégorie de produits KStores'} />
-        <meta property="og:title" content={category?.name ? `${category.name} - KStores` : 'Catégorie - KStores'} />
-        <meta property="og:description" content={category?.description?.slice(0, 160) || 'Catégorie de produits KStores'} />
-        <meta property="og:image" content={category?.hero_image || '/logo192.png'} />
-        <meta property="og:url" content={window.location.href} />
-        <meta name="twitter:card" content="summary_large_image" />
-      </Helmet>
-      {/* Hero Section for Gaming Category */}
-      {isGamingCategory && heroImages.length > 0 && (
+      <DynamicSocialMetaTags 
+        pageType="category"
+        category={category}
+      />
+      {/* Hero Section for Categories with Cover Images */}
+      {heroImages.length > 0 && (
         <div className="relative overflow-hidden bg-gray-900 py-24 text-white">
           <AnimatePresence mode="wait">
             <motion.div
@@ -222,7 +227,7 @@ const CategoryPage = () => {
         </div>
       )}
 
-      <div className="container mx-auto px-4 py-12">
+             <div className="container mx-auto px-4 py-12">
         {/* Breadcrumbs */}
         <nav className="mb-8 flex text-sm">
           <Link to="/" className="text-gray-500 hover:text-blue-600">{t('nav.home')}</Link>
@@ -230,7 +235,7 @@ const CategoryPage = () => {
           <span className="text-gray-800">{category.name}</span>
         </nav>
 
-        {!isGamingCategory && (
+        {heroImages.length === 0 && (
           <div className="mb-12">
             <h1 className="mb-4 text-3xl font-bold">{category.name}</h1>
             <p className="text-lg text-gray-600">
@@ -255,42 +260,88 @@ const CategoryPage = () => {
                   isGamingCategory ? 'hover:shadow-purple-200' : ''
                 }`}
               >
-                <Link to={`/product/${product.id}`} className="block overflow-hidden">
-                  <div className="h-64 overflow-hidden">
+                <Link to={urlUtils.generateProductUrl(product)} className="block overflow-hidden">
+                  <div className="h-64 overflow-hidden relative">
                     <img
                       src={product.image_url}
                       alt={product.name}
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
                     />
+                    <div 
+                      className="h-full w-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs"
+                      style={{ display: 'none' }}
+                    >
+                      <div className="text-center">
+                        <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center mb-1">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <span>Image non disponible</span>
+                      </div>
+                    </div>
+                    {product.inventory === 0 && (
+                      <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                        <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg">
+                          Écoulé
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="p-4">
                     <h3 className="mb-2 text-lg font-medium text-gray-900 line-clamp-2">{product.name}</h3>
+                    
+                    {/* Colors Display */}
+                    {product.colors && product.colors.length > 0 && (
+                      <div className="mb-2">
+                        <div className="flex items-center gap-1">
+                          {product.colors.filter(color => color.available !== false).slice(0, 5).map((color, index) => (
+                            <div
+                              key={index}
+                              className="w-4 h-4 rounded-full border border-gray-300"
+                              style={{ backgroundColor: color.hex }}
+                              title={color.name}
+                            />
+                          ))}
+                          {product.colors.filter(color => color.available !== false).length > 5 && (
+                            <span className="text-xs text-gray-500">
+                              +{product.colors.filter(color => color.available !== false).length - 5}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    
                     <div className="mb-2 flex items-center">
                       <div className="flex text-yellow-400">
                         {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="h-4 w-4 fill-current" />
+                          <Star key={i} className={`h-4 w-4 ${i < Math.round(product.reviews?.avg || 0) ? 'fill-current' : ''}`} />
                         ))}
                       </div>
                       <span className="ml-2 text-sm text-gray-600">
-                        (27 {t('product.reviews')})
+                        ({product.reviews?.count || 0} {t('product.reviews')})
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <p className={`text-xl font-bold ${isGamingCategory ? 'text-purple-600' : 'text-blue-700'}`}>
-                        {formatPrice(product.price)}
-                      </p>
+                      <div className="flex flex-col">
+                        <p className="text-xl font-bold text-blue-700">
+                          {formatPrice(product.price)}
+                        </p>
+                      </div>
                       <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          addItem(product, 1);
-                        }}
+                        onClick={(e) => handleAddToCart(e, product)}
+                        disabled={product.inventory === 0}
                         className={`rounded-full px-3 py-1 text-sm transition-colors ${
-                          isGamingCategory
-                            ? 'bg-purple-100 text-purple-700 hover:bg-purple-600 hover:text-white'
+                          product.inventory === 0 
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
                             : 'bg-gray-100 text-gray-700 hover:bg-blue-600 hover:text-white'
                         }`}
                       >
-                        {t('product.addToCart')}
+                        {product.inventory === 0 ? 'Indisponible' : t('product.addToCart')}
                       </button>
                     </div>
                   </div>

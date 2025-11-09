@@ -1,3 +1,322 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Configuration de base pour la lisibilité optimale */
+@layer base {
+  html {
+    @apply transition-colors duration-300;
+    /* Optimisation pour la lisibilité sur tous les appareils */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* Améliore le rendu des polices sur les écrans haute densité */
+    font-variant-ligatures: normal;
+    font-feature-settings: "liga", "clig", "kern";
+  }
+  
+  body {
+    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300;
+    /* Taille de police de base optimisée pour mobile */
+    font-size: 16px; /* Évite le zoom automatique sur iOS */
+    line-height: 1.6; /* Améliore la lisibilité */
+    /* Optimisations de performance */
+    font-display: swap;
+  }
+  
+  /* Optimisations de lisibilité par taille d'écran */
+  @media (max-width: 475px) {
+    body {
+      font-size: 16px; /* Taille minimale pour éviter le zoom iOS */
+      line-height: 1.5;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    body {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+  }
+  
+  /* Amélioration de la lisibilité des titres */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.5em;
+    color: inherit;
+    /* Évite les coupures de mots dans les titres */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* Optimisation pour le texte de paragraphe */
+  p {
+    margin-bottom: 1em;
+    line-height: 1.6;
+    /* Améliore la lisibilité sur de longs textes */
+    text-align: left;
+    word-spacing: 0.1em;
+  }
+  
+  /* Optimisation des liens pour la lisibilité et l'accessibilité */
+  a {
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  a:hover, a:focus {
+    text-decoration: none;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+  
+  /* Amélioration de la lisibilité des inputs */
+  input, textarea, select {
+    font-size: 16px; /* Évite le zoom sur iOS */
+    line-height: 1.4;
+  }
+}
+
+/* Styles personnalisés pour les modales - résistent aux extensions de mode sombre */
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(2px) !important;
+  z-index: 50 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem !important;
+}
+
+.modal-content {
+  background-color: white !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  position: relative !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  width: 100% !important;
+  max-width: 32rem !important;
+}
+
+.dark .modal-content {
+  background-color: #1f2937 !important; /* gray-800 */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal-content-large {
+  background-color: white !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  position: relative !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  width: 100% !important;
+  max-width: 56rem !important;
+}
+
+.dark .modal-content-large {
+  background-color: #1f2937 !important; /* gray-800 */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Force les couleurs pour les modales - Mode sombre compatible */
+.modal-overlay *,
+.modal-content *,
+.modal-content-large * {
+  color: inherit !important;
+}
+
+/* S'assurer que le texte dans les modales reste lisible */
+.modal-content h1,
+.modal-content h2,
+.modal-content h3,
+.modal-content p,
+.modal-content label,
+.modal-content span,
+.modal-content-large h1,
+.modal-content-large h2,
+.modal-content-large h3,
+.modal-content-large p,
+.modal-content-large label,
+.modal-content-large span {
+  color: inherit !important;
+}
+
+/* S'assurer que les inputs restent visibles */
+.modal-content input,
+.modal-content select,
+.modal-content textarea,
+.modal-content-large input,
+.modal-content-large select,
+.modal-content-large textarea {
+  background-color: inherit !important;
+  color: inherit !important;
+  border-color: inherit !important;
+}
+
+/* S'assurer que les boutons restent visibles */
+.modal-content button,
+.modal-content-large button {
+  background-color: inherit !important;
+  color: inherit !important;
+}
+
+.modal-content button.btn-outline,
+.modal-content-large button.btn-outline {
+  background-color: inherit !important;
+  color: inherit !important;
+  border-color: inherit !important;
+}
+
+/* Styles pour les messages de calcul */
+.calculation-message {
+  color: #2563eb !important; /* blue-600 */
+  font-weight: 500 !important;
+}
+
+.calculation-warning {
+  color: #ea580c !important; /* orange-600 */
+}
+
+.calculation-info {
+  color: #6b7280 !important; /* gray-500 */
+}
+
+/* Animation pour le calcul en cours */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.calculating {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Police Google avec optimisations de performance */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico:wght@400&display=swap');
+
+@layer base {
+  /* Configuration spécifique pour les titres avec la police logo */
+  .font-logo, 
+  .title-brand {
+    font-family: 'Pacifico', cursive, system-ui, sans-serif;
+    font-display: swap;
+    /* Optimisations de lisibilité pour la police décorative */
+    line-height: 1.2;
+    letter-spacing: 0.025em;
+  }
+}
+
+@layer components {
+  /* Boutons avec lisibilité optimisée */
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors;
+    font-size: 16px; /* Taille minimale pour les boutons sur mobile */
+    font-weight: 500;
+    line-height: 1.4;
+    min-height: 44px; /* Taille minimale recommandée pour le touch */
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-white px-4 py-2 rounded-lg hover:bg-secondary-dark transition-colors;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    min-height: 44px;
+  }
+
+  .btn-accent {
+    @apply bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent-dark transition-colors;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    min-height: 44px;
+  }
+
+  /* Cartes avec typographie optimisée */
+  .card {
+    @apply bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow;
+    line-height: 1.6;
+  }
+
+  /* Inputs avec taille optimisée pour éviter le zoom sur mobile */
+  .input {
+    @apply border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent;
+    font-size: 16px; /* Évite le zoom automatique sur iOS */
+    line-height: 1.4;
+    min-height: 44px;
+  }
+  
+  /* Utilitaires de lisibilité */
+  .text-readable {
+    line-height: 1.6;
+    letter-spacing: 0.015em;
+    word-spacing: 0.05em;
+  }
+  
+  .text-readable-large {
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    word-spacing: 0.05em;
+  }
+  
+  .text-mobile-friendly {
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0.015em;
+  }
+  
+  /* Amélioration du contraste pour l'accessibilité */
+  .contrast-high {
+    color: #1a202c; /* Assure un contraste élevé */
+  }
+  
+  .contrast-high-dark {
+    color: #f7fafc; /* Contraste élevé en mode sombre */
+  }
+}
+
+/* Optimisations spécifiques pour l'accessibilité */
+@layer utilities {
+  /* Respecte les préférences de mouvement réduit */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* Améliore la lisibilité pour les utilisateurs ayant des difficultés de lecture */
+  @media (prefers-contrast: high) {
+    body {
+      background-color: white !important;
+      color: black !important;
+    }
+    
+    .dark body {
+      background-color: black !important;
+      color: white !important;
+    }
+  }
+  
+  /* Support pour les grandes tailles de police système */
+  @media screen and (min-resolution: 192dpi) {
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  }
+}

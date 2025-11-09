@@ -2,6 +2,26 @@
   command = "npm run build"
   publish = "dist"
 
+# Configuration pour les métadonnées dynamiques
+[build.environment]
+  NODE_VERSION = "18"
+
+# Redirections pour améliorer le SEO et les aperçus sociaux
+[[redirects]]
+  from = "/product/:id"
+  to = "/index.html"
+  status = 200
+  force = false
+  headers = {Cache-Control = "public, max-age=0, must-revalidate"}
+
+[[redirects]]
+  from = "/category/:slug"
+  to = "/index.html" 
+  status = 200
+  force = false
+  headers = {Cache-Control = "public, max-age=0, must-revalidate"}
+
+# Fallback pour toutes les autres routes
 [[redirects]]
   from = "/*"
   to = "/index.html"

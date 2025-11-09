@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CreditCard, Lock } from 'lucide-react';
@@ -9,6 +9,8 @@ import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import LocationPicker from '../components/LocationPicker';
 import { formatPrice } from '../utils/currency';
+import { sendOrderWhatsappNotificationToAdmin, sendOrderWhatsappConfirmationToCustomer } from '../services/whatsappService';
+import { sendOrderEmailNotificationToAdmin as sendOrderEmailToAdmin, sendOrderEmailConfirmationToCustomer as sendOrderEmailToCustomer } from '../services/emailService';
 //import { createNotification } from '../lib/notifications';
 
 const CheckoutPage = () => {
@@ -21,14 +23,16 @@ const CheckoutPage = () => {
   const [formData, setFormData] = useState({
     email: user?.email || '',
     name: '',
+    phone: '',
     address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: ''
   });
+
+  // Redirect to cart if no items
+  useEffect(() => {
+    if (items.length === 0) {
+      navigate('/cart');
+    }
+  }, [items.length, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -51,62 +55,85 @@ const CheckoutPage = () => {
     setIsProcessing(true);
 
     try {
-      // Create order in database
+      // Create order in database with optional user_id
+      const orderData = {
+        user_id: user?.id || null, // Allow null for guest users
+        total: total,
+        status: 'pending',
+        shipping_address: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address
+        },
+        userGeolocation: {
+          latitude: location.lat,
+          longitude: location.lng
+        }
+      };
+
       const { data: order, error: orderError } = await supabase
         .from('orders')
-        .insert([
-          {
-            user_id: user.id,
-            total: total,
-            status: 'pending',
-            shipping_address: {
-              name: formData.name,
-              address: formData.address,
-              city: formData.city,
-              state: formData.state,
-              zip_code: formData.zipCode
-            },
-            userGeolocation: {
-              latitude: location.lat,
-              longitude: location.lng
-            }
-          }
-        ])
+        .insert([orderData])
         .select()
         .single();
 
+      //log error
       if (orderError) throw orderError;
-
-      // Créer une notification pour l'admin
-      /* await createNotification({
-        user_id: null, // ou l'id de l'admin si ciblé
-        type: 'order_received',
-        data: { orderId: order.id }
-      }); */
 
       // Create order items
       const orderItems = items.map(item => ({
         order_id: order.id,
         product_id: item.id,
         quantity: item.quantity,
-        price: item.price
+        price: item.price,
+        selected_color: item.selectedColor ? JSON.stringify(item.selectedColor) : null
       }));
 
       const { error: itemsError } = await supabase
         .from('order_items')
         .insert(orderItems);
-
       if (itemsError) throw itemsError;
 
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      // Fetch order items with product info for email
+      const { data: orderItemsFull, error: orderItemsFullError } = await supabase
+        .from('order_items')
+        .select('quantity, price, products(name, image_url)')
+        .eq('order_id', order.id);
+      if (orderItemsFullError) throw orderItemsFullError;
+
+      // Map to structure expected by email template
+      const orderWithItems = {
+        ...order,
+        order_items: orderItemsFull?.map(item => ({
+          name: item.products?.name,
+          image_url: item.products?.image_url,
+          quantity: item.quantity,
+          price: item.price
+        })) || []
+      };
+
+      // Send notifications (only with enriched order)
+      try {
+        // Admin email
+        await sendOrderEmailToAdmin(orderWithItems);
+        await sendOrderWhatsappNotificationToAdmin(order);
+        // Customer email (if phone/email present)
+        if (formData.phone) {
+          await sendOrderWhatsappConfirmationToCustomer(order);
+        }
+        if (formData.email) {
+          await sendOrderEmailToCustomer(orderWithItems);
+        }
+      } catch (error) {
+        console.error('❌ Error sending notifications:', error);
+      }
+
       // Clear cart and show success message
       clearCart();
       toast.success(t('checkout.order.success'));
       
-      // Redirect to orders page
-      navigate('/orders');
+      navigate(`/orders`);
     } catch (error) {
       console.error('Checkout error:', error);
       toast.error(t('checkout.order.error'));
@@ -115,8 +142,8 @@ const CheckoutPage = () => {
     }
   };
 
+  // Don't render if cart is empty (useEffect will handle redirect)
   if (items.length === 0) {
-    navigate('/cart');
     return null;
   }
 
@@ -130,14 +157,50 @@ const CheckoutPage = () => {
           transition={{ duration: 0.5 }}
           className="order-2 lg:order-1"
         >
-          <div className="rounded-lg bg-white p-6 shadow-md">
-            <h2 className="mb-6 text-2xl font-bold">{t('checkout.title')}</h2>
+          <div className="rounded-lg bg-white dark:bg-gray-800 p-6 shadow-md border border-gray-200 dark:border-gray-700">
+            <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">{t('checkout.title')}</h2>
+            
+            {!user && (
+              <div className="mb-6 rounded-lg bg-blue-50 dark:bg-blue-900/20 p-4 border border-blue-200 dark:border-blue-800">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  {t('checkout.guest.message')}
+                </p>
+              </div>
+            )}
             
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Contact Information */}
               <div>
-                <h3 className="mb-4 text-lg font-medium">{t('checkout.contact.title')}</h3>
+                <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">{t('checkout.contact.title')}</h3>
                 <div className="space-y-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {t('checkout.shipping.fullName')}
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                      {t('checkout.contact.phone')}
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                      required
+                    />
+                  </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                       {t('checkout.contact.email')}
@@ -148,7 +211,7 @@ const CheckoutPage = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                      className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                       required
                     />
                   </div>
@@ -156,38 +219,9 @@ const CheckoutPage = () => {
               </div>
 
               {/* Shipping Address */}
-              <div>
-                <h3 className="mb-4 text-lg font-medium">{t('checkout.shipping.title')}</h3>
+              {<div>
+                <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">{t('checkout.shipping.title')}</h3>
                 <div className="space-y-4">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                      {t('checkout.shipping.fullName')}
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                      {t('checkout.contact.phone')}
-                    </label>
-                    <input
-                      type="phone"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                      required
-                    />
-                  </div>
                   <div>
                     <label htmlFor="address" className="block text-sm font-medium text-gray-700">
                       {t('checkout.shipping.streetAddress')}
@@ -198,12 +232,12 @@ const CheckoutPage = () => {
                       name="address"
                       value={formData.address}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                      className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                       required
                     />
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
+                  {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <div>
                       <label htmlFor="city" className="block text-sm font-medium text-gray-700">
                         {t('checkout.shipping.city')}
@@ -214,8 +248,8 @@ const CheckoutPage = () => {
                         name="city"
                         value={formData.city}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                        
+                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                        required
                       />
                     </div>
                     
@@ -229,32 +263,31 @@ const CheckoutPage = () => {
                         name="state"
                         value={formData.state}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                        
+                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                        required
                       />
                     </div>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
-                      {t('checkout.shipping.zipCode')}
-                    </label>
-                    <input
-                      type="text"
-                      id="zipCode"
-                      name="zipCode"
-                      value={formData.zipCode}
-                      onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                      
-                    />
-                  </div>
+                    
+                    <div>
+                      <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
+                        {t('checkout.shipping.zipCode')}
+                      </label>
+                      <input
+                        type="text"
+                        id="zipCode"
+                        name="zipCode"
+                        value={formData.zipCode}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                        required
+                      />
+                    </div>
+                  </div> */}
                 </div>
-              </div>
-
+              </div>}
               {/* Location Picker */}
               <div>
-                <h3 className="mb-4 text-lg font-medium">{t('checkout.location.title')}</h3>
+                <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">{t('checkout.location.title')}</h3>
                 <div className="h-[300px] rounded-lg overflow-hidden">
                   <LocationPicker onLocationSelect={handleLocationSelect} />
                 </div>
@@ -294,7 +327,7 @@ const CheckoutPage = () => {
                         name="expiryDate"
                         value={formData.expiryDate}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                         placeholder="MM/YY"
                         required
                       />
@@ -310,7 +343,7 @@ const CheckoutPage = () => {
                         name="cvv"
                         value={formData.cvv}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                         placeholder="123"
                         required
                       />
@@ -322,7 +355,7 @@ const CheckoutPage = () => {
               <button
                 type="submit"
                 disabled={isProcessing}
-                className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                className="w-full rounded-full bg-primary px-6 py-3 text-base font-semibold text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition"
               >
                 {isProcessing ? t('checkout.order.processing') : t('checkout.order.placeOrder')}
               </button>
@@ -337,32 +370,29 @@ const CheckoutPage = () => {
           transition={{ duration: 0.5 }}
           className="order-1 lg:order-2"
         >
-          <div className="rounded-lg bg-white p-6 shadow-md">
-            <h2 className="mb-6 text-2xl font-bold">{t('checkout.order.title')}</h2>
+          <div className="rounded-lg bg-white dark:bg-gray-800 p-6 shadow-md border border-gray-200 dark:border-gray-700">
+            <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">{t('checkout.order.title')}</h2>
             
             <div className="space-y-4">
               {items.map((item) => (
                 <div key={item.id} className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-medium">{item.name}</h3>
-                    <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">{item.name}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Qty: {item.quantity}</p>
                   </div>
-                  <p className="font-medium">{formatPrice(item.price * item.quantity)}</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">{formatPrice(item.price * item.quantity)}</p>
                 </div>
               ))}
               
-              <div className="border-t pt-4">
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-gray-600">{t('checkout.order.subtotal')}</p>
-                  <p className="font-medium">{formatPrice(total)}</p>
+                  <p className="text-gray-600 dark:text-gray-400">{t('checkout.order.subtotal')}</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">{formatPrice(total)}</p>
                 </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-gray-600">{t('checkout.order.shipping')}</p>
-                  <p className="font-medium">$0.00</p>
-                </div>
-                <div className="mt-4 flex items-center justify-between border-t pt-4">
-                  <p className="text-lg font-bold">{t('checkout.order.total')}</p>
-                  <p className="text-lg font-bold">{formatPrice(total)}</p>
+                
+                <div className="mt-4 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
+                  <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{t('checkout.order.total')}</p>
+                  <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{formatPrice(total)}</p>
                 </div>
               </div>
             </div>

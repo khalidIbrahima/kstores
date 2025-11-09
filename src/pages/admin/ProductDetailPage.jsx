@@ -5,6 +5,7 @@ import { ArrowLeft, Edit, Trash2, X } from 'lucide-react';
 import ProductImageCarousel from '../../components/ProductImageCarousel';
 import ProductForm from './ProductForm';
 import toast from 'react-hot-toast';
+import { formatDescriptionFull } from '../../utils/formatDescription.jsx';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -52,19 +53,30 @@ const ProductDetailPage = () => {
     setShowEditModal(false);
   };
 
+  const handleProductSaved = async () => {
+    // Refetch the product data after saving
+    const { data } = await supabase
+      .from('products')
+      .select('*, categories(name)')
+      .eq('id', id)
+      .single();
+    setProduct(data);
+    setShowEditModal(false);
+  };
+
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-16 w-16 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="h-16 w-16 animate-spin rounded-full border-b-2 border-t-2 border-blue-500 dark:border-blue-400"></div>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="container mx-auto my-16 px-4 text-center">
-        <h2 className="mb-6 text-2xl font-bold">Produit introuvable</h2>
-        <Link to="/admin/products" className="rounded-md bg-blue-600 px-6 py-3 text-white hover:bg-blue-700 inline-flex items-center">
+      <div className="container mx-auto my-16 px-4 text-center bg-gray-50 dark:bg-gray-900 min-h-screen">
+        <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Produit introuvable</h2>
+        <Link to="/admin/products" className="rounded-md bg-blue-600 dark:bg-blue-500 px-6 py-3 text-white hover:bg-blue-700 dark:hover:bg-blue-600 inline-flex items-center">
           <ArrowLeft className="mr-2 h-5 w-5" /> Retour à la liste
         </Link>
       </div>
@@ -80,38 +92,38 @@ const ProductDetailPage = () => {
   ].filter(Boolean);
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-6xl">
-      <Link to="/admin/products" className="mb-8 inline-flex items-center text-blue-600 hover:underline">
+    <div className="container mx-auto px-4 py-12 max-w-6xl bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <Link to="/admin/products" className="mb-8 inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200">
         <ArrowLeft className="mr-2 h-5 w-5" /> Retour à la liste
       </Link>
-      <div className="rounded-2xl bg-white shadow-xl p-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+      <div className="rounded-2xl bg-white dark:bg-gray-800 shadow-xl p-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-start border border-gray-200 dark:border-gray-700">
         <div>
           <ProductImageCarousel images={images} />
         </div>
         <div>
           <div className="flex items-center mb-4">
-            <h1 className="text-3xl font-bold mr-4">{product.name}</h1>
-            <span className={`px-3 py-1 rounded-full text-xs font-semibold ml-2 ${product.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+            <h1 className="text-3xl font-bold mr-4 text-gray-900 dark:text-gray-100">{product.name}</h1>
+            <span className={`px-3 py-1 rounded-full text-xs font-semibold ml-2 ${product.isActive ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' : 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300'}`}>
               {product.isActive ? 'Actif' : 'Inactif'}
             </span>
           </div>
-          <div className="mb-6 text-gray-700 text-base">{product.description}</div>
+          <div className="mb-6 text-gray-700 dark:text-gray-300 text-base">{formatDescriptionFull(product.description)}</div>
           <div className="mb-8">
-            <span className="text-4xl font-bold text-blue-700">{product.price} FCFA</span>
+            <span className="text-4xl font-bold text-blue-700 dark:text-blue-400">{product.price} FCFA</span>
           </div>
-          <div className="mb-4"><span className="font-semibold text-gray-700">Stock :</span> {product.inventory}</div>
-          <div className="mb-4"><span className="font-semibold text-gray-700">Catégorie :</span> {product.categories?.name || '-'}</div>
+          <div className="mb-4 text-gray-700 dark:text-gray-300"><span className="font-semibold text-gray-900 dark:text-gray-100">Stock :</span> {product.inventory}</div>
+          <div className="mb-4 text-gray-700 dark:text-gray-300"><span className="font-semibold text-gray-900 dark:text-gray-100">Catégorie :</span> {product.categories?.name || '-'}</div>
           <div className="flex gap-4 mt-8">
             <button
               onClick={handleEdit}
-              className="inline-flex items-center rounded-md bg-yellow-400 px-5 py-2 font-medium text-gray-900 hover:bg-yellow-300 transition"
+              className="inline-flex items-center rounded-md bg-yellow-400 dark:bg-yellow-500 px-5 py-2 font-medium text-gray-900 dark:text-gray-100 hover:bg-yellow-300 dark:hover:bg-yellow-400 transition"
             >
               <Edit className="mr-2 h-5 w-5" /> Modifier
             </button>
             <button
               onClick={handleDelete}
               disabled={deleting}
-              className="inline-flex items-center rounded-md bg-red-600 px-5 py-2 font-medium text-white hover:bg-red-700 transition disabled:opacity-50"
+              className="inline-flex items-center rounded-md bg-red-600 dark:bg-red-500 px-5 py-2 font-medium text-white hover:bg-red-700 dark:hover:bg-red-600 transition disabled:opacity-50"
             >
               <Trash2 className="mr-2 h-5 w-5" /> {deleting ? 'Suppression...' : 'Supprimer'}
             </button>
@@ -121,16 +133,20 @@ const ProductDetailPage = () => {
       {showEditModal && (
         <>
           <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className="relative w-full max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-12">
-              <button
-                className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
-                onClick={handleModalClose}
-              >
-                <X className="h-6 w-6" />
-              </button>
-              <h2 className="mb-6 text-2xl font-bold text-center">Modifier le produit</h2>
-              <ProductForm product={product} onClose={handleModalClose} />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="relative w-full max-w-[76vw] mx-4 bg-white dark:bg-gray-800 rounded-lg shadow-xl max-h-[95vh] overflow-hidden border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Modifier le produit</h2>
+                <button
+                  className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  onClick={handleModalClose}
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+                <ProductForm product={product} onClose={handleModalClose} onSaved={handleProductSaved} />
+              </div>
             </div>
           </div>
         </>

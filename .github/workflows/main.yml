@@ -1,15 +1,70 @@
-name: Deploy netlify site
+name: Deploy on PR Merge
 
 on:
-  push:
-    branches: [main]
-    
+  pull_request:
+    types: [closed]
+
 jobs:
-  build:
+  ftp-deploy:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: "Deployed site"
-      run: curl -X POST -d {} ${{ secrets.NETLIFY_BUILD_HOOK }}
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_CALLBACK_URL: ${{ secrets.VITE_SUPABASE_CALLBACK_URL }}
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+          VITE_GOOGLE_REDIRECT_URL: ${{ secrets.VITE_GOOGLE_REDIRECT_URL }}
+          VITE_TWILIO_ACCOUNT_SID: ${{ secrets.VITE_TWILIO_ACCOUNT_SID }}
+          VITE_TWILIO_AUTH_TOKEN: ${{ secrets.VITE_TWILIO_AUTH_TOKEN }}
+          VITE_TWILIO_WHATSAPP_NUMBER: ${{ secrets.VITE_TWILIO_WHATSAPP_NUMBER }}
+          VITE_ADMIN_WHATSAPP_NUMBER: ${{ secrets.VITE_ADMIN_WHATSAPP_NUMBER }}
+          VITE_WAVE_API_KEY: ${{ secrets.VITE_WAVE_API_KEY }}
+          VITE_RESEND_EDGE_FUNCTION_URL: ${{ secrets.VITE_RESEND_EDGE_FUNCTION_URL }}
+          VITE_ADMIN_EMAIL: ${{ secrets.VITE_ADMIN_EMAIL }}
+          VITE_PRODUCTION_URL: ${{ secrets.VITE_PRODUCTION_URL }}
+          PROD: ${{ secrets.PROD }}
+          VITE_NODE_ENV: production
+          NODE_ENV: production
+
+      - name: Debug environment variables
+        run: |
+          echo "=== Environment variables ==="
+          env | grep VITE_ || echo "No VITE_ variables found"
+          echo "=== Checking built files ==="
+          ls -la dist/
+          echo "=== Checking if variables are in built JS files ==="
+          grep -r "VITE_SUPABASE_URL" dist/ || echo "VITE_SUPABASE_URL not found in build"
+          grep -r "prszfxibvgjeqxadzbfo" dist/ || echo "Supabase URL not found in build"
+
+      - name: Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /  # Change this to your server's target directory if needed
+
+  netlify-deploy:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trigger Netlify Build
+        run: curl -X POST -d {} ${{ secrets.NETLIFY_BUILD_HOOK }}
