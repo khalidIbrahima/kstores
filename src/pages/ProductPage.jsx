@@ -222,12 +222,15 @@ const ProductPage = () => {
           toast.error(`Veuillez sélectionner: ${missingVariants.map(v => v.name).join(', ')}`);
           return;
         }
-      }
-      
-      // Vérifier si une couleur est requise mais non sélectionnée (legacy support)
-      if (product.colors && product.colors.length > 0 && !selectedColor && !selectedVariants['Couleur'] && !selectedVariants['Color']) {
-        toast.error(t('product.colorRequired'));
-        return;
+      } else if (product.colors && product.colors.length > 0 && !selectedColor) {
+        // Legacy fallback uniquement si aucune variante n'est définie
+        const availableColor = product.colors.find(color => color.available !== false) || product.colors[0];
+        if (availableColor) {
+          setSelectedColor(availableColor);
+        } else {
+          toast.error(t('product.colorRequired'));
+          return;
+        }
       }
       
       // Vérifier si des propriétés requises ne sont pas sélectionnées (legacy support)
@@ -389,7 +392,7 @@ const ProductPage = () => {
           <h1 className="mb-4 text-3xl font-bold text-gray-900 dark:text-gray-100">{product.name}</h1>
           
           {/* Colors Display */}
-          {!hasColorVariant && product.colors && product.colors.length > 0 && (
+          {!hasColorVariant && (!productVariants || productVariants.length === 0) && product.colors && product.colors.length > 0 && (
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Couleurs disponibles</label>
               <div className="flex items-center gap-3">
