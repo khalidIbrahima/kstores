@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabase';
 import ShippingAgencyForm from './ShippingAgencyForm';
 import DeliveryForm from './DeliveryForm';
 
-const emptyItem = { product_name: '', unit_price_usd: '', quantity: '', unit_weight: '', unit_cbm: '', image_url: '' };
+const emptyItem = { product_name: '', unit_price_usd: '', quantity: '', unit_weight: '', unit_cbm: '', image_url: '', ads_amount: '', image_file: null };
 
 export default function SupplierOrderForm({ order, onClose }) {
   const isEdit = !!order;
@@ -72,10 +72,12 @@ export default function SupplierOrderForm({ order, onClose }) {
     // Convert numeric fields to strings for form inputs
     const processedItems = data && data.length ? data.map(item => ({
       ...item,
-              unit_price_usd: item.unit_price_usd ? item.unit_price_usd.toString() : '',
-        quantity: item.quantity ? item.quantity.toString() : '',
-        unit_weight: item.unit_weight ? item.unit_weight.toString() : '',
-        unit_cbm: item.unit_cbm ? item.unit_cbm.toString() : ''
+      unit_price_usd: item.unit_price_usd ? item.unit_price_usd.toString() : '',
+      quantity: item.quantity ? item.quantity.toString() : '',
+      unit_weight: item.unit_weight ? item.unit_weight.toString() : '',
+      unit_cbm: item.unit_cbm ? item.unit_cbm.toString() : '',
+      ads_amount: item.ads_amount ? item.ads_amount.toString() : '',
+      image_file: null
     })) : [ { ...emptyItem } ];
     
     setForm(f => ({ ...f, items: processedItems }));
@@ -115,11 +117,19 @@ export default function SupplierOrderForm({ order, onClose }) {
   };
 
   const handleItemChange = (idx, e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     const items = [...form.items];
     
-    // Handle numeric fields in items - store as string for input
-    if (['unit_price_usd', 'quantity', 'unit_weight', 'unit_cbm'].includes(name)) {
+    if (name === 'image_file') {
+      const file = files && files[0] ? files[0] : null;
+      if (file && file.type && !file.type.startsWith('image/')) {
+        return;
+      }
+      items[idx].image_file = file;
+      if (file) {
+        items[idx].image_url = '';
+      }
+    } else if (['unit_price_usd', 'quantity', 'unit_weight', 'unit_cbm', 'ads_amount'].includes(name)) {
       if (name === 'quantity') {
         // Allow empty string or valid positive integers
         if (value === '' || (!isNaN(parseInt(value)) && parseInt(value) > 0)) {
@@ -148,6 +158,23 @@ export default function SupplierOrderForm({ order, onClose }) {
       const items = form.items.filter((_, i) => i !== idx);
       setForm({ ...form, items });
     }
+  };
+
+  const uploadSupplierItemImage = async (file, supplierOrderId, index) => {
+    const bucket = 'supplier-order-items';
+    const extension = file.name?.split('.').pop() || 'jpg';
+    const filePath = `${supplierOrderId}/${Date.now()}-${index}.${extension}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from(bucket)
+      .upload(filePath, file, { upsert: true, cacheControl: '3600' });
+
+    if (uploadError) {
+      throw uploadError;
+    }
+
+    const { data } = supabase.storage.from(bucket).getPublicUrl(filePath);
+    return data?.publicUrl || null;
   };
 
   const handleDeliverySaved = () => {
@@ -255,7 +282,18 @@ export default function SupplierOrderForm({ order, onClose }) {
     }
       
       // Insert only valid items
-      for (const item of validItems) {
+      for (let index = 0; index < validItems.length; index++) {
+        const item = validItems[index];
+        let imageUrl = item.image_url || null;
+
+        if (item.image_file instanceof File) {
+          try {
+            imageUrl = await uploadSupplierItemImage(item.image_file, orderId, index);
+          } catch (uploadError) {
+            console.error('Image upload failed:', uploadError);
+          }
+        }
+
         const { error: itemError } = await supabase.from('supplier_order_items').insert({
           supplier_order_id: orderId,
           product_name: item.product_name,
@@ -263,7 +301,8 @@ export default function SupplierOrderForm({ order, onClose }) {
           quantity: item.quantity,
           unit_weight: item.unit_weight || null,
           unit_cbm: item.unit_cbm || null,
-          image_url: item.image_url || null
+          ads_amount: item.ads_amount ? parseFloat(item.ads_amount) : null,
+          image_url: imageUrl
         });
         
         if (itemError) throw itemError;
@@ -543,6 +582,26 @@ export default function SupplierOrderForm({ order, onClose }) {
                         />
                       </div>
                       
+                      {/* Ads Amount */}
+                      <div className="sm:col-span-1">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                          Ads Amount
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 text-sm">$</span>
+                          <input 
+                            type="number" 
+                            name="ads_amount" 
+                            placeholder="0.00" 
+                            value={item.ads_amount} 
+                            onChange={e => handleItemChange(idx, e)} 
+                            className="w-full pl-8 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors"
+                            min="0" 
+                            step="any" 
+                          />
+                        </div>
+                      </div>
+                      
                       {/* Price */}
                       <div className="sm:col-span-1">
                         <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -592,7 +651,7 @@ export default function SupplierOrderForm({ order, onClose }) {
                           onChange={e => handleItemChange(idx, e)} 
                           className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors" 
                           min="0" 
-                          step="0.01"
+                          step="any"
                         />
                       </div>
                       
@@ -609,11 +668,40 @@ export default function SupplierOrderForm({ order, onClose }) {
                           onChange={e => handleItemChange(idx, e)} 
                           className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors" 
                           min="0" 
-                          step="0.01"
+                          step="any"
                         />
                       </div>
                     </div>
                     
+                    {/* Image Upload */}
+                    <div className="sm:col-span-2 lg:col-span-3">
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Image (Upload)
+                      </label>
+                      <input 
+                        type="file"
+                        name="image_file"
+                        accept="image/*"
+                        onChange={e => handleItemChange(idx, e)}
+                        className="w-full px-3 py-2.5 border border-dashed border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base transition-colors"
+                      />
+                      <div className="mt-2 flex items-center gap-3">
+                        {item.image_file ? (
+                          <span className="text-xs text-green-600 dark:text-green-400">
+                            {item.image_file.name} ({Math.round(item.image_file.size / 1024)} KB)
+                          </span>
+                        ) : item.image_url ? (
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            Image existante : <a href={item.image_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline dark:text-blue-400">voir</a>
+                          </span>
+                        ) : (
+                          <span className="text-xs text-gray-400 dark:text-gray-500">
+                            Aucune image sélectionnée
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
                     {/* Image URL */}
                     <div className="sm:col-span-2 lg:col-span-3">
                       <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">

@@ -368,9 +368,9 @@ const Products = () => {
       {/* Product Modal */}
       {showModal && (
         <>
-          <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="relative w-full max-w-[76vw] mx-4 bg-white dark:bg-gray-800 rounded-lg shadow-xl dark:shadow-2xl max-h-[95vh] overflow-hidden">
+          <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-md lg:left-64" />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:left-64">
+            <div className="relative w-full max-w-[76vw] mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-2xl dark:shadow-2xl max-h-[95vh] overflow-hidden border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                   {selectedProduct ? 'Modifier le produit' : 'Ajouter un produit'}

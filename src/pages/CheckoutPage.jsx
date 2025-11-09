@@ -81,13 +81,56 @@ const CheckoutPage = () => {
       //log error
       if (orderError) throw orderError;
 
-      // Create order items
-      const orderItems = items.map(item => ({
-        order_id: order.id,
-        product_id: item.id,
-        quantity: item.quantity,
-        price: item.price,
-        selected_color: item.selectedColor ? JSON.stringify(item.selectedColor) : null
+      // Create order items with variants
+      const orderItems = await Promise.all(items.map(async (item) => {
+        let finalPrice = item.price;
+        let variantCombinationId = null;
+        
+        // Find variant combination if variants are selected
+        if (item.variantData && item.variantData.variantValues) {
+          try {
+            // Get all combinations for this product
+            const { data: combinations, error: comboError } = await supabase
+              .from('product_variant_combinations')
+              .select('id, price, inventory, variant_values')
+              .eq('product_id', item.id)
+              .eq('is_active', true);
+            
+            if (!comboError && combinations) {
+              // Find matching combination by comparing variant_values JSON
+              const matchingCombination = combinations.find(combo => {
+                const comboValues = combo.variant_values || {};
+                const itemValues = item.variantData.variantValues || {};
+                return JSON.stringify(comboValues) === JSON.stringify(itemValues);
+              });
+              
+              if (matchingCombination) {
+                variantCombinationId = matchingCombination.id;
+                if (matchingCombination.price) {
+                  finalPrice = matchingCombination.price;
+                }
+                // Check inventory for this specific combination
+                if (matchingCombination.inventory < item.quantity) {
+                  throw new Error(`Stock insuffisant pour cette combinaison de variantes`);
+                }
+              }
+            }
+          } catch (error) {
+            console.error('Error finding variant combination:', error);
+            throw error;
+          }
+        }
+        
+        return {
+          order_id: order.id,
+          product_id: item.id,
+          quantity: item.quantity,
+          price: finalPrice,
+          selected_color: item.selectedColor ? JSON.stringify(item.selectedColor) : null,
+          variant_combination_id: variantCombinationId,
+          selected_variant_options: item.variantData ? JSON.stringify(item.variantData) : null,
+          variant_values: item.variantData?.variantValues || null
+        };
       }));
 
       const { error: itemsError } = await supabase

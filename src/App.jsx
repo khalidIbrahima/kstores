@@ -75,6 +75,7 @@ import SupplierOrderDetail from './pages/admin/SupplierOrderDetail';
 import SupplierProductsPage from './pages/admin/SupplierProductsPage';
 import SupplierProductPage from './pages/admin/SupplierProductPage';
 import SupplierProductDetailPage from './pages/admin/SupplierProductDetailPage';
+import SupplierOrderItemDetail from './pages/admin/SupplierOrderItemDetail';
 import ShippingAgencies from './pages/admin/ShippingAgencies';
 
 const router = {
@@ -201,6 +202,7 @@ function App() {
                   <Route path="whatsapp-debug" element={<WhatsAppDebug />} />
                   <Route path="supplier-orders" element={<SupplierOrders />} />
                   <Route path="supplier-orders/:id" element={<SupplierOrderDetail />} />
+                  <Route path="supplier-order-items/:id" element={<SupplierOrderItemDetail />} />
                   <Route path="supplier-products" element={<SupplierProductsPage />} />
                   <Route path="supplier-products/create" element={<SupplierProductPage />} />
                   <Route path="supplier-products/edit/:id" element={<SupplierProductPage />} />

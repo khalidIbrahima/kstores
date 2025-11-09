@@ -16,10 +16,47 @@ export default function OrderDetailsModal({ order, onClose }) {
   // Detect if device is mobile
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-  // Function to open Google Maps
-  const openGoogleMaps = (latitude, longitude) => {
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
-    window.open(mapsUrl, '_blank');
+  // Extract coordinates from geo object (handles both lat/lng and latitude/longitude formats)
+  const getCoordinates = (geoObj) => {
+    if (!geoObj) return null;
+    
+    // Try latitude/longitude first
+    if (geoObj.latitude != null && geoObj.longitude != null) {
+      return { lat: geoObj.latitude, lng: geoObj.longitude };
+    }
+    
+    // Fall back to lat/lng
+    if (geoObj.lat != null && geoObj.lng != null) {
+      return { lat: geoObj.lat, lng: geoObj.lng };
+    }
+    
+    return null;
+  };
+
+  // Function to open Google Maps (opens native app on mobile if available)
+  const openGoogleMaps = (lat, lng) => {
+    if (lat == null || lng == null) {
+      console.error('Invalid coordinates:', { lat, lng });
+      return;
+    }
+    // Use Google Maps URL with @ format for direct coordinate navigation
+    const mapsUrl = `https://www.google.com/maps/@${lat},${lng},15z`;
+    if (isMobile) {
+      window.location.href = mapsUrl;
+    } else {
+      window.open(mapsUrl, '_blank');
+    }
+  };
+
+  // Generate URL for QR code (opens native Google Maps app when scanned on mobile)
+  const getGoogleMapsUrl = (lat, lng) => {
+    if (lat == null || lng == null) {
+      return '';
+    }
+    // Use Google Maps URL with @ format - more reliable for coordinates
+    // Format: https://www.google.com/maps/@lat,lng,zoom
+    // This format is better recognized by Google Maps and opens the location directly
+    return `https://www.google.com/maps/@${lat},${lng},15z`;
   };
 
   let geo = order.userGeolocation;
@@ -30,6 +67,9 @@ export default function OrderDetailsModal({ order, onClose }) {
       geo = null;
     }
   }
+
+  // Extract coordinates once
+  const coordinates = getCoordinates(geo);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/40 overflow-y-auto p-4">
@@ -83,14 +123,14 @@ export default function OrderDetailsModal({ order, onClose }) {
           <div className="space-y-6">
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('orders.customer_location')}</h3>
-              {geo && geo.latitude && geo.longitude ? (
+              {coordinates ? (
                 <>
                   <OrderLocationMap
                     userGeolocation={geo}
                     userName={order.profiles?.full_name || 'Unknown Customer'}
                   />
                   <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                    <span>{t('orders.lat')}: {geo.latitude}, {t('orders.lng')}: {geo.longitude}</span>
+                    <span>{t('orders.lat')}: {coordinates.lat}, {t('orders.lng')}: {coordinates.lng}</span>
                   </div>
                   <div className="mt-4 flex flex-col items-center gap-2">
                     <span className="text-xs text-gray-700 dark:text-gray-300">
@@ -98,14 +138,14 @@ export default function OrderDetailsModal({ order, onClose }) {
                     </span>
                     {isMobile ? (
                       <button
-                        onClick={() => openGoogleMaps(geo.latitude, geo.longitude)}
+                        onClick={() => openGoogleMaps(coordinates.lat, coordinates.lng)}
                         className="transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
                         aria-label="Ouvrir dans Google Maps"
                       >
-                        <QRCode value={`https://www.google.com/maps/search/?api=1&query=${geo.latitude},${geo.longitude}`} size={96} />
+                        <QRCode value={getGoogleMapsUrl(coordinates.lat, coordinates.lng)} size={96} />
                       </button>
                     ) : (
-                      <QRCode value={`https://www.google.com/maps/search/?api=1&query=${geo.latitude},${geo.longitude}`} size={96} />
+                      <QRCode value={getGoogleMapsUrl(coordinates.lat, coordinates.lng)} size={96} />
                     )}
                   </div>
                 </>

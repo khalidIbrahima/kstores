@@ -20,6 +20,7 @@ import { useProductAnalytics, useProductStats } from '../hooks/useAnalytics';
 import ProductStats from '../components/analytics/ProductStats';
 import ProductPrice from '../components/ProductPrice';
 import PromotionBadge from '../components/PromotionBadge';
+import ProductVariantSelector from '../components/ProductVariantSelector';
 import { urlUtils } from '../utils/slugUtils';
 import { scrollToTop } from '../utils/scrollUtils';
 import { debugProductSocialMeta, testSocialMetaValidation } from '../utils/debugSocialMeta';
@@ -34,6 +35,8 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedProperties, setSelectedProperties] = useState({});
+  const [productVariants, setProductVariants] = useState([]);
+  const [selectedVariants, setSelectedVariants] = useState({});
   const { addItem } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const { t } = useTranslation();
@@ -149,6 +152,18 @@ const ProductPage = () => {
         setProduct(productWithRating);
         setProductId(productData.id);
         
+        // Fetch product variants
+        const { data: variantsData } = await supabase
+          .from('product_variants')
+          .select(`
+            *,
+            product_variant_options(*)
+          `)
+          .eq('product_id', productData.id)
+          .order('display_order');
+        
+        setProductVariants(variantsData || []);
+        
         // Vérifier si l'utilisateur a déjà laissé un avis
         if (user) {
           const { data: userReview } = await supabase
@@ -195,13 +210,27 @@ const ProductPage = () => {
 
   const handleAddToCart = () => {
     if (product && product.inventory > 0) {
-      // Vérifier si une couleur est requise mais non sélectionnée
-      if (product.colors && product.colors.length > 0 && !selectedColor) {
+      // Vérifier si des variantes sont requises mais non sélectionnées
+      if (productVariants && productVariants.length > 0) {
+        const missingVariants = productVariants.filter(
+          variant => variant.product_variant_options && 
+                     variant.product_variant_options.length > 0 && 
+                     !selectedVariants[variant.name]
+        );
+        
+        if (missingVariants.length > 0) {
+          toast.error(`Veuillez sélectionner: ${missingVariants.map(v => v.name).join(', ')}`);
+          return;
+        }
+      }
+      
+      // Vérifier si une couleur est requise mais non sélectionnée (legacy support)
+      if (product.colors && product.colors.length > 0 && !selectedColor && !selectedVariants['Couleur'] && !selectedVariants['Color']) {
         toast.error(t('product.colorRequired'));
         return;
       }
       
-      // Vérifier si des propriétés requises ne sont pas sélectionnées
+      // Vérifier si des propriétés requises ne sont pas sélectionnées (legacy support)
       if (product.properties && product.properties.length > 0) {
         const missingRequiredProperties = product.properties.filter(
           prop => prop.required && !selectedProperties[prop.name]
@@ -213,10 +242,20 @@ const ProductPage = () => {
         }
       }
       
-      addItem(product, quantity, selectedColor, selectedProperties);
+      // Prepare variant data for cart
+      const variantData = {
+        ...selectedVariants,
+        variantValues: Object.keys(selectedVariants).reduce((acc, key) => {
+          acc[key] = selectedVariants[key].name;
+          return acc;
+        }, {})
+      };
+      
+      addItem(product, quantity, selectedColor, selectedProperties, variantData);
       setQuantity(1);
       setSelectedColor(null);
       setSelectedProperties({});
+      setSelectedVariants({});
     }
   };
 
@@ -286,6 +325,11 @@ const ProductPage = () => {
     );
   }
 
+  const hasColorVariant = (productVariants || []).some(variant => {
+    const name = (variant.name || '').toLowerCase();
+    return name === 'couleur' || name === 'color' || name === 'colour';
+  });
+
   const images = [
     product.image_url,
     product.image_url1,
@@ -330,9 +374,9 @@ const ProductPage = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="overflow-hidden rounded-lg bg-background relative"
+          className="overflow-hidden rounded-lg bg-background relative flex justify-center"
         >
-          <ProductImageCarousel images={images} />
+          <ProductImageCarousel images={images} wrapperClassName="w-full max-w-md" />
           <PromotionBadge product={product} size="lg" />
         </motion.div>
 
@@ -345,7 +389,7 @@ const ProductPage = () => {
           <h1 className="mb-4 text-3xl font-bold text-gray-900 dark:text-gray-100">{product.name}</h1>
           
           {/* Colors Display */}
-          {product.colors && product.colors.length > 0 && (
+          {!hasColorVariant && product.colors && product.colors.length > 0 && (
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Couleurs disponibles</label>
               <div className="flex items-center gap-3">
@@ -376,8 +420,8 @@ const ProductPage = () => {
             </div>
           )}
 
-          {/* Properties Display */}
-          {product.properties && product.properties.length > 0 && (
+          {/* Properties Display (only show if no variants exist, to avoid duplication) */}
+          {(!productVariants || productVariants.length === 0) && product.properties && product.properties.length > 0 && (
             <div className="mb-6 space-y-4">
               {product.properties.map((property, index) => (
                 <div key={index} className="space-y-2">
@@ -576,6 +620,51 @@ const ProductPage = () => {
                 </button>
               </div>
             </div>
+
+            {/* Variants Selector */}
+            {productVariants && productVariants.length > 0 && (
+              <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <ProductVariantSelector
+                  variants={productVariants}
+                  selectedVariants={selectedVariants}
+                  onVariantChange={setSelectedVariants}
+                  optionImageSize={64}
+                  colorDotSize={48}
+                  previewSize={280}
+                />
+              </div>
+            )}
+
+            {/* Legacy Colors (keep for backwards compatibility) */}
+            {(!productVariants || productVariants.length === 0) && !hasColorVariant && product.colors && product.colors.length > 0 && (
+              <div className="mb-6">
+                <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-100">
+                  {t('product.selectColor')}
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {product.colors.map((color, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setSelectedColor(color)}
+                      className={`rounded-lg px-4 py-2 border-2 transition-all ${
+                        selectedColor?.name === color.name
+                          ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                          : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-5 h-5 rounded-full border border-gray-300 dark:border-gray-500"
+                          style={{ backgroundColor: color.hex }}
+                        />
+                        <span>{color.name}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Quantity Selector */}
             <div className="mb-6">

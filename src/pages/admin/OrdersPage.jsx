@@ -232,7 +232,7 @@ const OrdersPage = () => {
                     {t('orders.scan_to_open_in_google_maps')}
                   </span>
                   <QRCode 
-                    value={`https://www.google.com/maps/search/?api=1&query=${order.userGeolocation.lat},${order.userGeolocation.lng}`} 
+                    value={`https://www.google.com/maps/@${order.userGeolocation.lat},${order.userGeolocation.lng},15z`} 
                     size={96} 
                   />
                 </div>
