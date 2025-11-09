@@ -62,9 +62,36 @@ const OrderLocationMap = ({ userGeolocation, userName }) => {
     );
   }
 
+  // Parse userGeolocation (handles both string JSON and object)
+  let parsedUserGeolocation = userGeolocation;
+  if (typeof userGeolocation === 'string') {
+    try {
+      parsedUserGeolocation = JSON.parse(userGeolocation);
+    } catch (e) {
+      console.error('Error parsing userGeolocation:', e);
+      parsedUserGeolocation = null;
+    }
+  }
+
+  // Extract coordinates (handles both lat/lng and latitude/longitude formats)
+  let lat = null;
+  let lng = null;
+  
+  if (parsedUserGeolocation) {
+    // Try latitude/longitude first
+    if (parsedUserGeolocation.latitude != null && parsedUserGeolocation.longitude != null) {
+      lat = parsedUserGeolocation.latitude;
+      lng = parsedUserGeolocation.longitude;
+    }
+    // Fall back to lat/lng
+    else if (parsedUserGeolocation.lat != null && parsedUserGeolocation.lng != null) {
+      lat = parsedUserGeolocation.lat;
+      lng = parsedUserGeolocation.lng;
+    }
+  }
+
   // Vérifier si les coordonnées sont valides
-  const parsedUserGeolocation = JSON.parse(userGeolocation);
-  if (!parsedUserGeolocation?.latitude || !parsedUserGeolocation?.longitude) {
+  if (!lat || !lng) {
     return (
       <div className="flex h-[300px] items-center justify-center rounded-lg bg-gray-100">
         <div className="text-center">
@@ -80,7 +107,7 @@ const OrderLocationMap = ({ userGeolocation, userName }) => {
   return (
     <div className="h-[300px] w-full rounded-lg overflow-hidden border border-gray-200">
       <MapContainer
-        center={[parsedUserGeolocation.latitude, parsedUserGeolocation.longitude]}
+        center={[lat, lng]}
         zoom={15}
         className="h-full w-full"
         style={{ minHeight: '300px' }}
@@ -90,15 +117,15 @@ const OrderLocationMap = ({ userGeolocation, userName }) => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={[parsedUserGeolocation.latitude, parsedUserGeolocation.longitude]} icon={userIcon}>
+        <Marker position={[lat, lng]} icon={userIcon}>
           <Popup>
             <div className="text-center">
               <p className="font-medium text-gray-900">{userName || 'Client'}</p>
               <p className="text-sm text-gray-600">
-                Latitude: {parsedUserGeolocation.latitude.toFixed(6)}
+                Latitude: {lat.toFixed(6)}
               </p>
               <p className="text-sm text-gray-600">
-                Longitude: {parsedUserGeolocation.longitude.toFixed(6)}
+                Longitude: {lng.toFixed(6)}
               </p>
             </div>
           </Popup>

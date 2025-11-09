@@ -115,7 +115,9 @@ const ProductsPage = () => {
     });
 
   const handleAddToCart = (product, e) => {
-    e.preventDefault();
+    if (e?.preventDefault) {
+      e.preventDefault();
+    }
     if (product.inventory > 0) {
       const selectedColor = selectedColorForProduct[product.id];
       
@@ -566,154 +568,192 @@ const ProductsPage = () => {
               role="grid"
               aria-label="Grille de produits"
             >
-            {filteredProducts.map((product, index) => (
-              <motion.article
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="group overflow-hidden rounded-xl sm:rounded-2xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-lg sm:shadow-md sm:hover:shadow-xl dark:shadow-gray-900/20 dark:hover:shadow-gray-900/40 transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/20 dark:hover:border-blue-400/30 transform hover:-translate-y-1"
-                role="gridcell"
-                aria-label={`Produit ${index + 1} sur ${filteredProducts.length}`}
-                itemScope
-                itemType="https://schema.org/Product"
-              >
-                <Link 
-                  to={urlUtils.generateProductUrl(product)} 
-                  className="block overflow-hidden"
-                  aria-label={`Voir les détails de ${product.name}`}
+            {filteredProducts.map((product, index) => {
+              const productImages = [
+                product.image_url,
+                product.image_url1,
+                product.image_url2,
+                product.image_url3,
+                product.image_url4
+              ].filter(Boolean);
+
+              return (
+                <motion.article
+                  key={product.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  className="group overflow-hidden rounded-xl sm:rounded-2xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-lg sm:shadow-md sm:hover:shadow-xl dark:shadow-gray-900/20 dark:hover:shadow-gray-900/40 transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/20 dark:hover:border-blue-400/30 transform hover:-translate-y-1 focus-within:ring-2 focus-within:ring-primary/40"
+                  role="gridcell"
+                  aria-label={`Produit ${index + 1} sur ${filteredProducts.length}`}
+                  itemScope
+                  itemType="https://schema.org/Product"
                 >
-                  <div className="h-40 xs:h-32 sm:h-36 md:h-44 lg:h-48 xl:h-52 overflow-hidden relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800">
-                    <img
-                      src={product.image_url}
-                      alt={`${product.name} - ${product.categories?.name || 'Produit'}`}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      itemProp="image"
-                      loading="lazy"
-                      decoding="async"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
-                      }}
-                    />
-                  <div 
-                    className="h-full w-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm"
-                    style={{ display: 'none' }}
-                  >
-                    <div className="text-center">
-                      <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mb-2">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                      <span>Image non disponible</span>
-                    </div>
-                  </div>
-                  {product.inventory === 0 && (
-                    <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-                      <span className="bg-red-600 text-white px-2 py-1 xs:px-3 rounded-full text-xs xs:text-sm font-medium shadow-lg">
-                        Écoulé
-                      </span>
-                    </div>
-                  )}
-                  <PromotionBadge product={product} size="sm" showEndDate={false} />
-                </div>
-                <div className="p-3 xs:p-2 sm:p-3 md:p-4">
-                  <div className="mb-2 text-xs font-medium text-primary dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-full inline-block" itemProp="category">
-                    {product.categories?.name}
-                  </div>
-                  <h3 className="mb-2 text-sm xs:text-xs sm:text-sm md:text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-primary dark:group-hover:text-blue-400 transition-colors duration-200 leading-tight" itemProp="name">
-                    {product.name}
-                  </h3>
-                  
-                  {/* Données structurées cachées */}
-                  <meta itemProp="description" content={product.description || product.name} />
-                  <meta itemProp="sku" content={product.id} />
-                  <meta itemProp="url" content={`${window.location.origin}/product/${product.id}`} />
-                  
-                  {/* Colors Display */}
-                  {product.colors && product.colors.length > 0 && (
-                    <div className="mb-3">
-                      <div className="flex items-center gap-1.5">
-                        {product.colors.filter(color => color.available !== false).slice(0, 4).map((color, index) => (
-                          <div
-                            key={index}
-                            className={`w-5 h-5 xs:w-4 xs:h-4 sm:w-5 sm:h-5 rounded-full border cursor-pointer transition-colors ${
-                              selectedColorForProduct[product.id]?.name === color.name 
-                                ? 'border-primary ring-1 ring-primary' 
-                                : 'border-gray-300 hover:border-primary'
-                            }`}
-                            style={{ backgroundColor: color.hex }}
-                            title={color.name}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setSelectedColorForProduct(prev => ({
-                                ...prev,
-                                [product.id]: color
-                              }));
-                            }}
-                          />
-                        ))}
-                        {product.colors.filter(color => color.available !== false).length > 4 && (
-                          <span className="text-xs text-gray-500">
-                            +{product.colors.filter(color => color.available !== false).length - 4}
-                          </span>
+                  <div className="flex h-full flex-col">
+                    <Link 
+                      to={urlUtils.generateProductUrl(product)} 
+                      className="flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                      aria-label={`Voir les détails de ${product.name}`}
+                    >
+                      <div className="relative overflow-hidden rounded-t-xl bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-700 dark:via-gray-750 dark:to-gray-800">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/30 pointer-events-none"></div>
+                        <img
+                          src={product.image_url || productImages[0]}
+                          alt={`${product.name} - ${product.categories?.name || 'Produit'}`}
+                          className="w-full object-contain transition-transform duration-300 group-hover:scale-[1.04] h-48 xs:h-40 sm:h-56 md:h-64 lg:h-72 xl:h-80"
+                          itemProp="image"
+                          loading="lazy"
+                          decoding="async"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            const fallback = e.target.nextSibling;
+                            if (fallback) fallback.style.display = 'flex';
+                          }}
+                        />
+                        <div 
+                          className="h-full w-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm"
+                          style={{ display: 'none' }}
+                        >
+                          <div className="text-center">
+                            <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mb-2">
+                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              </svg>
+                            </div>
+                            <span>Image non disponible</span>
+                          </div>
+                        </div>
+                        {product.inventory === 0 && (
+                          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                            <span className="bg-red-600 text-white px-2 py-1 xs:px-3 rounded-full text-xs xs:text-sm font-medium shadow-lg">
+                              Écoulé
+                            </span>
+                          </div>
+                        )}
+                        <PromotionBadge product={product} size="sm" showEndDate={false} className="top-3 left-3" />
+                        {productImages.length > 1 && (
+                          <div className="absolute top-3 right-3 rounded-full bg-white/90 dark:bg-gray-900/80 px-2 py-1 text-[11px] font-medium text-gray-600 dark:text-gray-300 shadow-sm">
+                            +{productImages.length - 1} vues
+                          </div>
                         )}
                       </div>
-                      {selectedColorForProduct[product.id] && (
-                        <p className="text-xs text-primary font-medium mt-1.5">
-                          {selectedColorForProduct[product.id].name}
+                      <div className="flex flex-col gap-2 px-4 py-3 sm:py-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                            {product.categories?.name || 'Collection'}
+                          </span>
+                          {product.views_count ? (
+                            <span className="text-[11px] text-gray-400 dark:text-gray-500">
+                              {product.views_count} vues
+                            </span>
+                          ) : null}
+                        </div>
+                        <h3 className="text-sm xs:text-xs sm:text-sm md:text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-primary dark:group-hover:text-blue-400 transition-colors duration-200 leading-tight" itemProp="name">
+                          {product.name}
+                        </h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                          {formatDescriptionForCard(product.description)}
                         </p>
-                      )}
-                    </div>
-                  )}
-                  
-                  <div className="mb-2 flex items-center" itemProp="aggregateRating" itemScope itemType="https://schema.org/AggregateRating">
-                    <div className="flex text-accent" aria-label={`Note ${product.reviews?.avg || 0} sur 5 étoiles`}>
-                      {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
-                          className={`h-3 w-3 xs:h-3 xs:w-3 sm:h-4 sm:w-4 ${i < Math.round(product.reviews?.avg || 0) ? 'fill-current' : ''}`}
-                          aria-hidden="true"
-                        />
-                      ))}
-                    </div>
-                    <span className="ml-1.5 text-xs text-gray-600 dark:text-gray-400">
-                      ({product.reviews?.count || 0})
-                    </span>
-                    {product.reviews?.count > 0 && (
-                      <>
-                        <meta itemProp="ratingValue" content={product.reviews.avg} />
-                        <meta itemProp="reviewCount" content={product.reviews.count} />
-                        <meta itemProp="bestRating" content="5" />
-                        <meta itemProp="worstRating" content="1" />
-                      </>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:justify-between" itemProp="offers" itemScope itemType="https://schema.org/Offer">
-                    <div className="flex flex-col">
-                      <div itemProp="price" content={product.price}>
-                        <ProductPrice product={product} size="sm" showEndDate={false} />
+                        
+                        {/* Données structurées cachées */}
+                        <meta itemProp="description" content={product.description || product.name} />
+                        <meta itemProp="sku" content={product.id} />
+                        <meta itemProp="url" content={`${window.location.origin}/product/${product.id}`} />
+
+                        <div className="flex items-center" itemProp="aggregateRating" itemScope itemType="https://schema.org/AggregateRating">
+                          <div className="flex text-accent" aria-label={`Note ${product.reviews?.avg || 0} sur 5 étoiles`}>
+                            {[...Array(5)].map((_, i) => (
+                              <Star 
+                                key={i} 
+                                className={`h-3 w-3 xs:h-3 xs:w-3 sm:h-4 sm:w-4 ${i < Math.round(product.reviews?.avg || 0) ? 'fill-current' : ''}`}
+                                aria-hidden="true"
+                              />
+                            ))}
+                          </div>
+                          <span className="ml-1.5 text-xs text-gray-600 dark:text-gray-400">
+                            ({product.reviews?.count || 0})
+                          </span>
+                          {product.reviews?.count > 0 && (
+                            <>
+                              <meta itemProp="ratingValue" content={product.reviews.avg} />
+                              <meta itemProp="reviewCount" content={product.reviews.count} />
+                              <meta itemProp="bestRating" content="5" />
+                              <meta itemProp="worstRating" content="1" />
+                            </>
+                          )}
+                        </div>
                       </div>
-                      <meta itemProp="priceCurrency" content="XOF" />
-                      <meta itemProp="availability" content={product.inventory > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} />
+                    </Link>
+
+                    <div className="flex flex-col gap-3 px-4 pb-4 pt-0" itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                      {product.colors && product.colors.length > 0 && (
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            {product.colors
+                              .filter(color => color.available !== false)
+                              .slice(0, 4)
+                              .map((color, index) => (
+                                <button
+                                  key={index}
+                                  type="button"
+                                  className={`h-5 w-5 xs:h-4 xs:w-4 sm:h-5 sm:w-5 rounded-full border transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/60 ${
+                                    selectedColorForProduct[product.id]?.name === color.name 
+                                      ? 'border-primary ring-1 ring-primary' 
+                                      : 'border-gray-300 hover:border-primary'
+                                  }`}
+                                  style={{ backgroundColor: color.hex }}
+                                  title={color.name}
+                                  aria-label={`Sélectionner la couleur ${color.name}`}
+                                  onClick={() => {
+                                    setSelectedColorForProduct(prev => ({
+                                      ...prev,
+                                      [product.id]: color
+                                    }));
+                                  }}
+                                />
+                              ))}
+                            {product.colors.filter(color => color.available !== false).length > 4 && (
+                              <span className="text-xs text-gray-500">
+                                +{product.colors.filter(color => color.available !== false).length - 4}
+                              </span>
+                            )}
+                          </div>
+                          {selectedColorForProduct[product.id] && (
+                            <p className="text-xs text-primary font-medium mt-1.5">
+                              {selectedColorForProduct[product.id].name}
+                            </p>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="mt-auto flex items-end justify-between gap-3">
+                        <div className="flex flex-col">
+                          <div itemProp="price" content={product.price}>
+                            <ProductPrice product={product} size="sm" showEndDate={false} />
+                          </div>
+                          <meta itemProp="priceCurrency" content="XOF" />
+                          <meta itemProp="availability" content={product.inventory > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} />
+                          <span className={`mt-1 text-[11px] font-medium ${product.inventory > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+                            {product.inventory > 0 ? t('products.inStock') : t('products.outOfStock')}
+                          </span>
+                        </div>
+                        <button
+                          onClick={(e) => handleAddToCart(product, e)}
+                          disabled={product.inventory === 0}
+                          className={`flex-shrink-0 rounded-lg px-4 py-2 text-xs sm:text-sm font-medium transition-colors shadow-sm ${
+                            product.inventory === 0 
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200' 
+                              : 'bg-primary text-white hover:bg-blue-700 active:bg-blue-800 border border-primary hover:border-blue-700'
+                          }`}
+                        >
+                          {product.inventory === 0 ? 'Indisponible' : 'Ajouter'}
+                        </button>
+                      </div>
                     </div>
-                    <button
-                      onClick={(e) => handleAddToCart(product, e)}
-                      disabled={product.inventory === 0}
-                      className={`w-full xs:w-auto rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors shadow-sm ${
-                        product.inventory === 0 
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200' 
-                          : 'bg-primary text-white hover:bg-blue-700 active:bg-blue-800 border border-primary hover:border-blue-700'
-                      }`}
-                    >
-                      {product.inventory === 0 ? 'Indisponible' : 'Ajouter'}
-                    </button>
                   </div>
-                </div>
-                </Link>
-              </motion.article>
-            ))}
+                </motion.article>
+              );
+            })}
             </div>
           </section>
         )}

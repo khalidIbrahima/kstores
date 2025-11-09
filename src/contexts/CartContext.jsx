@@ -27,7 +27,7 @@ export function CartProvider({ children }) {
     }
   }, [items]);
 
-  const addItem = (product, quantity = 1, selectedColor = null, selectedProperties = {}) => {
+  const addItem = (product, quantity = 1, selectedColor = null, selectedProperties = {}, variantData = null) => {
     if (!product) return;
 
     const parsedQuantity = parseInt(quantity);
@@ -37,19 +37,25 @@ export function CartProvider({ children }) {
     }
 
     setItems(currentItems => {
-      // Create unique key based on product ID, color, and properties
+      // Create unique key based on product ID, color, properties, and variants
       const propertiesKey = Object.keys(selectedProperties).length > 0 
         ? JSON.stringify(selectedProperties) 
         : '';
       const colorKey = selectedColor ? selectedColor.name : '';
-      const itemKey = `${product.id}-${colorKey}-${propertiesKey}`;
+      const variantKey = variantData && variantData.variantValues 
+        ? JSON.stringify(variantData.variantValues) 
+        : '';
+      const itemKey = `${product.id}-${colorKey}-${propertiesKey}-${variantKey}`;
       
       const existingItem = currentItems.find(item => {
         const existingPropertiesKey = item.selectedProperties && Object.keys(item.selectedProperties).length > 0 
           ? JSON.stringify(item.selectedProperties) 
           : '';
         const existingColorKey = item.selectedColor ? item.selectedColor.name : '';
-        const existingKey = `${item.id}-${existingColorKey}-${existingPropertiesKey}`;
+        const existingVariantKey = item.variantData && item.variantData.variantValues
+          ? JSON.stringify(item.variantData.variantValues)
+          : '';
+        const existingKey = `${item.id}-${existingColorKey}-${existingPropertiesKey}-${existingVariantKey}`;
         return existingKey === itemKey;
       });
       
@@ -66,22 +72,29 @@ export function CartProvider({ children }) {
             ? JSON.stringify(item.selectedProperties) 
             : '';
           const existingColorKey = item.selectedColor ? item.selectedColor.name : '';
-          const existingKey = `${item.id}-${existingColorKey}-${existingPropertiesKey}`;
+          const existingVariantKey = item.variantData && item.variantData.variantValues
+            ? JSON.stringify(item.variantData.variantValues)
+            : '';
+          const existingKey = `${item.id}-${existingColorKey}-${existingPropertiesKey}-${existingVariantKey}`;
           return existingKey === itemKey
             ? { ...item, quantity: newQuantity }
             : item;
         });
         
         // Create display text for toast
+        const variantText = variantData && variantData.variantValues 
+          ? `(${Object.values(variantData.variantValues).join(', ')})` 
+          : '';
         const displayText = [
           product.name,
           selectedColor ? `(${selectedColor.name})` : '',
+          variantText,
           Object.keys(selectedProperties).length > 0 
             ? `[${Object.entries(selectedProperties).map(([key, value]) => `${key}: ${value}`).join(', ')}]`
             : ''
         ].filter(Boolean).join(' ');
         
-        toast.success(`Updated ${displayText} quantity in cart`);
+        toast.success(`Quantité mise à jour pour ${displayText}`);
         return updatedItems;
       } else {
         if (product.inventory && parsedQuantity > product.inventory) {
@@ -90,15 +103,19 @@ export function CartProvider({ children }) {
         }
 
         // Create display text for toast
+        const variantText = variantData && variantData.variantValues 
+          ? `(${Object.values(variantData.variantValues).join(', ')})` 
+          : '';
         const displayText = [
           product.name,
           selectedColor ? `(${selectedColor.name})` : '',
+          variantText,
           Object.keys(selectedProperties).length > 0 
             ? `[${Object.entries(selectedProperties).map(([key, value]) => `${key}: ${value}`).join(', ')}]`
             : ''
         ].filter(Boolean).join(' ');
 
-        toast.success(`Added ${displayText} to cart`);
+        toast.success(`${displayText} ajouté au panier`);
         return [...currentItems, { 
           id: product.id,
           name: product.name,
@@ -107,7 +124,8 @@ export function CartProvider({ children }) {
           inventory: product.inventory,
           quantity: parsedQuantity,
           selectedColor: selectedColor,
-          selectedProperties: selectedProperties
+          selectedProperties: selectedProperties,
+          variantData: variantData
         }];
       }
     });

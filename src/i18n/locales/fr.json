@@ -827,7 +827,22 @@
     "image_url2": "URL de l'image 2",
     "image_url3": "URL de l'image 3",
     "image_url4": "URL de l'image 4",
-    "views": "Vues"
+    "views": "Vues",
+    "clone": "Cloner",
+    "inStock": "En stock",
+    "outOfStock": "Rupture de stock",
+    "noImage": "Aucune image",
+    "addImage": "Ajouter une image",
+    "statuses": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "images": "Images de l'article",
+    "image": "Image",
+    "imageUrlPlaceholder": "URL de l'image",
+    "invalidImageUrl": "L'URL de l'image n'est pas valide",
+    "removeImage": "Supprimer l'image",
+    "preview": "Aperçu"
   },
   "users": {
     "management": {

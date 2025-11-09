@@ -719,7 +719,22 @@
     "image_url2": "Image 2 URL",
     "image_url3": "Image 3 URL",
     "image_url4": "Image 4 URL",
-    "views": "Views"
+    "views": "Views",
+    "clone": "Clone",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "noImage": "No Image",
+    "addImage": "Add Image",
+    "statuses": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "images": "Images",
+    "image": "Image",
+    "imageUrlPlaceholder": "Image URL",
+    "invalidImageUrl": "Invalid image URL",
+    "removeImage": "Remove image",
+    "preview": "Preview"
   },
   "users": {
     "management": {

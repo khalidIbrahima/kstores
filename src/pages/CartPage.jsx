@@ -91,7 +91,36 @@ const CartPage = () => {
                         </div>
                       )}
                       
-                      {/* Properties Display */}
+                      {/* Variants Display */}
+                      {item.variantData && item.variantData.variantValues && Object.keys(item.variantData.variantValues).length > 0 && (
+                        <div className="mt-2 space-y-1">
+                          {Object.entries(item.variantData.variantValues).map(([variantName, optionName]) => {
+                            const variantOption = item.variantData[variantName];
+                            const optionImage = variantOption?.image_url;
+                            
+                            return (
+                              <div key={variantName} className="flex items-center text-xs text-gray-600 dark:text-gray-400">
+                                <span className="font-medium">{variantName}:</span>
+                                {optionImage ? (
+                                  <div className="ml-1 flex items-center gap-1">
+                                    <img
+                                      src={optionImage}
+                                      alt={optionName}
+                                      className="w-3 h-3 rounded border border-gray-300 dark:border-gray-600 object-cover"
+                                      onError={(e) => { e.target.style.display = 'none'; }}
+                                    />
+                                    <span className="px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded text-xs">{optionName}</span>
+                                  </div>
+                                ) : (
+                                  <span className="ml-1 px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded text-xs">{optionName}</span>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                      
+                      {/* Properties Display (legacy) */}
                       {item.selectedProperties && Object.keys(item.selectedProperties).length > 0 && (
                         <div className="mt-2 space-y-1">
                           {Object.entries(item.selectedProperties).map(([key, value]) => {
@@ -233,7 +262,36 @@ const CartPage = () => {
                                 </div>
                               )}
                               
-                              {/* Properties Display */}
+                              {/* Variants Display */}
+                              {item.variantData && item.variantData.variantValues && Object.keys(item.variantData.variantValues).length > 0 && (
+                                <div className="mt-1 space-y-1">
+                                  {Object.entries(item.variantData.variantValues).map(([variantName, optionName]) => {
+                                    const variantOption = item.variantData[variantName];
+                                    const optionImage = variantOption?.image_url;
+                                    
+                                    return (
+                                      <div key={variantName} className="flex items-center text-xs text-gray-600 dark:text-gray-400">
+                                        <span className="font-medium">{variantName}:</span>
+                                        {optionImage ? (
+                                          <div className="ml-1 flex items-center gap-1">
+                                            <img
+                                              src={optionImage}
+                                              alt={optionName}
+                                              className="w-4 h-4 rounded border border-gray-300 dark:border-gray-600 object-cover"
+                                              onError={(e) => { e.target.style.display = 'none'; }}
+                                            />
+                                            <span className="px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded text-xs">{optionName}</span>
+                                          </div>
+                                        ) : (
+                                          <span className="ml-1 px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded text-xs">{optionName}</span>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                              
+                              {/* Properties Display (legacy) */}
                               {item.selectedProperties && Object.keys(item.selectedProperties).length > 0 && (
                                 <div className="mt-1 space-y-1">
                                   {Object.entries(item.selectedProperties).map(([key, value]) => {
